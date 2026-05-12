@@ -488,7 +488,6 @@
           <!-- adding data to Nutrient Content table -->
           <?php if (!empty($nutrient_array_rows)) { ?>
             <section class="content-section nutrient-declaration-section" id="nutrient-declaration">
-
               <h2 class="section-heading">Nutrient Declaration</h2>
               <div class="inner__content">
                 <table class="nutrient-table" id="productNutrientTable">
@@ -497,7 +496,7 @@
                     <?php
                     foreach ($nutrient_array_rows as $rows) { ?>
                       <tr>
-                        <td><?php echo esc_html($rows['label']); ?></td>
+                        <td><?php echo eurofert_format_chemical_formula(esc_html($rows['label'])); ?></td>
                         <td><?php echo esc_html($rows['value']); ?></td>
                       </tr>
                     <?php  } //close for each loop
@@ -620,10 +619,6 @@
               'time'        => $time,
             ];
           } //end of for loop
-
-          // Store the cleaned row for rendering
-
-
           ?>
 
           <div class="section-divider" aria-hidden="true">
@@ -631,6 +626,7 @@
           </div>
 
           <?php if (!empty($recom_rows)) { ?>
+
             <!-- Adding Data to Application Recommendations Table -->
             <section
               class="content-section application-recommendations-section"
@@ -655,27 +651,56 @@
                         <tr>
                           <!-- nl2br converts "\n" inside the cell into <br> for HTML display -->
                           <td><?php echo nl2br(esc_html($data_rows['crop'])); ?></td>
-                          <td>
 
-                            <?php
-                            $fert_lines = explode("\n", $data_rows['fertigation']);
-                            foreach ($fert_lines as $line) {
-                              $line = trim($line);
-                              if (!empty($line)) {
-                                echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                          <!-- conditional check foliar and fert -->
+                          <?php if ($data_rows['fertigation'] === $data_rows['foliar']) {
+
+                          ?>
+                            <td colspan="2">
+
+                              <?php
+                              $fert_lines = explode("\n", $data_rows['fertigation']);
+                              foreach ($fert_lines as $line) {
+                                $line = trim($line);
+                                if (!empty($line)) {
+                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                                }
                               }
-                            }
-                            ?></td>
-                          <td><?php
-                              $foliar_lines = explode("\n", $data_rows['foliar']);
+                              ?>
+                            </td>
+                          <?php } else { // print both independently  
+                          ?>
+                            <td> <!-- Fertigation cell -->
+                              <?php
+                              // get foliar fertigation as separate values
+                              $fert_lines = explode("\n", $data_rows['fertigation']);
+
+                              foreach ($fert_lines as $line) {
+                                $line = trim($line);
+                                if (!empty($line)) {
+                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                                }
+                              } //end of for loop 
+                              ?>
+
+                            </td>
+                            <td>
+                              <!-- Foliar cell-->
+                              <?php $foliar_lines = explode("\n", $data_rows['foliar']);
                               foreach ($foliar_lines as $line) {
                                 $line = trim($line);
 
                                 if (!empty($line)) {
                                   echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
                                 }
-                              }
-                              ?></td>
+                              } //end for loop for foliar data 
+
+                              ?>
+
+                            </td>
+                          <?php } //closing else 
+                          ?>
+
                           <td><?php echo nl2br(esc_html($data_rows['time'])); ?></td>
                         </tr>
                       <?php } ?>

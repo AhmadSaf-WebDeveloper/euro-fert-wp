@@ -5,7 +5,7 @@
 <main class="content home-page">
   <section class="hero-section hero-section--image" id="home">
     <div class="container hero-section__row">
-      <div class="hero-section__text fade-in">
+      <div class="hero-section__text">
 
         <h1 class="hero-section__title fw-bold">
           Growth Rooted in Quality &amp; Trust
@@ -23,7 +23,25 @@
       </div>
     </div>
 
+    <!-- original 
+     viewBox="0 0 1440 320"
+  <path     
+          fill="#ffffff"
+          d="M 0 140 C 216.233 564.4 361.845 93.09 678.729 
+          148.922 C 793.75 160.651 964.357 231.648 1175.231 212.578 
+          C 1302.39 189.262 1443.778 194.192 1481.472 142.663
+           L 1478.484 323.963 
+           L 0 320 Z"></path> 
 
+
+            <path
+          fill="#ffffff"
+          d="M 0 140 C 216.233 564.4 361.845 93.09 678.729 
+          148.922 C 793.75 160.651 964.357 231.648 1175.231 212.578 
+          C 1302.39 189.262 1443.778 194.192 1481.472 142.663
+           L 1478.484 323.963 
+           L 0 320 Z"></path>
+           -->
 
     <div class="wave-divider" aria-hidden="true">
       <svg
