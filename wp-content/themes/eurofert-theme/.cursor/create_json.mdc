@@ -55,11 +55,13 @@ A valid JSON array, like:
 6. **Merged Fertigation + Foliar cell** (one cell visually spans both columns): duplicate the value into BOTH `fertigation` AND `foliar`.
    - Reason: WP CMB2 metabox shows two empty fields if foliar is `""`. Duplicating ensures both fields show data.
    - Example: Field crops with merged "8 - 10 L / Ha" → `"fertigation": "8 - 10 L / Ha", "foliar": "8 - 10 L / Ha"`.
+   - **Default for .txt input:** When parsing a `.txt` file and a row has a fertigation value but nothing in the foliar position, **always assume merged (Rule 6) and duplicate the value** — UNLESS the line ends with the explicit annotation `[foliar-empty]`. Never guess Rule 8 from ambiguous input.
 
 7. **Table has NO Foliar column at all** (only Crop + Fertigation + Time): every row's `foliar` is `""`.
    - Recognise this case from the table header: if there's no "Foliar" header, the table has no foliar data.
 
-8. **Single row's Foliar cell is empty** (other rows in the same table do have foliar values): that row's `foliar` is `""`.
+8. **Single row's Foliar cell is truly empty** (other rows in the same table do have foliar values): that row's `foliar` is `""`.
+   - **Only apply this rule** if the source `.txt` line ends with the annotation `[foliar-empty]` (e.g. `Field crops | 12 - 15 Kg/ha [foliar-empty]`). Without this marker, default to Rule 6 (duplicate). Strip the `[foliar-empty]` annotation before writing to JSON.
 
 9. **Ignore decoration**: footnotes, asterisks pointing to commentary (`**Not recommended for…`), highlighted backgrounds, merged-header decorations, table column-group labels like "Application Rate". Extract only the text content of data cells.
 
