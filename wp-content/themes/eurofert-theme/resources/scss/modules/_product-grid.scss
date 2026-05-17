@@ -3,7 +3,7 @@ to represent the product inside the single category. 00
 =========================================================
    Category  Page Hero Banner
    ========================================================= */
-
+$card-inline-padding: var(--space-sm);
 /* 1. Kill ALL default browser margins on the children */
 .category-info .category-title,
 .category-info .category-description,
@@ -12,7 +12,7 @@ to represent the product inside the single category. 00
 }
 
 .category-hero {
-  background: var(--hero-bg-gradient);
+  background: linear-gradient(180deg, #ffffff 0%, #f0f7f2 100%);
   border-bottom: 1px solid #e2e8e4; /* Optional: A very faint border to define the edge */
   padding: 3.5rem 1.25rem;
   border-bottom: 1px solid #e2e8e4;
@@ -160,100 +160,160 @@ to represent the product inside the single category. 00
 /* =========================================================
           Product Grid                                       
   ==========================================================*/
-.product-grid__col {
-  margin-bottom: var(--content-spacing);
+.product-section {
+  background: var(--product-bg-color);
 }
-
-.product-grid__item-link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-.product-grid__item {
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  overflow: hidden;
-  border: 0.5px solid var(--gray-200);
-  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.06);
-  border-radius: 5px;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-  height: 100%;
-}
-
-.product-grid__item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-}
-
-/* Image container — aspect-ratio drives height automatically */
-.product-grid__media {
-  background: var(--hero-bg-gradient);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  display: flex;
-  aspect-ratio: 1 / 1;
+.product-grid {
+  display: grid;
+  /* This fills the gap on the right automatically */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  max-width: 1100px;
+  margin: 0 auto; /* Centers the whole grid on the page */
   width: 100%;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 1.5rem;
-  height: 280px;
-}
+  gap: clamp(1.5rem, 3vw, 2.5rem);
 
-/* =========================================================
+  /* grid item */
+  &__item {
+    /* These three rules ensure the 'Link-Card' behaves perfectly */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      .product-grid__media::after {
+        transform: scaleX(1);
+        opacity: 0.9;
+        height: 2px;
+      }
+
+      /* Formula hover glow animation */
+      .product-grid__formula {
+        color: var(--primary, #2e7d32);
+        text-shadow: 0 0 8px rgba(46, 125, 50, 0.25);
+        transform: translateX(2px);
+      }
+
+      .product-grid__cta {
+        color: var(--primary-dark, #1b5e20);
+      }
+
+      .product-grid__arrow {
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  /*body content wrapper*/
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1; // fills remaining card height
+    padding: 1.25rem 1.35rem 1rem;
+    gap: 0; // let the children handle their own spacing
+  }
+
+  /* Card body — scoped override of card-body base */
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0; // formula + footer stay grouped
+  }
+
+  /*Image wrapper */
+  &__media {
+    position: relative;
+    aspect-ratio: 8 / 5; /* Matches your 1200x1600 figma frame */
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    background: var(--product-img-bg);
+    // #f8faf8;
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--primary-light), transparent);
+      opacity: 0.6;
+      transform-origin: center;
+      transform: scaleX(0.5);
+      transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+    }
+  }
+
+  /* =========================================================
    Product Grid Image
    Dedicated media box for the single category page cards
    ========================================================= */
-.product-grid__img {
-  display: block;
-  max-height: 100%;
-  max-height: 100%; /* CRITICAL: Stops vertical expansion */
-  object-fit: contain;
-  transition: transform 0.3s ease;
-}
+  &__img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+  }
 
-.product-grid__item:hover .product-grid__img {
-  transform: scale(1.06);
-}
+  &__title {
+    font-weight: 700;
+    margin: 0;
+    padding-bottom: var(--grid-spacing); // visual separation: title stands alone above formula+footer
+    font-size: 1rem;
+    color: var(--gray-900, #1a1a1a);
+    line-height: 1.35;
+  }
 
-/* Card body — scoped override of card-body base */
-.product-grid__body {
-  padding: var(--space-md);
-  display: flex;
-  flex-direction: column;
+  /* Formula — clean green text with hover glow */
+  &__formula {
+    font-size: 0.9rem;
+    color: var(--primary-dark, #1b5e20);
+    letter-spacing: 1px;
+    margin: 0;
+    font-weight: 800;
+    font-family: var(--font-primary);
+    transition:
+      color 0.3s ease,
+      text-shadow 0.3s ease,
+      transform 0.25s ease;
+  }
 
-  flex: 1;
-}
-.product-grid__title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: var(--space-xs);
-}
-.product-grid__formula {
-  font-size: 0.85rem;
-  color: var(--gray-600);
-  margin-bottom: var(--space-sm);
-}
-.product-grid__footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto; /* pushes footer to bottom of card */
-}
-.product-grid__cta {
-  color: var(--primary);
-  font-weight: 700;
-}
-.product-grid__arrow {
-  color: var(--primary);
-}
-/* Mobile — no image override needed, aspect-ratio is already fluid */
-@media (max-width: 767px) {
-  .product-grid__body {
-    padding: var(--space-sm);
+  /* Footer — left-aligned to sync with formula */
+  &__footer {
+    display: flex;
+    justify-content: flex-start; // left-aligned like the old design
+    align-items: center;
+    gap: 0.45rem;
+    padding-top: 0.75rem; // tight with formula as one unit
+  }
+
+  &__cta {
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: color 0.2s ease;
+  }
+
+  &__arrow {
+    color: var(--primary);
+    font-size: 0.65rem;
+    transition: transform 0.2s ease;
   }
 }
 

@@ -1,145 +1,145 @@
- <?php get_header();
-  /**
-   * taxonomy-fertilizer_category.php
-   * Purpose: WP version of products.html (category -> products page) */
+<?php get_header();
+/**
+ * taxonomy-fertilizer_category.php
+ * Purpose: WP version of products.html (category -> products page) */
 
-  /* NEW START: Current category (taxonomy term) context
-   This template is loaded when visiting:
-   /product-category/<term-slug>*/
-
-
-  $category_obj = get_queried_object();
-  $category_name = isset($category_obj->name) ? (string) $category_obj->name : 'Product Category';
+/* NEW START: Current category (taxonomy term) context
+ This template is loaded when visiting:
+ /product-category/<term-slug>*/
 
 
-  $category_desc_input = isset($category_obj->description) ? (string) $category_obj->description : 'Description of Category';
-  $category_desc_input = trim($category_desc_input);
-
-  $category_desc = ($category_desc_input !== '')
-    ? trim($category_desc_input)
-    : 'Explore our range of products within this category.';
+$category_obj = get_queried_object();
+$category_name = isset($category_obj->name) ? (string) $category_obj->name : 'Product Category';
 
 
-  // get the image for the hero section 
-  $category_hero_img = get_page_by_path('eurofert-category-hero-bottles-HD',  OBJECT, 'attachment');
-  $category_hero_id = $category_hero_img ? (int) $category_hero_img->ID : 0;
-  ?>
- <main class="content">
-   <section class="category-hero py-5">
-     <div class="container">
-       <div class="row align-items-stretch">
+$category_desc_input = isset($category_obj->description) ? (string) $category_obj->description : 'Description of Category';
+$category_desc_input = trim($category_desc_input);
 
-         <div class="category-container  d-flex col-12 col-lg-8 justify-content-center">
-           <div class="category-info text-center">
+$category_desc = ($category_desc_input !== '')
+  ? trim($category_desc_input)
+  : 'Explore our range of products within this category.';
 
-             <h1 class="category-title display-4 fw-bold">
-               <?php echo esc_html($category_name); ?>
-             </h1>
-             <div class="category-description" id="pageHeaderLead">
-               <?php echo wpautop(esc_html($category_desc)); ?>
-             </div>
-             <div class="button-container mt-4">
-               <a href="#productGrid" class="btn btn-primary btn-attention">Download Brochure</a>
-             </div>
-           </div>
-         </div>
 
-         <div class="col-12 col-lg-4 image-wrapper">
-           <?php if ($category_hero_id) :
-              echo wp_get_attachment_image(
-                $category_hero_id,
-                'full',
-                false,
-                array(
-                  'class' => 'category-hero-img',
-                  'alt' => '',
-                  'aria-hidden' => 'true',
-                  'loading'  => 'eager',
-                  'decoding' => 'async',
-                  'sizes' => '(max-width: 767.98px) 100vw, (max-width: 1199.98px) 50vw, 800px'
-                )
-              );
-            // END wp_get_attachment_image()
-            endif;
-            ?>
-         </div>
-       </div>
-     </div>
-   </section>
+// get the image for the hero section 
+$category_hero_img = get_page_by_path('eurofert-category-hero-bottles-HD', OBJECT, 'attachment');
+$category_hero_id = $category_hero_img ? (int) $category_hero_img->ID : 0;
+?>
+<main class="content">
+  <section class="category-hero py-5">
+    <div class="container">
+      <div class="row align-items-stretch">
 
-   <!-- Product Grid -->
-   <section class="product-grid py-5" id="productGrid">
-     <div class="container">
-       <div class="d-flex justify-content-between align-items-center mb-4">
-         <a class="btn btn-outline-secondary" href="<?php echo esc_url(home_url('/')); ?>">
-           <i class="fas fa-arrow-left me-2"></i>Back to Categories
-         </a>
-       </div>
+        <div class="category-container  d-flex col-12 col-lg-8 justify-content-center">
+          <div class="category-info text-center">
 
-       <div class="row g-3" id="productGridContainer">
-         <?php
-          /** 1 check if current taxonomy term have products */
-          if (have_posts()) :
-            while (have_posts()):
-              the_post();
+            <h1 class="category-title display-4 fw-bold">
+              <?php echo esc_html($category_name); ?>
+            </h1>
+            <div class="category-description" id="pageHeaderLead">
+              <?php echo wpautop(esc_html($category_desc)); ?>
+            </div>
+            <div class="button-container mt-4">
+              <a href="#productGrid" class="btn btn-primary btn-attention">Download Brochure</a>
+            </div>
+          </div>
+        </div>
 
-              $product_url = get_permalink();
-              $product_formula = function_exists('get_field') ?  get_field('formula') : '';
+        <div class="col-12 col-lg-4 image-wrapper">
+          <?php if ($category_hero_id):
+            echo wp_get_attachment_image(
+              $category_hero_id,
+              'full',
+              false,
+              array(
+                'class' => 'category-hero-img',
+                'alt' => '',
+                'aria-hidden' => 'true',
+                'loading' => 'eager',
+                'decoding' => 'async',
+                'sizes' => '(max-width: 767.98px) 100vw, (max-width: 1199.98px) 50vw, 800px'
+              )
+            );
+          // END wp_get_attachment_image()
+          endif;
           ?>
-             <div class="product-grid__col col-lg-3 col-md-4 col-sm-6">
-               <a class="product-grid__item-link" href="<?php echo esc_url($product_url); ?>">
-                 <div class="card product-grid__item">
-                   <div class="product-grid__media">
-                     <?php
-                      $product_image_id = get_post_thumbnail_id(get_the_ID());
+        </div>
+      </div>
+    </div>
+  </section>
 
-                      if ($product_image_id) {
-                        echo wp_get_attachment_image(
-                          $product_image_id,
-                          'product_portrait_thumb',
-                          false,
-                          array(
-                            'class' => 'product-grid__img',
-                            'alt'   => get_the_title(),
-                            'loading' => 'lazy',
-                            'decoding' => 'async'
-                          )
-                        );
-                      }
-                      ?>
-                   </div>
-                   <div class="card-body product-grid__body">
-                     <h5 class="product-grid__title"> <?php echo esc_html(get_the_title()); ?></h5>
-                     <?php if (!empty($product_formula)) : ?>
-                       <p class="product-grid__formula">
-                         <?php echo esc_html($product_formula) ?></p>
-                     <?php endif; ?>
+  <!-- Product Grid -->
+  <section class="product-section" id="productGridContainer">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center m-4">
+        <a class="btn btn-outline-secondary" href="<?php echo esc_url(home_url('/')); ?>">
+          <i class="fas fa-arrow-left me-2"></i>Back to Categories
+        </a>
+      </div>
 
-                     <div class="product-grid__footer">
-                       <small class="product-grid__cta text-primary fw-bold">View Details</small>
-                       <i class="fas fa-arrow-right text-primary product-grid__arrow"></i>
-                     </div>
-                   </div>
+      <div class="product-grid" id="productGrid">
+        <?php
+        /** 1 check if current taxonomy term have products */
+        if (have_posts()):
+          while (have_posts()):
+            the_post();
 
-                 </div>
-               </a>
+            $product_url = get_permalink();
+            $product_formula = function_exists('get_field') ? get_field('formula') : '';
+        ?>
+            <a class="product-grid__col card product-grid__item" href="<?php echo esc_url($product_url); ?>">
+              <div class="product-grid__media">
+                <?php
+                $product_image_id = get_post_thumbnail_id(get_the_ID());
 
-             </div>
-           <?php endwhile;
+                if ($product_image_id) {
+                  echo wp_get_attachment_image(
+                    $product_image_id,
+                    'product_portrait_thumb',
+                    false,
+                    array(
+                      'class' => 'product-grid__img',
+                      'alt' => get_the_title(),
+                      'loading' => 'lazy',
+                      'decoding' => 'async'
+                    )
+                  );
+                }
+                ?>
+              </div>
+              <div class="product-grid__content">
+                <div class="card-body product-grid__body">
+                  <h5 class="product-grid__title"> <?php echo esc_html(get_the_title()); ?></h5>
+                  <?php if (!empty($product_formula)): ?>
+                    <p class="product-grid__formula">
+                      <?php echo esc_html($product_formula) ?>
+                    </p>
+                  <?php endif; ?>
+                </div>
+                <div class="product-grid__footer">
+                  <small class="product-grid__cta text-primary fw-bold">View Details</small>
+                  <i class="fas fa-arrow-right text-primary product-grid__arrow"></i>
+                </div>
+              </div>
 
-          else:  ?>
-           <div class="col-12">
-             <p class="text-muted mb-0">
-               <?php echo esc_html__('No products found in this category yet.', 'eurofert'); ?>
-             </p>
-           </div>
-         <?php endif; // END if (have_posts()) 
-          ?>
 
-       </div>
-     </div>
-   </section>
- </main>
- <?php
-  get_footer();
-  ?>
+            </a>
+
+
+          <?php endwhile;
+
+        else: ?>
+          <div class="col-12">
+            <p class="text-muted mb-0">
+              <?php echo esc_html__('No products found in this category yet.', 'eurofert'); ?>
+            </p>
+          </div>
+        <?php endif; // END if (have_posts()) 
+        ?>
+
+      </div>
+    </div>
+  </section>
+</main>
+<?php
+get_footer();
+?>
