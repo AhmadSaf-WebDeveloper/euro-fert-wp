@@ -38,6 +38,7 @@ function eurofert_theme_setup()
     // Use proper sizes for your project (example values)
     add_image_size('productImage_large', 960, 640, false);
     add_image_size('productImage_small', 600, 400, true);
+    add_image_size('product_portrait_thumb', 600, 800, false); // Portrait aspect ratio for grid
     add_image_size('pageBanner', 1920, 600, true);
 }
 
@@ -53,7 +54,7 @@ function eurofert_files()
         true
     );
 
-    wp_enqueue_script('main-eurofert-js', get_theme_file_uri('/js/main.js'), array('bootstrap-bundle'), '1.0', true);
+    wp_enqueue_script('main-eurofert-js', get_theme_file_uri('/public/index.js'), array('bootstrap-bundle'), filemtime(get_theme_file_path('/public/index.js')), true);
 
 
     /* Fonts */
@@ -66,46 +67,13 @@ function eurofert_files()
         'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap'
     );
 
+
     wp_enqueue_style(
         'eurofert_main_styles',
-        get_theme_file_uri('/css/styles.css'),
+        get_theme_file_uri('/public/index.css'),
         array(),
-        filemtime(get_theme_file_path('/css/styles.css')) // This creates a unique version on every save
+        filemtime(get_theme_file_path('/public/index.css'))
     );
-
-    // Other styles that depend on the main styles
-    wp_enqueue_style(
-        'eurofert_animation_styles',
-        get_theme_file_uri('/css/animations.css'),
-        array('eurofert_main_styles'),
-        filemtime(get_theme_file_path('/css/animations.css'))
-    );
-
-    wp_enqueue_style('eurofert_category_styles', get_theme_file_uri('/css/category-grid.css'),  array('eurofert_main_styles'),  filemtime(
-        get_theme_file_path('/css/category-grid.css')
-    ));
-
-    wp_enqueue_style(
-        'eurofert_product_grid_styles',
-        get_theme_file_uri('/css/product-grid.css'),
-        array('eurofert_main_styles'),
-        filemtime(get_theme_file_path('/css/product-grid.css'))
-    );
-
-    wp_enqueue_style(
-        'eurofert_product_styles',
-        get_theme_file_uri('/css/product-details.css'),
-        array('eurofert_main_styles'),
-        filemtime(
-            get_theme_file_path('/css/product-details.css')
-        )
-    );
-
-
-    wp_enqueue_style('eurofert_header_styles', get_theme_file_uri('/css/header.css'), array('eurofert_main_styles'), filemtime(get_theme_file_path('/css/header.css')));
-
-
-    wp_enqueue_style('eurofert_footer_styles', get_theme_file_uri('/css/footer.css'), array('eurofert_main_styles'), filemtime(get_theme_file_path('/css/footer.css')));
 }
 
 add_action('wp_enqueue_scripts', 'eurofert_files'); //hook into wp_enqueue_scripts
@@ -209,4 +177,18 @@ function register_auto_fix(array &$nutrient_autofixed_lines, int $line_number, s
         'original' => $original,
         'fixed'    => $fixed,
     ];
+}
+
+function eurofert_format_chemical_formula($string)
+{
+
+    // 1. Check if the string contains any numbers at all
+    if (preg_match('/[0-9]/', $string)) {
+
+        // 2. Find any letter immediately followed by a number, and wrap the number
+        return preg_replace('/([a-zA-Z])([0-9]+)/', '$1<sub>$2</sub>', $string);
+    }
+
+    // 3. If no numbers exist, return the original string untouched
+    return $string;
 }

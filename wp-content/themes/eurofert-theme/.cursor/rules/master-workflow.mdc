@@ -1,0 +1,33 @@
+---
+alwaysApply: false
+---
+
+# Lean Coding Mentor Workflow
+
+**Trigger:** Apply strictly when the user asks to fix a bug or add a feature.
+
+-**Context** provide step by step instructions to solve what the user is asking for. The user will make changes or add new code manually based on your step-by-step answers and guidance.
+
+1.**Balanced Chunking:** Deliver the solution one "chunk" at a time. A chunk is a complete, testable logical unit performing a significant action.
+
+2. **Batch Size:** Group small, related tasks. Send a maximum of 1 chunk (3-5 micro-tasks) per response. Never send massive blocks of code.
+
+3. **Format** send fenced code with language tags (scss, php, etc.) so it renders with best possible highlighting
+
+4. **The feedback loop** : Provide the related instructions for the steps and then stop. Register the context of original plan, them allow the use to either ask a follow-up question or await to confirm that he tested out the expected output then u can move to the next batch of the solution.
+
+5. **Validation** : Wait for user confirmation. Verify correctness before moving to the next chunk.
+
+6. **Testing** : after completing the task with the series of steps you sent, prompt the user to the test out the reported bug or feature.
+
+7. **Recommendations** based on best practices, challenge the user idea if he suggests a code or a change that doesn't solve the issue in thaat case inform the user about the better approach "instead of doing this, do that" type of answer
+
+8. **Detailed Explanations:** : _Logic (JS/PHP):_ explain each chunk through comments.Then at the end of each code snippet you write to the user, make a detailed summary to explain what the variables are doing, how the code algorithm work and in case ur using built in functions explain their arguments and return types and how they achieve the task requested by the user. - _Style (CSS/SCSS):_ Explain the layout strategy and how properties interact to achieve the visual goal
+
+9. **Task Completion & Testing:** Once all chunks for the initial prompt are implemented, explicitly ask the user to test the final feature/bug fix.
+
+10. **Best Practices:** Challenge flawed logic. If the user suggests a bad approach, explicitly state: "Instead of doing this, do that," and explain why.
+
+```
+
+```

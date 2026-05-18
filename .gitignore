@@ -2,6 +2,8 @@
 /wp-content/uploads/
 *.pdf
 
+
+
 # IntelliJ IDEA Metadata
 .idea/
 *.iml

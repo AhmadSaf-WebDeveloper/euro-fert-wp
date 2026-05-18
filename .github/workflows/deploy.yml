@@ -11,13 +11,44 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        # 1. SETUP: Prepare the cloud environment with your specific Node version
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Professional LTS version recommended for wp-scripts
+      - name: Install and Build Eurofert Theme
+        working-directory: wp-content/themes/eurofert-theme
+        run: | # go into theme folder to find package.json
+          npm install
+          npm run build
 
       - name: SFTP Deploy
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           username: ${{ secrets.SFTP_USERNAME }}
           server: ${{ secrets.SFTP_SERVER_IP }}
           ssh_private_key: ${{ secrets.SFTP_SSH_KEY }}
-          local_path: "wp-content/themes/eurofert-theme/*"
-          remote_path: "/opt/bitnami/wordpress/wp-content/themes/eurofert-theme"
-          args: "-o ConnectTimeout=5"
+
+          # Deploy the whole theme directory as source
+          local_path: 'wp-content/themes/eurofert-theme/'
+          remote_path: '/opt/bitnami/wordpress/wp-content/themes/eurofert-theme'
+          sftpArgs: '-o ConnectTimeout=5'
+
+          # Exclude dev/local-only files from server deploy
+          rsyncArgs: >-
+            --delete
+            --exclude=.git
+            --exclude=.github
+            --exclude=.cursor
+            --exclude=.antigravity
+            --exclude=node_modules
+            --exclude=resources
+            --exclude=scripts
+            --exclude=datasheets
+            --exclude=.env
+            --exclude=.env.*
+            --exclude=package.json
+            --exclude=package-lock.json
+            --exclude=webpack.config.js
+            --exclude=.eslintrc.json
+            --exclude=jsconfig.json
