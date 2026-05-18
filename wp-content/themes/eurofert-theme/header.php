@@ -46,7 +46,7 @@
             <a class="nav-link active" href="index.html"><span>Home</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="services.html"><span>Services</span></a>
+            <a class="nav-link" href="services.html"><span>Contact us</span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="about.html"><span>About Us</span></a>
