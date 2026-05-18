@@ -14,7 +14,7 @@ $wave-height-mobile: 62px;
 
 /* Spacing gaps for hero section */
 $hero-wave-clearance: clamp(6px, 1vw, 14px); /* breathing room between buttons and wave's top edge */
-
+$hero-spacing: clamp(0.75rem, 1.5vw, 1.25rem);
 /*control buttons and wave spacing */
 $hero-cta-dip-desktop: clamp(40px, 5vw, 80px);
 $hero-cta-dip-tablet: clamp(6px, 0.8vw, 12px);
@@ -26,8 +26,9 @@ $hero-cta-dip-tablet: clamp(6px, 0.8vw, 12px);
   width: 100%;
   @media (min-width: 768px) {
     max-width: min(80vw, 1720px);
-    margin-left: var(--hero-gutter);
+    margin-left: 0;
     margin-right: auto;
+    padding-left: 4rem;
   }
 }
 
@@ -43,6 +44,7 @@ $hero-cta-dip-tablet: clamp(6px, 0.8vw, 12px);
   background-size: cover;
   background-position: center 80%;
   color: #fff;
+  background-position: 50% 56%;
 
   //wave spacing at the bottom
   padding-bottom: calc(#{$wave-height-mobile} + #{$hero-wave-clearance});
@@ -61,9 +63,25 @@ $hero-cta-dip-tablet: clamp(6px, 0.8vw, 12px);
     //create vertical space
     // min-height: clamp(280px, 50svh, 440px);
     gap: 24px;
+    padding-top: clamp(2rem, 8vw, 3rem);
 
     @media (min-width: 768px) {
-      gap: 0;
+      min-height: clamp(350px, 45vh, 500px);
+      justify-content: flex-start;
+
+      /* Give breathing room above the H1 so it doesn't touch the header */
+      padding-top: clamp(1.5rem, 5vh, 4rem);
+    }
+
+    /* ── 4K / tall-screen safety net ──────────────────────────────────────────
+       On monitors taller than ~900px viewport height, the min-height clamp
+       would force the row to 500px, creating a huge space-between gap between
+       H1 and subtitle. We disable it here and use padding to control height
+       instead. The content naturally wraps tightly; no ghost space can form.
+    ── */
+    @media (min-width: 768px) and (min-height: 900px) {
+      min-height: auto;
+      padding-bottom: clamp(4rem, 8vh, 10rem);
     }
   }
 
@@ -75,29 +93,21 @@ $hero-cta-dip-tablet: clamp(6px, 0.8vw, 12px);
     justify-content: center;
     margin: 0;
     width: 100%;
+    gap: $hero-spacing;
 
     @media (min-width: 768px) {
-      width: 80%;
+      width: 100%;
       align-items: flex-start;
       font-size: clamp(1rem, 1.2vw + 0.5rem, 1.25rem);
-
-      /*This ensures that no matter what the dip is, 
-         the text follows it proportionally without ever 
-         escaping the parent's boundary*/
-      transform: translateY(max(0px, calc(var(--hero-cta-dip) * 0.95 - 0.2em)));
-      //We multiply the current dip by the Ratio,
-
-      transition: transform 0.4s ease-out;
-    }
-
-    @media (min-width: 1225px) {
-      transform: translateY(max(0px, calc(var(--hero-cta-dip) - 1.5em)));
+      flex-grow: 1;
+      justify-content: space-evenly;
     }
   }
 
   &__title {
     line-height: 1.15;
-    font-size: 8vmin;
+    font-size: 9vmin;
+    margin-top: 0;
   }
 
   &__subtitle {
@@ -108,7 +118,7 @@ $hero-cta-dip-tablet: clamp(6px, 0.8vw, 12px);
 
     @media (min-width: 768px) {
       font-size: 1.3rem;
-      max-width: 60ch;
+      max-width: 100%;
     }
   }
 
@@ -148,6 +158,9 @@ $hero-cta-dip-tablet: clamp(6px, 0.8vw, 12px);
     @media (min-width: 768px) {
       flex-direction: row;
       align-items: center;
+      /* By reducing this margin, we allow the subtitle container to grow further down, 
+         reducing the visual gap without moving the H1 or the buttons themselves! */
+      margin-top: calc((clamp(0.75rem, 1.5vw, 1.25rem) * 2) - var(--hero-cta-dip));
       .btn-attention {
         text-transform: none;
         letter-spacing: 0.5px;

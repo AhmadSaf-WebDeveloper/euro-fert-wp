@@ -13,7 +13,7 @@
 
         <p class="hero-section__subtitle">
           Advanced agricultural solutions that respect both soil and nature
-          while maximizing crop yield and quality.
+          while maximizing crop yield and quality. Precision-formulated for robust root development and higher profitability.
         </p>
       </div>
 
@@ -23,25 +23,6 @@
       </div>
     </div>
 
-    <!-- original 
-     viewBox="0 0 1440 320"
-  <path     
-          fill="#ffffff"
-          d="M 0 140 C 216.233 564.4 361.845 93.09 678.729 
-          148.922 C 793.75 160.651 964.357 231.648 1175.231 212.578 
-          C 1302.39 189.262 1443.778 194.192 1481.472 142.663
-           L 1478.484 323.963 
-           L 0 320 Z"></path> 
-
-
-            <path
-          fill="#ffffff"
-          d="M 0 140 C 216.233 564.4 361.845 93.09 678.729 
-          148.922 C 793.75 160.651 964.357 231.648 1175.231 212.578 
-          C 1302.39 189.262 1443.778 194.192 1481.472 142.663
-           L 1478.484 323.963 
-           L 0 320 Z"></path>
-           -->
 
     <div class="wave-divider" aria-hidden="true">
       <svg

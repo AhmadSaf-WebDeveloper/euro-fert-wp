@@ -98,7 +98,7 @@ body {
 main > *:first-child {
   //prettier-ignore
   padding-top: calc(
-    var(--header-offset) + var(--wp-admin-bar-h));
+    var(--header-offset)); //var(--wp-admin-bar-h)
 }
 
 img {
