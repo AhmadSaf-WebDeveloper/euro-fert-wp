@@ -65,47 +65,34 @@
             </span>
 
             <!-- Mobile and Desktop Categories Sub-menu -->
+            <?php
+            // Build category URLs dynamically from WP taxonomy slugs
+            $cat_base = 'fertilizer_category';
+            $cats = array(
+              array( 'slug' => 'colfert-essential',  'label' => 'Colfert Essential'  ),
+              array( 'slug' => 'colfert-power',      'label' => 'Colfert Power NP'   ),
+              array( 'slug' => 'colfert-npk',        'label' => 'Colfert NPK'        ),
+              array( 'slug' => 'colfert-foliar',     'label' => 'Colfert Foliar'     ),
+              array( 'slug' => 'colfert-trace',      'label' => 'Colfert Trace'      ),
+              array( 'slug' => 'colfert-special',    'label' => 'Colfert Special'    ),
+              array( 'slug' => 'colfert-terra',      'label' => 'Colfert Terra'      ),
+            );
+            ?>
             <ul class="dropdown-menu submenu-items">
               <li class="submenu-item submenu-title">
-                <!-- WP categories URL -->
-                <a class="submenu__link" href="">
+                <a class="submenu__link" href="<?php echo esc_url( home_url( '/product-category/' ) ); ?>">
                   Product Categories Overview</a>
               </li>
 
               <div>
-
+                <?php foreach ( $cats as $cat ) :
+                  $term = get_term_by( 'slug', $cat['slug'], $cat_base );
+                  $url  = $term ? esc_url( get_term_link( $term ) ) : '#';
+                ?>
                 <li class="submenu-item">
-                  <a href="" class="submenu__link">
-                    MAXIGROW Essentials</a>
+                  <a href="<?php echo $url; ?>" class="submenu__link"><?php echo esc_html( $cat['label'] ); ?></a>
                 </li>
-
-                <li class="submenu-item">
-                  <a href="" class="submenu__link">MAXIGROW Power</a>
-                </li>
-
-                <li class="submenu-item">
-                  <a href="" class="submenu__link">MAXIGROW NPK</a>
-                </li>
-
-                <li class="submenu-item">
-                  <a href="" class="submenu__link">MAXIGROW Foliar</a>
-                </li>
-
-
-
-                <li class="submenu-item">
-                  <a href="" class="submenu__link">MAXIGROW Trace</a>
-                </li>
-
-
-
-                <li class="submenu-item">
-                  <a href="" class="submenu__link">MAXIGROW Specialty</a>
-                </li>
-
-                <li class="submenu-item">
-                  <a href="" class="submenu__link">MAXIGROW Terra</a>
-                </li>
+                <?php endforeach; ?>
               </div>
             </ul>
           </li>

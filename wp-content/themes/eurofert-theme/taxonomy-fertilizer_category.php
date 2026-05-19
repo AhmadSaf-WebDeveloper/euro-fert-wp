@@ -23,6 +23,16 @@ $category_desc = ($category_desc_input !== '')
 // get the image for the hero section 
 $category_hero_img = get_page_by_path('eurofert-category-hero-bottles-HD', OBJECT, 'attachment');
 $category_hero_id = $category_hero_img ? (int) $category_hero_img->ID : 0;
+
+// Category Brochure — ACF field 'category_brochure' returns a file attachment ID.
+// We resolve it to a URL so we can build a real download link.
+$brochure_url = '';
+if (function_exists('get_field') && isset($category_obj->term_id)) {
+  $brochure_id = get_field('category_brochure', 'term_' . $category_obj->term_id);
+  if ($brochure_id) {
+    $brochure_url = wp_get_attachment_url((int) $brochure_id);
+  }
+}
 ?>
 <main class="content">
   <section class="category-hero py-5">
@@ -38,9 +48,13 @@ $category_hero_id = $category_hero_img ? (int) $category_hero_img->ID : 0;
             <div class="category-description" id="pageHeaderLead">
               <?php echo wpautop(esc_html($category_desc)); ?>
             </div>
+            <?php if ($brochure_url): ?>
             <div class="button-container mt-4">
-              <a href="#productGrid" class="btn btn-primary btn-attention">Download Brochure</a>
+              <a href="<?php echo esc_url($brochure_url); ?>" class="btn btn-primary btn-attention" download>
+                <i class="fas fa-file-pdf me-2"></i>Download Brochure
+              </a>
             </div>
+            <?php endif; ?>
           </div>
         </div>
 

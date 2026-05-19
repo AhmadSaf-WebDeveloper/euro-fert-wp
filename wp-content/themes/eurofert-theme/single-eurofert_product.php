@@ -384,13 +384,6 @@
                   data-section="packaging"><span class="nav-link-text">Packaging</span>
                   <span class="menu-dash" aria-hidden="true"></span></a>
               </li>
-              <li>
-                <a
-                  href="#documents"
-                  class="nav-panel-link"
-                  data-section="documents"><span class="nav-link-text">Documents & Downloads</span>
-                  <span class="menu-dash" aria-hidden="true"></span></a>
-              </li>
             </ul>
           </nav>
 
