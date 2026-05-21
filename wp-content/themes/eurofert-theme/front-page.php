@@ -63,7 +63,58 @@
       </div>
     </div>
   </section>
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <h2 class="text-center display-5 fw-bold mb-5 text-primary section-title">Why Choose Eurofert</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card card h-100 border-0 shadow-sm fade-in">
+            <div class="card-body text-center p-4">
+              <div class="feature-icon mb-3">
+                <i class="fas fa-seedling fa-3x text-primary"></i>
+              </div>
+              <h3 class="card-title h4 mb-3">Sustainable Farming</h3>
+              <p class="card-text">
+                Our products are developed with sustainability at their core, helping you reduce environmental impact
+                while improving soil health.
+              </p>
+            </div>
+          </div>
+        </div>
 
+        <div class="col-md-4">
+          <div class="feature-card card h-100 border-0 shadow-sm fade-in" data-delay="100">
+            <div class="card-body text-center p-4">
+              <div class="feature-icon mb-3">
+                <i class="fas fa-flask fa-3x text-primary"></i>
+              </div>
+              <h3 class="card-title h4 mb-4">Science-Backed</h3>
+              <p class="card-text">
+                Every product is the result of extensive research and testing to ensure optimal performance in various
+                soil conditions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="feature-card card h-100 border-0 shadow-sm fade-in" data-delay="200">
+            <div class="card-body text-center p-4">
+              <div class="feature-icon mb-3">
+                <i class="fas fa-leaf fa-3x text-primary"></i>
+              </div>
+              <h3 class="card-title h4 mb-3">Yield Optimization</h3>
+              <p class="card-text">
+                Achieve better yields and higher quality crops with nutrient solutions precisely formulated for
+                different crop needs.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <!-- Quick Products Preview / Category Teaser -->
 
   <?php /*load Product Category terms for homepage teaser */

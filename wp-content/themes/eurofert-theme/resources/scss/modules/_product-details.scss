@@ -16,6 +16,10 @@
  ==========================================================================================
  */
 
+.product-details__wrapper section {
+  border-top: none;
+}
+
 @media (max-width: 1023.98px) {
   .overview-section,
   .content-section {
@@ -46,7 +50,6 @@ Hero Section (Image + Key Facts Only)
 }
 
 .product-details-image__container {
-  background: var(--modern-white);
   width: fit-content;
   max-width: 100%;
   margin-inline: auto;
@@ -246,7 +249,6 @@ Application Recommendations Table
   table-layout: auto;
 }
 .recommendations-table thead {
-  background-color: var(--modern-white);
   color: white;
 }
 
@@ -351,32 +353,88 @@ Application Recommendations Table
 }
 /*
 ==========================================================================================
-Packaging Section
+Packaging Selector (Option A - Premium Minimalist Size Selectors)
 ==========================================================================================
 */
+.product-packaging-selector {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
-.badge-container {
+.product-packaging-selector .selector-label {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-600);
+}
+
+.product-packaging-selector .selector-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
 }
 
-.badge {
-  display: inline-block;
-  padding: 0.625rem 1.25rem;
-  border-radius: 6px;
+.product-packaging-selector .selector-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--font-color);
+  background-color: transparent;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  cursor: default;
+  transition: all 0.2s ease-in-out;
+}
+
+.product-packaging-selector .selector-pill i {
+  margin-right: 0.5rem;
   font-size: 0.9rem;
-  font-weight: 600;
-  border: 2px solid var(--primary);
-  color: var(--primary);
-  background: #f2f7f7;
-  transition: all 0.2s ease;
+  color: var(--primary-light);
+  transition:
+    transform 0.2s ease-in-out,
+    color 0.2s ease-in-out;
 }
 
-.badge:hover {
-  background: var(--primary);
-  color: white;
+.product-packaging-selector .selector-pill i.icon-sm {
+  transform: scale(0.85);
+}
+
+.product-packaging-selector .selector-pill i.icon-md {
+  transform: scale(1.1);
+}
+
+.product-packaging-selector .selector-pill i.icon-lg {
+  transform: scale(1.3);
+}
+
+.product-packaging-selector .selector-pill:hover {
+  border-color: var(--primary-light);
+  color: var(--primary-light);
+  background-color: var(--ef-green-soft-2, rgba(106, 191, 75, 0.05));
+}
+
+.product-packaging-selector .selector-pill:hover i {
+  color: var(--primary);
+}
+
+.product-packaging-selector .selector-pill:hover i.icon-sm {
+  transform: scale(1);
+}
+
+.product-packaging-selector .selector-pill:hover i.icon-md {
+  transform: scale(1.3);
+}
+
+.product-packaging-selector .selector-pill:hover i.icon-lg {
+  transform: scale(1.5);
 }
 
 /*
@@ -439,7 +497,6 @@ Desktop Product details
   .product-details__container {
     display: grid;
     grid-template-columns: fit-content(420px) minmax(0, 1fr);
-    background: #f2f7f7;
     align-items: center;
   }
   .product-details-image__container {
@@ -531,7 +588,7 @@ Desktop Product details
     max-width: 1440px;
     height: 100%;
     pointer-events: none;
-    z-index: 2;
+    z-index: 20;
   }
 
   /*drawer list - drawer ul*/
@@ -540,11 +597,13 @@ Desktop Product details
     top: var(--drawer-sticky-top);
     width: var(--drawer-max-width);
     border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     margin-left: auto;
     overflow: hidden;
     pointer-events: all;
-    background-color: var(--modern-white);
-    z-index: 10;
+    background-color: var(--modern-white, #ffffff);
+    z-index: 100;
   }
 
   .overview-section,
@@ -580,8 +639,12 @@ Desktop Product details
     font-size: 2.375rem;
   }
 
-  .product-details___body .section-divider {
+  .product-details__wrapper .section-divider {
     width: 100%;
+  }
+
+  .product-details__wrapper section {
+    border-top: none;
   }
 
   .nav-panel-list > li {
@@ -589,7 +652,7 @@ Desktop Product details
     padding: 0;
     max-height: 100%;
     height: auto;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--primary-light);
   }
 
   .nav-panel-list > li:last-child {
