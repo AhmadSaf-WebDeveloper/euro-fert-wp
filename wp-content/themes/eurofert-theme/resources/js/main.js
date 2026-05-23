@@ -386,8 +386,8 @@ function initProductDrawerNavDash() {
       isManualScrolling = true;
       setActive(a);
 
-      // 3. Scroll: We use scrollIntoView so it respects your CSS 'scroll-margin-top'
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      // 3. Scroll: We use scrollIntoView to center the section in the viewport so it doesn't get cut off
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
 
       // 4. LOCK OFF: Restart camera after scroll finishes (approx 1000ms)
       clearTimeout(manualScrollTimer);

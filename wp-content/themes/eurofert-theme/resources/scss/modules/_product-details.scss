@@ -1,6 +1,9 @@
 /** Product details – desktop layout sections (hero, description, nutrient declaration, etc.) */
 
 /* Override body background for product details page */
+body.single-eurofert_product {
+  background: var(--hero-bg-gradient, linear-gradient(180deg, #ffffff 0%, #f7fdfa 100%));
+}
 
 .product-details__wrapper {
   width: 100%;
@@ -17,6 +20,10 @@
  */
 
 .product-details__wrapper section {
+  border-top: none;
+}
+
+.no-borders-section {
   border-top: none;
 }
 
@@ -199,18 +206,39 @@ Nutrient Declaration Table
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+  border: 1px solid rgba(46, 125, 50, 0.15); /* Premium tinted outer border */
+}
+
+@media (min-width: 768px) {
+  .nutrient-table {
+    width: max-content; /* Shrink to perfectly fit the text */
+    margin-left: clamp(4rem, 15vw, 10rem); /* Increased rightward indentation */
+  }
+}
+
+/* Premium micro-interactions & zebra striping */
+.nutrient-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+.nutrient-table tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.015);
+}
+.nutrient-table tbody tr:hover {
+  background-color: rgba(46, 125, 50, 0.04);
 }
 
 .nutrient-table td {
-  padding: 0.875rem;
-  border-bottom: 1px solid #e5e7eb;
-  border-right: 1px solid #e5e7eb;
+  padding: 0.875rem 1.5rem; /* Increased horizontal padding to widen the columns */
+  border-bottom: 1px solid rgba(46, 125, 50, 0.15); /* Premium tinted inner border */
+  border-right: 1px solid rgba(46, 125, 50, 0.15);
   font-size: 0.95rem;
 }
 
 .nutrient-table td:first-child {
   font-weight: 600;
   color: #374151;
+  width: 1%; /* Force label column to fit its content */
+  white-space: nowrap; /* Prevent label from wrapping awkwardly */
 }
 
 .nutrient-table td:last-child {
@@ -218,6 +246,7 @@ Nutrient Declaration Table
   color: var(--primary);
   font-weight: 700;
   border-right: none;
+  font-variant-numeric: tabular-nums; /* Align decimals perfectly */
 }
 
 .nutrient-table tr:last-child td {
@@ -496,8 +525,11 @@ Desktop Product details
 @media (min-width: 768px) {
   .product-details__container {
     display: grid;
-    grid-template-columns: fit-content(420px) minmax(0, 1fr);
+    /* Constrain the text column so it doesn't stretch to the drawer, causing huge gaps */
+    grid-template-columns: minmax(250px, 300px) minmax(0, 480px);
     align-items: center;
+    justify-content: center; /* Push closer to the center */
+    gap: 2.5rem;
   }
   .product-details-image__container {
     display: flex;
@@ -567,25 +599,37 @@ Desktop Product details
   }
 
   .nutrient-table td {
-    padding: 1rem 2.5rem;
+    padding: 1rem 1.25rem; /* Significantly reduced to pull text closer to separator */
     font-size: 1rem;
   }
 }
-
+/*
+==========================================================================================
+ Desktop Drawer Navigation 
+==========================================================================================
+*/
 @media (min-width: 1024px) {
   .product-details__wrapper {
     position: relative;
     width: 100%;
   }
 
+  .product-details__wrapper > * {
+    grid-column: 1;
+  }
+
   .product-navigation-panel {
     display: block;
     position: absolute;
+
+    /* FIX 1: Anchor top and bottom instead of height: 100%. 
+       This physically stretches the track down to 120px above the footer,
+       giving the drawer guaranteed room to slide. */
     top: 0;
     left: 50%;
     transform: translateX(-50%); /* Perfectly centered */
     width: 100%;
-    max-width: 1440px;
+    max-width: 1280px;
     height: 100%;
     pointer-events: none;
     z-index: 20;
@@ -595,14 +639,19 @@ Desktop Product details
   .nav-panel-list {
     position: sticky;
     top: var(--drawer-sticky-top);
-    width: var(--drawer-max-width);
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    width: var(--drawer-max-width, 320px);
     margin-left: auto;
+    margin-right: clamp(1rem, 3vw, 4rem); /* Matches content padding to align nicely on the right */
+    
+    /* Premium Soft UI Aesthetic */
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.03);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     overflow: hidden;
     pointer-events: all;
-    background-color: var(--modern-white, #ffffff);
     z-index: 100;
   }
 
@@ -612,13 +661,28 @@ Desktop Product details
     width: 100%;
 
     /* CONSTRAINT B: Center the content so it matches the Drawer's box */
-    max-width: 1440px;
+    max-width: 1280px;
     margin-inline: auto;
     padding-right: 390px;
     padding-left: clamp(2rem, 3vw, 4rem);
     padding-top: 80px;
     padding-bottom: 80px;
     scroll-margin-top: 140px;
+  }
+
+  /* UNIFIED CONTENT LAYOUT: Ensure content blocks have equal distance to the drawer */
+  .overview-section > .product-details__container,
+  .content-section > .inner__content {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* TITLES LEFT ALIGNED: Titles sit at the left padding gutter, creating the indentation space for the content underneath */
+  .content-section > .section-heading {
+    text-align: left;
+    width: 100%;
+    margin-left: 0;
   }
 
   .overview-section#hero {
@@ -643,16 +707,12 @@ Desktop Product details
     width: 100%;
   }
 
-  .product-details__wrapper section {
-    border-top: none;
-  }
-
   .nav-panel-list > li {
     margin: 0;
     padding: 0;
     max-height: 100%;
     height: auto;
-    border-bottom: 1px solid var(--primary-light);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   }
 
   .nav-panel-list > li:last-child {
@@ -661,8 +721,8 @@ Desktop Product details
 
   /* links in the drawer */
   .nav-panel-link {
-    font-family: --font-menu;
-    position: relative; /* needed for your active dash */
+    font-family: var(--font-menu, inherit);
+    position: relative;
     display: inline-flex;
     align-items: center;
     width: 100%;
@@ -670,39 +730,46 @@ Desktop Product details
     text-decoration: none;
     line-height: 1.15;
     font-weight: 500;
-    border-radius: 4px;
-    transition: 0.2s cubic-bezier(0.39, 0.575, 0.565, 1);
-    padding: 19.5px; /* base padding*/
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    padding: 22px 24px; /* Roomier padding */
+    background: transparent;
   }
+  
+  .nav-panel-link:hover {
+    background: rgba(46, 125, 50, 0.03);
+    color: var(--primary, #2b7a2b);
+    padding-left: 30px; /* Micro-animation shift */
+  }
+
   .nav-link-text {
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.3s ease;
   }
 
   .menu-dash {
-    flex: 0 0 18px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--primary-light);
-    margin-left: 10px;
+    flex: 0 0 20px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--primary, #2b7a2b);
+    margin-left: 12px;
 
     /* start hidden */
     opacity: 0;
     transform: scaleX(0);
     transform-origin: left center;
-
-    /* smooth animation */
-    transition:
-      transform 220ms cubic-bezier(0.39, 0.575, 0.565, 1),
-      opacity 150ms ease;
-
-    /* optional micro-nudge if your font still makes it look low */
-    translate: 0 -0.5px;
+    transition: transform 300ms cubic-bezier(0.25, 0.8, 0.25, 1), opacity 200ms ease;
   }
 
-  /* active = dash slides IN */
+  /* active state */
+  .nav-panel-link.active {
+    color: var(--primary, #2b7a2b);
+    font-weight: 600;
+    background: rgba(46, 125, 50, 0.05);
+  }
+
   .nav-panel-link.active .menu-dash {
     opacity: 1;
     transform: scaleX(1);
@@ -755,7 +822,7 @@ Desktop Product details
 
 @media (min-width: 1200px) {
   .nutrient-table td {
-    padding: 1.125rem 3rem;
+    padding: 1.125rem 1.5rem; /* Reduced padding on large screens */
   }
 }
 @media (min-width: 421px) {

@@ -384,7 +384,7 @@
           </nav>
 
           <!--  First Product Section -->
-          <section class="overview-section" id="hero">
+          <section class="overview-section no-borders-section" id="hero">
             <div class="product-details__container">
               <!-- Product Image -->
               <div class="product-details-image__container">
@@ -454,265 +454,318 @@
                     <ul id="productBenefits">
                       <?php foreach ($benefits as $b) { ?>
                         <li><?php echo esc_html($b); ?></li>
-                  <?php } ?>
+                      <?php } ?>
                     </ul>
                   <?php } ?>
                 </div>
 
-                <div class="product-packaging-selector">
-                  <span class="selector-label">Available Sizes</span>
-                  <div class="selector-options">
-                    <span class="selector-pill"><i class="fa-solid fa-bottle-water icon-sm"></i> 5 lt</span>
-                    <span class="selector-pill"><i class="fa-solid fa-prescription-bottle-medical icon-md"></i> 20 lt</span>
-                    <span class="selector-pill"><i class="fa-solid fa-cube icon-lg"></i> 1000 lt</span>
-                  </div>
-                </div>
-              </div> <!-- end of hero content-->
+                <!-- Packaging section -->
+                <?php
+                $packages_array = [];
+                if (!empty($packages_content)) {
+                  $regex_pattern = '/(?:[0-9]+(?:\.[0-9]+)?\s*[a-zA-Z]+(?:\s[a-zA-Z]+)?)/';
+                  preg_match_all($regex_pattern, (string) $packages_content, $matches);
+                  // If we successfully found matches, we clean them up (trim spaces) 
+                  // and assign them to our main array.
+                  if (!empty($matches[0])) {
+                    $packages_array = array_map('trim', $matches[0]);
+                  }
+                }
+                ?>
+                <?php if (!empty($packages_array)):
+                  //output html only if we have valid matches from the regex 
+                ?>
+                  <div class="product-packaging-selector">
+                    <span class="selector-label">Available Sizes</span>
+                    <div class="selector-options">
+                      <?php foreach ($packages_array as $pkg):
+                        // Convert to lowercase so our unit checks are case-insensitive.
+                        $pkg_lower = strtolower($pkg);
+                        // Set a default icon just in case it doesn't match our specific rules.
+                        $icon = 'fa-solid fa-box icon-sm';
+
+                        $numeric_value = floatval($pkg_lower); // extract numeric value for more flexible checks
+
+                        //Logic A:  checks for liquids
+                        if (preg_match('/(?:lt|l|liter|ml|gallon|gal|fl oz|fluid ounce)\b/', $pkg_lower)) {
+                          // Keep the same sizing rules for liquids
+                          if ($numeric_value >= 1000) {
+                            $icon = 'fa-solid fa-cube icon-lg';
+                          } elseif ($numeric_value >= 15) {
+                            $icon = 'fa-solid fa-prescription-bottle-medical icon-md';
+                          } else {
+                            $icon = 'fa-solid fa-bottle-water icon-sm';
+                          }
+                          // LOGIC B: Solid units (g, kg, t, ton, oz, pound, lb)
+                        } elseif (preg_match('/(?:g|kg|t|ton|oz|pound|lb)\b/', $pkg_lower)) {
+                          // If it's a heavy solid (15, 20, 25, or ton/t), use a sack icon
+                          $is_ton = preg_match('/\b(?:t|ton)\b/', $pkg_lower);
+
+                          if (($numeric_value >= 20) || $is_ton) {
+                            $icon = 'fa-solid fa-sack icon-lg';
+                          } elseif ($numeric_value >= 10) {
+                            $icon = 'fa-solid fa-boxes-stacked icon-md';
+                          } else {
+                            // FA6 Free: Single box for 1kg - 5kg
+                            $icon = 'fa-solid fa-box icon-sm';
+                          }
+                        } ?>
+                        <span class="selector-pill">
+                          <i class="<?php echo esc_attr($icon); ?>"></i>
+                          <?php echo esc_html($pkg); ?>
+                        </span>
+                      <?php endforeach; ?>
+                    </div>
+                  </div> <!-- end of packaging section-->
+                <?php endif; ?>
+              </div>
+
+            </div> <!-- end of hero content-->
+          </section>
+
+          <div class="section-divider" aria-hidden="true">
+          <div class="separator-line"></div>
+        </div>
+
+        <section title="description" class="description-section content-section no-borders-section" id="description">
+          <h2 class="section-heading">Description</h2>
+          <div class="inner__content">
+            <p id="productDescription">
+              <?php the_content(); ?>
+            </p>
+          </div>
+        </section>
+
+        <!-- adding data to Nutrient Content table -->
+        <?php if (!empty($nutrient_array_rows)) { ?>
+          <div class="section-divider" aria-hidden="true">
+            <div class="separator-line"></div>
+          </div>
+
+          <section class="content-section nutrient-declaration-section no-borders-section" id="nutrient-declaration">
+            <h2 class="section-heading">Nutrient Declaration</h2>
+            <div class="inner__content">
+              <table class="nutrient-table" id="productNutrientTable">
+                <tbody>
+                  <!-- ADD DATA TABLE From database -->
+                  <?php
+                  foreach ($nutrient_array_rows as $rows) { ?>
+                    <tr>
+                      <td><?php echo eurofert_format_chemical_formula(esc_html($rows['label'])); ?></td>
+                      <td><?php echo esc_html($rows['value']); ?></td>
+                    </tr>
+                  <?php  } //close for each loop
+                  ?>
+                </tbody>
+              </table>
             </div>
           </section>
+        <?php } ?>
+
+        <?php
+        // Internal staff notice block , Prompting Staff  
+        if ($is_internal_user && ($nutrient_state != 'ok' || !empty($nutrient_autofixed_lines))) :
+          if (!empty($nutrient_autofixed_lines)) : ?>
+            <div class="editor-only-prompt" role="note">
+              <strong>Internal notice (staff only):</strong>
+              <div>Nutrient table were auto-fixed before display.</div>
+              <details>
+                <summary>Show auto-fixed lines</summary>
+                <ul>
+                  <?php foreach ($nutrient_autofixed_lines as $fix) : ?>
+                    <li>
+                      <?php echo esc_html('Line ' . $fix['line'] . ': ' . $fix['original'] . ' → ' . $fix['fixed'] . ' (' . $fix['rule'] . ')'); ?>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              </details>
+            </div>
+          <?php endif; /* NEW */ ?>
+
+          <?php
+          // 1) Field is empty (not an error)
+          if ($nutrient_state === 'empty') : ?>
+            <div class="editor-only-prompt" role="note">
+              <strong>Internal notice (staff only):</strong>
+              <div>Nutrient table is hidden because the ACF field is empty (no data yet).</div>
+              <div>Expected format: <code>Label|Value</code> (one per line).</div>
+            </div>
+
+          <?php
+          // 2) Partial: table is shown but some lines ignored
+          elseif ($nutrient_state === 'partial') :
+
+            // Count reasons
+            $reason_counts = [];
+            foreach ($nutrient_invalid_lines as $issue) {
+              $reason = $issue['reason'];
+              $reason_counts[$reason] = ($reason_counts[$reason] ?? 0) + 1;
+            }
+          ?>
+            <div class="editor-only-prompt" role="alert">
+              <strong>Internal notice (staff only):</strong>
+              <div>Some nutrient lines were ignored — valid rows are shown above.</div>
+              <div>Expected format: <code>Label|Value</code> (one per line).</div>
+
+              <ul>
+                <?php foreach ($reason_counts as $reason => $count) : ?>
+                  <li><?php echo esc_html($count . ' × ' . $reason); ?></li>
+                <?php endforeach; ?>
+              </ul>
+
+              <details>
+                <summary>Show invalid lines</summary>
+                <ul>
+                  <?php foreach ($nutrient_invalid_lines as $issue) : ?>
+                    <li>
+                      <?php echo esc_html('Line ' . $issue['line'] . ': ' . $issue['original'] . ' — ' . $issue['reason']); ?>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              </details>
+            </div>
+
+          <?php
+          // 3) Invalid: field has content but 0 valid rows
+          elseif ($nutrient_state === 'invalid') : ?>
+            <div class="editor-only-prompt" role="alert">
+              <strong>Internal notice (staff only):</strong>
+              <div>Nutrient table is hidden because all lines are invalid.</div>
+              <div>Expected format: <code>Label|Value</code> (one per line).</div>
+
+              <details>
+                <summary>Show invalid lines</summary>
+                <ul>
+                  <?php foreach ($nutrient_invalid_lines as $issue) : ?>
+                    <li>
+                      <?php echo esc_html('Line ' . $issue['line'] . ': ' . $issue['original'] . ' — ' . $issue['reason']); ?>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              </details>
+            </div>
+          <?php endif; ?>
+
+        <?php endif; // END is_internal_user 
+        ?>
+
+        <!-- NEW START: Build a cleaned rows array (separate from raw meta) !-->
+
+        <?php
+        $recom_rows = [];
+
+        foreach ($recom_table_rows as $row) {
+          if (!is_array($row)) {
+            continue;
+          }
+
+          $crop        = normalize_string($row['crop'] ?? '');
+          $fertigation = normalize_string($row['fertigation'] ?? '');
+          $foliar      = normalize_string($row['foliar'] ?? '');
+          $time        = normalize_string($row['time'] ?? '');
+
+          if ($crop === '' && $fertigation === '' && $foliar === '' && $time === '')
+            continue;
+
+          $recom_rows[] = [
+            'crop'        => $crop,
+            'fertigation' => $fertigation,
+            'foliar'      => $foliar,
+            'time'        => $time,
+          ];
+        } //end of for loop
+        ?>
+
+        <?php if (!empty($recom_rows)) { ?>
 
           <div class="section-divider" aria-hidden="true">
             <div class="separator-line"></div>
           </div>
 
-          <section title="description" class="description-section content-section" id="description">
-            <h2 class="section-heading">Description</h2>
+          <!-- Adding Data to Application Recommendations Table -->
+          <section
+            class="content-section application-recommendations-section no-borders-section"
+            id="application-recommendations">
+            <h2 class="section-heading">Application Recommendations</h2>
             <div class="inner__content">
-              <p id="productDescription">
-                <?php the_content(); ?>
-              </p>
-            </div>
-          </section>
-
-          <!-- adding data to Nutrient Content table -->
-          <?php if (!empty($nutrient_array_rows)) { ?>
-            <div class="section-divider" aria-hidden="true">
-              <div class="separator-line"></div>
-            </div>
-            <section class="content-section nutrient-declaration-section" id="nutrient-declaration">
-              <h2 class="section-heading">Nutrient Declaration</h2>
-              <div class="inner__content">
-                <table class="nutrient-table" id="productNutrientTable">
+              <div class="table-container">
+                <table class="recommendations-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Crop</th>
+                      <th colspan="2">Application Rate</th>
+                      <th rowspan="2">Time of Application</th>
+                    </tr>
+                    <tr>
+                      <th>Fertigation</th>
+                      <th>Foliar ml/100 L</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    <!-- ADD DATA TABLE From database -->
-                    <?php
-                    foreach ($nutrient_array_rows as $rows) { ?>
+                    <?php foreach ($recom_rows as $data_rows) { ?>
                       <tr>
-                        <td><?php echo eurofert_format_chemical_formula(esc_html($rows['label'])); ?></td>
-                        <td><?php echo esc_html($rows['value']); ?></td>
+                        <!-- nl2br converts "\n" inside the cell into <br> for HTML display -->
+                        <td><?php echo nl2br(esc_html($data_rows['crop'])); ?></td>
+
+                        <!-- conditional check foliar and fert -->
+                        <?php if ($data_rows['fertigation'] === $data_rows['foliar']) {
+
+                        ?>
+                          <td colspan="2">
+
+                            <?php
+                            $fert_lines = explode("\n", $data_rows['fertigation']);
+                            foreach ($fert_lines as $line) {
+                              $line = trim($line);
+                              if (!empty($line)) {
+                                echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                              }
+                            }
+                            ?>
+                          </td>
+                        <?php } else { // print both independently  
+                        ?>
+                          <td> <!-- Fertigation cell -->
+                            <?php
+                            // get foliar fertigation as separate values
+                            $fert_lines = explode("\n", $data_rows['fertigation']);
+
+                            foreach ($fert_lines as $line) {
+                              $line = trim($line);
+                              if (!empty($line)) {
+                                echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                              }
+                            } //end of for loop 
+                            ?>
+
+                          </td>
+                          <td>
+                            <!-- Foliar cell-->
+                            <?php $foliar_lines = explode("\n", $data_rows['foliar']);
+                            foreach ($foliar_lines as $line) {
+                              $line = trim($line);
+
+                              if (!empty($line)) {
+                                echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                              }
+                            } //end for loop for foliar data 
+
+                            ?>
+
+                          </td>
+                        <?php } //closing else 
+                        ?>
+
+                        <td><?php echo nl2br(esc_html($data_rows['time'])); ?></td>
                       </tr>
-                    <?php  } //close for each loop
-                    ?>
+                    <?php } ?>
                   </tbody>
                 </table>
               </div>
-            </section>
-          <?php } ?>
-
-          <?php
-          // Internal staff notice block , Prompting Staff  
-          if ($is_internal_user && ($nutrient_state != 'ok' || !empty($nutrient_autofixed_lines))) :
-            if (!empty($nutrient_autofixed_lines)) : ?>
-              <div class="editor-only-prompt" role="note">
-                <strong>Internal notice (staff only):</strong>
-                <div>Nutrient table were auto-fixed before display.</div>
-                <details>
-                  <summary>Show auto-fixed lines</summary>
-                  <ul>
-                    <?php foreach ($nutrient_autofixed_lines as $fix) : ?>
-                      <li>
-                        <?php echo esc_html('Line ' . $fix['line'] . ': ' . $fix['original'] . ' → ' . $fix['fixed'] . ' (' . $fix['rule'] . ')'); ?>
-                      </li>
-                    <?php endforeach; ?>
-                  </ul>
-                </details>
-              </div>
-            <?php endif; /* NEW */ ?>
-
-            <?php
-            // 1) Field is empty (not an error)
-            if ($nutrient_state === 'empty') : ?>
-              <div class="editor-only-prompt" role="note">
-                <strong>Internal notice (staff only):</strong>
-                <div>Nutrient table is hidden because the ACF field is empty (no data yet).</div>
-                <div>Expected format: <code>Label|Value</code> (one per line).</div>
-              </div>
-
-            <?php
-            // 2) Partial: table is shown but some lines ignored
-            elseif ($nutrient_state === 'partial') :
-
-              // Count reasons
-              $reason_counts = [];
-              foreach ($nutrient_invalid_lines as $issue) {
-                $reason = $issue['reason'];
-                $reason_counts[$reason] = ($reason_counts[$reason] ?? 0) + 1;
-              }
-            ?>
-              <div class="editor-only-prompt" role="alert">
-                <strong>Internal notice (staff only):</strong>
-                <div>Some nutrient lines were ignored — valid rows are shown above.</div>
-                <div>Expected format: <code>Label|Value</code> (one per line).</div>
-
-                <ul>
-                  <?php foreach ($reason_counts as $reason => $count) : ?>
-                    <li><?php echo esc_html($count . ' × ' . $reason); ?></li>
-                  <?php endforeach; ?>
-                </ul>
-
-                <details>
-                  <summary>Show invalid lines</summary>
-                  <ul>
-                    <?php foreach ($nutrient_invalid_lines as $issue) : ?>
-                      <li>
-                        <?php echo esc_html('Line ' . $issue['line'] . ': ' . $issue['original'] . ' — ' . $issue['reason']); ?>
-                      </li>
-                    <?php endforeach; ?>
-                  </ul>
-                </details>
-              </div>
-
-            <?php
-            // 3) Invalid: field has content but 0 valid rows
-            elseif ($nutrient_state === 'invalid') : ?>
-              <div class="editor-only-prompt" role="alert">
-                <strong>Internal notice (staff only):</strong>
-                <div>Nutrient table is hidden because all lines are invalid.</div>
-                <div>Expected format: <code>Label|Value</code> (one per line).</div>
-
-                <details>
-                  <summary>Show invalid lines</summary>
-                  <ul>
-                    <?php foreach ($nutrient_invalid_lines as $issue) : ?>
-                      <li>
-                        <?php echo esc_html('Line ' . $issue['line'] . ': ' . $issue['original'] . ' — ' . $issue['reason']); ?>
-                      </li>
-                    <?php endforeach; ?>
-                  </ul>
-                </details>
-              </div>
-            <?php endif; ?>
-
-          <?php endif; // END is_internal_user 
-          ?>
-
-          <!-- NEW START: Build a cleaned rows array (separate from raw meta) !-->
-
-          <?php
-          $recom_rows = [];
-
-          foreach ($recom_table_rows as $row) {
-            if (!is_array($row)) {
-              continue;
-            }
-
-            $crop        = normalize_string($row['crop'] ?? '');
-            $fertigation = normalize_string($row['fertigation'] ?? '');
-            $foliar      = normalize_string($row['foliar'] ?? '');
-            $time        = normalize_string($row['time'] ?? '');
-
-            if ($crop === '' && $fertigation === '' && $foliar === '' && $time === '')
-              continue;
-
-            $recom_rows[] = [
-              'crop'        => $crop,
-              'fertigation' => $fertigation,
-              'foliar'      => $foliar,
-              'time'        => $time,
-            ];
-          } //end of for loop
-          ?>
-
-          <?php if (!empty($recom_rows)) { ?>
-
-            <div class="section-divider" aria-hidden="true">
-              <div class="separator-line"></div>
             </div>
-
-            <!-- Adding Data to Application Recommendations Table -->
-            <section
-              class="content-section application-recommendations-section"
-              id="application-recommendations">
-              <h2 class="section-heading">Application Recommendations</h2>
-              <div class="inner__content">
-                <div class="table-container">
-                  <table class="recommendations-table">
-                    <thead>
-                      <tr>
-                        <th rowspan="2">Crop</th>
-                        <th colspan="2">Application Rate</th>
-                        <th rowspan="2">Time of Application</th>
-                      </tr>
-                      <tr>
-                        <th>Fertigation</th>
-                        <th>Foliar ml/100 L</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php foreach ($recom_rows as $data_rows) { ?>
-                        <tr>
-                          <!-- nl2br converts "\n" inside the cell into <br> for HTML display -->
-                          <td><?php echo nl2br(esc_html($data_rows['crop'])); ?></td>
-
-                          <!-- conditional check foliar and fert -->
-                          <?php if ($data_rows['fertigation'] === $data_rows['foliar']) {
-
-                          ?>
-                            <td colspan="2">
-
-                              <?php
-                              $fert_lines = explode("\n", $data_rows['fertigation']);
-                              foreach ($fert_lines as $line) {
-                                $line = trim($line);
-                                if (!empty($line)) {
-                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
-                                }
-                              }
-                              ?>
-                            </td>
-                          <?php } else { // print both independently  
-                          ?>
-                            <td> <!-- Fertigation cell -->
-                              <?php
-                              // get foliar fertigation as separate values
-                              $fert_lines = explode("\n", $data_rows['fertigation']);
-
-                              foreach ($fert_lines as $line) {
-                                $line = trim($line);
-                                if (!empty($line)) {
-                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
-                                }
-                              } //end of for loop 
-                              ?>
-
-                            </td>
-                            <td>
-                              <!-- Foliar cell-->
-                              <?php $foliar_lines = explode("\n", $data_rows['foliar']);
-                              foreach ($foliar_lines as $line) {
-                                $line = trim($line);
-
-                                if (!empty($line)) {
-                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
-                                }
-                              } //end for loop for foliar data 
-
-                              ?>
-
-                            </td>
-                          <?php } //closing else 
-                          ?>
-
-                          <td><?php echo nl2br(esc_html($data_rows['time'])); ?></td>
-                        </tr>
-                      <?php } ?>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </section>
-          <?php } //end of if 
-          ?>
+          </section>
+        <?php } //end of if 
+        ?>
 
 
         </div> <!-- wrapper end of content-->
