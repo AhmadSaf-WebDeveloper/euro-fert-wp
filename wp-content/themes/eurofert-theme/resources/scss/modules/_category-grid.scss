@@ -2,14 +2,19 @@
 .category-preview .category-card {
   display: flex;
   flex-direction: column;
-  background: white;
+  background: var(--surface-white);
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
-  border: 2px solid #d9dee3;
+  box-shadow: 0 4px 16px rgba(31, 41, 31, 0.08); /* Deep, earthy, subtle shadow */
+  border: 1px solid var(--gray-300); /* Soft earthy border */
   width: 100%;
   margin: 0 auto;
+}
+
+.category-preview .category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 32px rgba(31, 41, 31, 0.12);
 }
 
 /* Products Section */

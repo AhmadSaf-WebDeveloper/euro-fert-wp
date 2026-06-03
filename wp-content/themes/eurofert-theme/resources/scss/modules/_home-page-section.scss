@@ -1,0 +1,356 @@
+/* ==========================================================================
+   HOME PAGE SECTIONS — Intro & Features
+   Extracted from _styles.scss for separation of concerns.
+   Controls: <section class="intro-section"> and <section class="features-section">
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. INTRO SECTION — Base Rules
+   -------------------------------------------------------------------------- */
+
+.intro-section p,
+.intro-section .lead,
+.intro-section .intro-lead {
+  max-width: none; /* override the 45ch */
+}
+
+.intro-section .container {
+  max-width: 960px;
+}
+
+.intro-section h2 {
+  font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
+  margin-bottom: 2rem;
+}
+
+.intro-section p {
+  font-size: clamp(1.125rem, 1.5vw + 0.5rem, 1.375rem);
+  line-height: 1.8;
+  /* max-width: 60ch; */
+  margin-left: 0;
+  margin-right: 0;
+
+  font-weight: 400;
+  margin-bottom: var(--text-block-spacing);
+}
+
+/* Explicit text end decoration for the intro section */
+.text-end-decoration {
+  width: 40px;
+  height: 2px;
+  background-color: rgba(46, 125, 50, 0.4);
+  border-radius: 2px;
+}
+
+/* Modern Fade-In-Up Animation (only used in intro section) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  opacity: 0; /* Start hidden */
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+/* --------------------------------------------------------------------------
+   2. FEATURES SECTION — Base Rules
+   -------------------------------------------------------------------------- */
+
+.features-section {
+  padding: var(--section-padding-y) 0;
+  border-top: 1px solid var(--gray-300);
+}
+
+.features-title {
+  /* Fluid typography perfectly sized to prevent wrapping on mobile */
+  font-size: clamp(1.4rem, 4.5vw, 2.5rem);
+  white-space: nowrap; /* Prevent ugly single-word wrapping */
+}
+
+.features-section .container {
+  max-width: var(--content-max-width);
+}
+
+.features-section .row {
+  gap: var(--content-spacing) 0; /* Extra spacing between feature cards */
+}
+
+/* --------------------------------------------------------------------------
+   3. FEATURE CARD & ICON — Base Rules
+   -------------------------------------------------------------------------- */
+
+.feature-card {
+  transition: all 0.3s ease;
+  margin-bottom: var(--content-spacing); /* Premium spacing between cards */
+}
+
+.feature-card .card-body {
+  padding: var(--premium-spacing) var(--content-spacing); /* Premium internal spacing */
+}
+
+.feature-card .card-text {
+  max-width: 25ch; /* Shorter lines for better visual appeal - 4-5 words per line */
+  line-height: 1.6;
+  margin: 0 auto; /* Center the text within the card */
+  text-align: center; /* Center align for better presentation */
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); /* Enhanced shadow for premium feel */
+}
+
+.feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: rgba(46, 125, 50, 0.1);
+  color: var(--primary);
+  margin-bottom: var(--space-md);
+}
+
+/* ==========================================================================
+   RESPONSIVE: Small Mobile (max-width: 575.98px)
+   ========================================================================== */
+
+@media (max-width: 575.98px) {
+  .intro-section {
+    margin-top: var(--space-xs);
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE: Mobile (max-width: 767.98px)
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+  /* Welcome to Eurofert slightly bigger for visual balance */
+  .intro-section .section-title {
+    font-size: 2.15rem !important;
+  }
+
+  /* Sections - Mobile Spacing with consistent padding */
+  .intro-section,
+  .features-section {
+    padding: 2.5rem 1rem;
+  }
+
+  /* Features section - match products section style */
+  .features-section {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+    border-top: none;
+  }
+
+  .features-section .row {
+    gap: 1rem 0;
+  }
+
+  .features-section .col-md-4 {
+    margin-bottom: 0.75rem;
+
+    display: flex;
+    justify-content: center;
+  }
+
+  .features-section .col-md-4:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Feature cards - Fluid width matching product cards (NO max-width) */
+  .feature-card {
+    margin: 0 auto !important;
+    padding: clamp(0.75rem, 2vw, 1rem);
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    width: 100% !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .feature-card .card-body {
+    padding: clamp(0.875rem, 2vw, 1.25rem);
+    text-align: center;
+  }
+
+  .feature-card .card-text {
+    font-size: clamp(0.8125rem, 1.8vw, 0.9375rem);
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-card .card-title {
+    font-size: clamp(0.95rem, 2.5vw, 1.125rem);
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+  }
+
+  .feature-icon i {
+    font-size: 2rem !important;
+  }
+
+  .intro-section .container {
+    padding-right: var(--section-xpad);
+    padding-left: var(--section-xpad);
+  }
+
+  .intro-section p {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .intro-section .section-title {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .intro-section .lead {
+    padding: 0;
+    max-width: 100%;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE: Large Phones (412px - 767.98px)
+   ========================================================================== */
+
+@media (min-width: 412px) and (max-width: 767.98px) {
+  .features-section .row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .features-section .col-md-4 {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .feature-card {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE: Phablet (576px - 767.98px)
+   ========================================================================== */
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .features-section .col-md-4 {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .feature-card {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE: Desktop Intro Section (min-width: 768px)
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .intro-section .row {
+    justify-content: center;
+  }
+
+  .intro-section .col-lg-9,
+  .intro-section .col-xl-8 {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .feature-card .card-body {
+    padding: var(--content-spacing); /* Reduced padding on mobile */
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE: Tablet Only (768px - 991.98px)
+   ========================================================================== */
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .intro-section,
+  .features-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .features-section .row {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .features-section .col-md-4 {
+    padding-right: 0;
+    padding-left: 0;
+    flex: none !important;
+    max-width: none !important;
+  }
+
+  .feature-card {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .feature-card .card-body {
+    padding: 1.5rem;
+  }
+
+  .feature-card .card-title {
+    font-size: 1.25rem;
+  }
+
+  .feature-card .card-text {
+    font-size: 1rem;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE: Desktop (min-width: 992px)
+   ========================================================================== */
+
+@media (min-width: 992px) {
+  .intro-section {
+    padding-top: clamp(1rem, 3vw, 2.5rem) !important;
+  }
+
+  .features-section {
+    padding: var(--premium-spacing) 0 var(--section-padding-y) 0;
+  }
+
+  .features-section .col-md-4 {
+    width: auto !important;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+}

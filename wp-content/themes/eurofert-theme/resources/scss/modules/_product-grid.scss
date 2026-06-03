@@ -182,16 +182,19 @@ $card-inline-padding: var(--space-sm);
     color: inherit;
     width: 100%;
     background: #fff;
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--gray-300);
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(31, 41, 31, 0.06), 0 1px 3px rgba(31, 41, 31, 0.04);
     transition:
       transform 0.3s ease,
-      box-shadow 0.3s ease;
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
 
     &:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 12px 28px rgba(31, 41, 31, 0.1), 0 4px 10px rgba(31, 41, 31, 0.06);
+      border-color: var(--primary-light);
       .product-grid__media::after {
         transform: scaleX(1);
         opacity: 0.9;
@@ -239,7 +242,7 @@ $card-inline-padding: var(--space-sm);
     width: 100%;
     display: flex;
     overflow: hidden;
-    background: var(--product-img-bg);
+    background: linear-gradient(180deg, #f3f6f3 0%, #f8faf8 100%);
     // #f8faf8;
     &::after {
       content: "";

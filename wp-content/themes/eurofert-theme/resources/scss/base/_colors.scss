@@ -9,26 +9,27 @@
   --secondary: #5d4037;
   --secondary-light: #8b6b61;
   --accent-green: #93d500;
-  --hero-bg-gradient: linear-gradient(180deg, #ffffff 0%, #f7fdfa 100%);
-  --product-bg-color: #f7f8fa;
-  --product-img-bg: #faf9f6;
+  --hero-bg-gradient: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+  --product-bg-color: #f8f9fa;
+  --product-img-bg: #f8f9fa;
 
   /* ── Functional Greens ─────────────────────────── */
   --ef-green: #2e7d32;
-  --ef-green-soft: #eef7ee;
-  --ef-green-soft-2: #f7fbf7;
+  --ef-green-soft: #f1f8f1;
+  --ef-green-soft-2: #f8f9fa;
   --border-green-light: #93d500;
-  /* ── Neutral Scale ─────────────────────────────── */
-  --dark: #2d2a26;
-  --gray-100: #f8f9fa;
-  --gray-200: #e9ecef;
-  --gray-300: #dee2e6;
+  /* ── Organic Technical Neutrals ────────────────── */
+  --dark: #1f291f; /* Deep forest black */
+  --gray-100: #fdfbf7; /* Surface Sand */
+  --gray-200: #f4faf4; /* Surface Mint */
+  --gray-300: #e2e8e2; /* Soft earthy border */
   --gray-400: #ced4da;
   --gray-500: #adb5bd;
   --gray-600: #6c757d;
-  --gray-700: #495057;
-  --gray-800: #343a40;
-  --gray-900: #212529;
+  --gray-700: #4e5a4e; /* Earthy gray muted text */
+  --gray-800: #2c382c;
+  --gray-900: #1f291f;
+  
   /* ── Text ──────────────────────────────────────── */
-  --font-color: #374151;
+  --font-color: #2c382c; /* Richer dark text */
 }

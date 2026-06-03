@@ -642,16 +642,14 @@ Desktop Product details
     width: var(--drawer-max-width, 320px);
     margin-left: auto;
     margin-right: clamp(1rem, 3vw, 4rem); /* Matches content padding to align nicely on the right */
-    
-    /* Premium Soft UI Aesthetic */
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.03);
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    overflow: hidden;
     pointer-events: all;
+    
+    /* Solid UI Aesthetic (Compo Expert Style) */
+    background: var(--surface-white, #ffffff);
+    border-radius: 12px;
+    border: 1px solid var(--gray-300, #e2e8e2); 
+    box-shadow: 0 4px 16px rgba(31, 41, 31, 0.06); 
+    overflow: hidden;
     z-index: 100;
   }
 
@@ -712,7 +710,7 @@ Desktop Product details
     padding: 0;
     max-height: 100%;
     height: auto;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid var(--gray-300, #e2e8e2); /* Visible separator line */
   }
 
   .nav-panel-list > li:last-child {
@@ -726,19 +724,21 @@ Desktop Product details
     display: inline-flex;
     align-items: center;
     width: 100%;
-    color: #4b5563;
+    color: var(--gray-700, #4e5a4e);
     text-decoration: none;
     line-height: 1.15;
     font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    padding: 22px 24px; /* Roomier padding */
+    /* User request: use transition-property: color */
+    transition-property: color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    padding: 24px 24px; /* Roomier padding */
     background: transparent;
   }
-  
-  .nav-panel-link:hover {
-    background: rgba(46, 125, 50, 0.03);
-    color: var(--primary, #2b7a2b);
-    padding-left: 30px; /* Micro-animation shift */
+
+  .nav-panel-link:hover, .nav-panel-link.active {
+    color: var(--primary, #45a041);
+    /* No background change or padding shift, just a clean color transition like Compo Expert */
   }
 
   .nav-link-text {
@@ -760,14 +760,16 @@ Desktop Product details
     opacity: 0;
     transform: scaleX(0);
     transform-origin: left center;
-    transition: transform 300ms cubic-bezier(0.25, 0.8, 0.25, 1), opacity 200ms ease;
+    transition:
+      transform 300ms cubic-bezier(0.25, 0.8, 0.25, 1),
+      opacity 200ms ease;
   }
 
   /* active state */
   .nav-panel-link.active {
-    color: var(--primary, #2b7a2b);
+    color: var(--primary, #45a041);
     font-weight: 600;
-    background: rgba(46, 125, 50, 0.05);
+    background: transparent;
   }
 
   .nav-panel-link.active .menu-dash {

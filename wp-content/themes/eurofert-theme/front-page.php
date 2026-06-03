@@ -46,19 +46,20 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-9 col-xl-12 text-center">
-          <h2 class="section-title display-5 fw-bold mb-3 text-primary">Welcome to Eurofert</h2>
-          <p class="intro-lead text-muted mb-3">
+          <h2 class="section-title display-5 fw-bold text-primary fade-in-up">Welcome to Eurofert</h2>
+          <p class="intro-lead text-muted mb-3 fade-in-up delay-100">
             At Eurofert, we believe sustainable agriculture starts with the soil. Our fertilizers are designed to
             enrich crops while preserving the planet. With decades of experience in soil nutrition, Eurofert delivers
             science-backed solutions that improve yield quality, reduce environmental impact, and support farming
             communities worldwide.
           </p>
-          <p class="text-muted mb-3">
+          <p class="text-muted mb-4 fade-in-up delay-200">
             From high-concentration pastes to precision liquid and granular fertilizers, every Eurofert product is
             designed to deliver consistent nutrient availability, excellent solubility, and predictable results in
             real-world farming conditions. Our ranges are tested across different crops, climates, and irrigation
             systems to make sure they perform where it matters most: in your fields.
           </p>
+          <div class="text-end-decoration mx-auto mt-4 mb-2 fade-in-up delay-300"></div>
         </div>
       </div>
     </div>
@@ -66,7 +67,9 @@
   <!-- Features Section -->
   <section class="features-section" id="features">
     <div class="container">
-      <h2 class="text-center display-5 fw-bold mb-5 text-primary section-title">Why Choose Eurofert</h2>
+      <div class="text-center">
+        <h2 class="fw-bold text-primary section-title features-title">Why Choose Eurofert</h2>
+      </div>
       <div class="row g-4">
         <div class="col-md-4">
           <div class="feature-card card h-100 border-0 shadow-sm fade-in">
@@ -131,8 +134,10 @@
     <div class="container">
       <!-- Section Title-->
 
-      <h2 class="text-center fw-bold text-primary section-title">Colfert Product Lines</h2>
-      <p class="text-center text-muted mb-3">Explore our comprehensive range of 7 specialized fertilizer lines</p>
+      <div class="text-center preview-header">
+        <h2 class="fw-bold text-primary section-title has-subtitle">Colfert Product Lines</h2>
+        <p class="text-muted">Explore our comprehensive range of 7 specialized fertilizer lines</p>
+      </div>
 
       <!-- Row -->
       <?php if (!is_wp_error($product_categories) && !empty($product_categories)) { ?>

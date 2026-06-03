@@ -43,7 +43,7 @@
         <!-- Nav menu list-->
         <ul class="nav-menu">
           <li class="nav-item">
-            <a class="nav-link active" href="index.html"><span>Home</span></a>
+            <a class="nav-link active" href="<?php echo esc_url(home_url('/')); ?>"><span>Home</span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="services.html"><span>Contact us</span></a>

@@ -205,12 +205,7 @@ ul {
   text-align: left; /* Consistent left alignment */
 }
 
-/* Intro section paragraphs global, paragraph global intro global  */
-.intro-section p,
-.intro-section .lead,
-.intro-section .intro-lead {
-  max-width: none; /* override the 45ch */
-}
+/* Intro section rules moved to modules/_home-page-section.scss */
 
 /* Enhanced Typography Hierarchy */
 .display-4,
@@ -352,46 +347,80 @@ img {
 /* Section Styles */
 section {
   padding: var(--section-padding-y) 0;
-  border-top: 1px solid var(--gray-300);
 }
 
 section:first-of-type {
   border-top: none;
 }
 
+.section-title {
+  position: relative;
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  /* Uniform responsive bottom margin for perfectly consistent spacing */
+  margin-bottom: 2.5rem !important;
+}
+
+/* Modifiers for titles with subtitles directly beneath them */
+.section-title.has-subtitle {
+  margin-bottom: 0.5rem !important; /* Tighten gap to subtitle */
+}
+
+/* Specific 28px (1.75rem) gap below the preview header container */
+.preview-header {
+  margin-bottom: 1.75rem !important;
+}
+
+/* Mobile Uniformity Overrides */
+@media (max-width: 767.98px) {
+  .section-title {
+    font-size: 1.75rem !important; /* Uniform font size on mobile */
+    width: 100% !important; /* Force 100% width for perfect dead-center text alignment */
+    white-space: normal !important; /* Allow wrapping on very small screens if necessary */
+  }
+
+}
+
 .section-title::after {
   content: "";
   position: absolute;
-  bottom: -18px;
-  left: 50%;
-  width: 60px;
-  height: 3px;
-  background-color: var(--primary);
-  transform: translateX(-50%);
-  transition:
-    width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Balanced small gap as requested */
+  bottom: -8px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(46, 125, 50, 0.4);
+  /* Hide completely on mobile */
+  display: none;
+  transform-origin: center;
+  border-radius: 2px;
 }
 
-/* Desktop hover effect for section title */
+/* Desktop behaviors */
 @media (min-width: 992px) {
-  .section-title:hover {
-    transform: scale(1.02);
+  .section-title::after {
+    /* Show it on desktop */
+    display: block;
+    /* Smaller initial width on desktop to allow for hover growth */
+    transform: scaleX(0.4);
+    background-color: rgba(46, 125, 50, 0.35);
+    transition:
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.3s ease;
   }
 
   .section-title:hover::after {
-    width: 140px;
+    /* Expand the line to a larger portion, without covering the full text */
+    transform: scaleX(0.7);
+    background-color: rgba(46, 125, 50, 0.6);
   }
 }
 /*handling background colors , write here : */
 
-.intro-section .section-title {
-  display: block; /* make it a full-width block */
-  text-align: center; /* center the text inside the H2 */
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: var(--space-md); /* slightly tighter under-title spacing */
-}
+
 
 /* About Section Styles */
 .about-section {
@@ -412,89 +441,8 @@ section:first-of-type {
   padding: var(--premium-spacing) 0; /* Premium spacing for intro */
 }
 
-.intro-section .container {
-  max-width: 960px;
-}
-
-.intro-section h2 {
-  font-size: clamp(2rem, 4vw + 0.5rem, 3rem);
-  margin-bottom: 2rem;
-}
-
-.intro-section p {
-  font-size: clamp(1.125rem, 1.5vw + 0.5rem, 1.375rem);
-  line-height: 1.8;
-  /* max-width: 60ch; */
-  margin-left: 0;
-  margin-right: 0;
-
-  font-weight: 400;
-  margin-bottom: var(--text-block-spacing);
-}
-
-/* Desktop intro section - Desktop Product layout */
-@media (min-width: 768px) {
-  .intro-section .row {
-    justify-content: center;
-  }
-
-  .intro-section .col-lg-9,
-  .intro-section .col-xl-8 {
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-/* Features Section */
-.features-section {
-  padding: var(--section-padding-y) 0;
-  border-top: 1px solid var(--gray-300);
-}
-
-.features-section .container {
-  max-width: var(--content-max-width);
-}
-
-.features-section .row {
-  gap: var(--content-spacing) 0; /* Extra spacing between feature cards */
-}
-
-.feature-card,
-.service-card {
-  transition: all 0.3s ease;
-  margin-bottom: var(--content-spacing); /* Premium spacing between cards */
-}
-
-.feature-card .card-body,
-.service-card .card-body {
-  padding: var(--premium-spacing) var(--content-spacing); /* Premium internal spacing */
-}
-
-.feature-card .card-text,
-.service-card .card-text {
-  max-width: 25ch; /* Shorter lines for better visual appeal - 4-5 words per line */
-  line-height: 1.6;
-  margin: 0 auto; /* Center the text within the card */
-  text-align: center; /* Center align for better presentation */
-}
-
-.feature-card:hover,
-.service-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); /* Enhanced shadow for premium feel */
-}
-
-.feature-icon,
-.service-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: rgba(46, 125, 50, 0.1);
-  color: var(--primary);
-  margin-bottom: var(--space-md);
-}
+/* Intro/Features section rules moved to modules/_home-page-section.scss */
+/* .service-card and .service-icon dead code deleted */
 
 /* 7th card stays in first column of third row (left-aligned) */
 .product-categories .col-lg-4:nth-child(7) {
@@ -694,11 +642,6 @@ section:first-of-type {
     margin-bottom: var(--space-lg);
   }
 
-  .feature-card .card-body,
-  .service-card .card-body {
-    padding: var(--content-spacing); /* Reduced padding on mobile */
-  }
-
   .testimonial-card {
     padding: var(--content-spacing); /* Reduced testimonial padding on mobile */
     margin: 0 var(--space-sm);
@@ -774,10 +717,6 @@ section:first-of-type {
   /* Small mobile text adjustments */
   .testimonial-text {
     max-width: 30ch; /* Shortest for small mobile */
-  }
-
-  .intro-section {
-    margin-top: var(--space-xs);
   }
 
   .btn-lg {
@@ -939,71 +878,9 @@ section:first-of-type {
 
   /* Sections - Mobile Spacing with consistent padding */
   .section,
-  .intro-section,
-  .features-section,
   .testimonials-section,
   .contact-section {
     padding: 2.5rem 1rem;
-  }
-
-  /* Features section - match products section style */
-  .features-section {
-    padding-top: 2.5rem !important;
-    padding-bottom: 2.5rem !important;
-    border-top: none;
-  }
-
-  .features-section .row {
-    gap: 1rem 0;
-  }
-
-  .features-section .col-md-4 {
-    margin-bottom: 0.75rem;
-
-    display: flex;
-    justify-content: center;
-  }
-
-  .features-section .col-md-4:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Feature cards - Fluid width matching product cards (NO max-width) */
-  .feature-card {
-    margin: 0 auto !important;
-    padding: clamp(0.75rem, 2vw, 1rem);
-    border: 1px solid var(--gray-300);
-    border-radius: 8px;
-    width: 100% !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .feature-card .card-body {
-    padding: clamp(0.875rem, 2vw, 1.25rem);
-    text-align: center;
-  }
-
-  .feature-card .card-text {
-    font-size: clamp(0.8125rem, 1.8vw, 0.9375rem);
-    line-height: 1.6;
-    text-align: center;
-    margin-bottom: 0.75rem;
-  }
-
-  .feature-card .card-title {
-    font-size: clamp(0.95rem, 2.5vw, 1.125rem);
-    margin-bottom: 0.5rem;
-    text-align: center;
-  }
-
-  .feature-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 1rem;
-  }
-
-  .feature-icon i {
-    font-size: 2rem !important;
   }
 
   /* Testimonials section - match style */
@@ -1017,26 +894,6 @@ section:first-of-type {
     width: 100% !important;
     padding: clamp(0.75rem, 2vw, 1rem);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .intro-section .container {
-    padding-right: 0;
-    padding-left: 0;
-  }
-
-  .intro-section p {
-    padding: 0;
-    max-width: 100%;
-  }
-
-  .intro-section .section-title {
-    padding: 0;
-    max-width: 100%;
-  }
-
-  .intro-section .lead {
-    padding: 0;
-    max-width: 100%;
   }
 
   .product-categories {
@@ -1946,23 +1803,6 @@ section:first-of-type {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
-
-  .features-section .row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-    margin-right: 0;
-    margin-left: 0;
-  }
-
-  .features-section .col-md-4 {
-    padding-right: 0;
-    padding-left: 0;
-  }
-
-  .feature-card {
-    width: 100%;
-  }
 }
 
 /* Media Query for Large Phones (576px+) problem2*/
@@ -1980,14 +1820,6 @@ section:first-of-type {
     font-size: 0.875rem;
   }
 
-  .features-section .col-md-4 {
-    padding-right: 0;
-    padding-left: 0;
-  }
-
-  .feature-card {
-    width: 100%;
-  }
 
   .btn {
     padding: 0.5625rem 1.125rem;
@@ -2055,41 +1887,9 @@ Mid range screens Feature section
     padding: 3rem 1.5rem;
   }
 
-  .intro-section,
-  .features-section,
   .testimonials-section,
   .contact-section {
     padding: 3rem 1.5rem;
-  }
-
-  .features-section .row {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-
-  .features-section .col-md-4 {
-    padding-right: 0;
-    padding-left: 0;
-    flex: none !important;
-    max-width: none !important;
-  }
-
-  .feature-card {
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  .feature-card .card-body {
-    padding: 1.5rem;
-  }
-
-  .feature-card .card-title {
-    font-size: 1.25rem;
-  }
-
-  .feature-card .card-text {
-    font-size: 1rem;
   }
 
   .wave-divider {
@@ -2134,14 +1934,6 @@ Mid range screens Feature section
     height: 220px;
   }
 
-  .features-section {
-    padding: var(--premium-spacing) 0 var(--section-padding-y) 0;
-  }
-  .features-section .col-md-4 {
-    width: auto !important;
-    flex: 0 0 33.333333%;
-    max-width: 33.333333%;
-  }
 }
 
 /* ===================================================================
