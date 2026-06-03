@@ -2037,7 +2037,7 @@ Mid range screens Feature section
   height: 100vh;
   background: white;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-  z-index: 1050;
+  z-index: 3000;
   transform: translateX(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
@@ -2118,7 +2118,7 @@ Mid range screens Feature section
   font-size: 1.25rem;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(46, 125, 50, 0.3);
-  z-index: 1000;
+  z-index: 1500;
   display: none;
   align-items: center;
   justify-content: center;
@@ -2143,7 +2143,7 @@ Mid range screens Feature section
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 1040;
+  z-index: 2900;
   opacity: 0;
   visibility: hidden;
   transition:

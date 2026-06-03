@@ -15,7 +15,7 @@
   /* Crisp neutral border to prevent merging with white backgrounds */
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: none;
-  z-index: 1020; /* Keep above all page content including drawers */
+  z-index: 2000; /* Fixed header above all desktop page content, including sticky drawers */
   padding-block: 1.5rem;
   transition:
     padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
@@ -774,7 +774,7 @@ Desktop main menu - 768px and above**/
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
-    z-index: 4;
+    z-index: 2100;
     display: none;
     list-style: none;
     /* visible so the arrow caret is not clipped */
@@ -790,7 +790,7 @@ Desktop main menu - 768px and above**/
     position: absolute;
     /* 1px above the white fill — creates the border outline */
     top: calc(100% - 17px);
-    z-index: 5;
+    z-index: 2101;
     margin-top: 0;
     width: 0;
     height: 0;
@@ -815,7 +815,7 @@ Desktop main menu - 768px and above**/
     */
     top: calc(100% - 15px);
     margin-top: 0;
-    z-index: 6;
+    z-index: 2102;
     width: 0;
     height: 0;
     border-style: solid;
