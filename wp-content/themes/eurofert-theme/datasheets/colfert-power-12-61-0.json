@@ -1,0 +1,38 @@
+[
+  {
+    "crop": "Vegetables (GH/Open Field)",
+    "fertigation": "2 - 4 kg/ 500 m²\n12 - 15 kg/ha",
+    "foliar": "",
+    "time": "During root development and flowering stage"
+  },
+  {
+    "crop": "Field crops",
+    "fertigation": "12 - 15 Kg/ha",
+    "foliar": "12 - 15 Kg/ha",
+    "time": "One month old plants"
+  },
+  {
+    "crop": "Forages",
+    "fertigation": "12 - 15 Kg/ha",
+    "foliar": "12 - 15 Kg/ha",
+    "time": "One month old plants"
+  },
+  {
+    "crop": "Fruit trees",
+    "fertigation": "12 - 15 kg/ha",
+    "foliar": "",
+    "time": "At flowering stage"
+  },
+  {
+    "crop": "Ornamentals",
+    "fertigation": "12 - 15 kg/ha",
+    "foliar": "",
+    "time": "Upon need"
+  },
+  {
+    "crop": "Nurseries",
+    "fertigation": "100 - 150 gm/100 L water",
+    "foliar": "100 - 150 gm/100 L water",
+    "time": "After true leaves appearance"
+  }
+]
