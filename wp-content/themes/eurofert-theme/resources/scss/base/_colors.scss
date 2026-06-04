@@ -32,4 +32,13 @@
   
   /* ── Text ──────────────────────────────────────── */
   --font-color: #2c382c; /* Richer dark text */
+
+  /* ── Table Recommendations UI ──────────────────── */
+  --reco-row-odd: #f4faf4;
+  --reco-row-even: #ffffff;
+  --reco-hover-bg: #ebf5eb;
+  --reco-merge-bg: #e5f2e5;
+  --reco-border: rgba(46, 125, 50, 0.12);
+  --reco-header-bg: #45a041; /* Vibrant flat green */
+  --reco-header-gradient: linear-gradient(90deg, var(--ef-green) 0%, var(--primary) 100%);
 }

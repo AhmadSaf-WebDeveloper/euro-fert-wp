@@ -77,7 +77,7 @@ Hero Section (Image + Key Facts Only)
   background: #f2f7f7;
   padding: 1.25rem;
   border-radius: 8px;
-  max-width: 220px; /* Mobile: stacked above text, compact */
+  max-width: 280px; /* Mobile: stacked above text — larger for formula readability */
   width: 100%;
   height: auto;
   object-fit: contain;
@@ -270,125 +270,509 @@ Application Recommendations Table
 ==========================================================================================
 */
 
+// ── LOCAL SCSS VARIABLES ──────────────────────────────────────────────────────
+// Color variables have been moved to _colors.scss (--reco-*)
+
+// ── ANIMATION KEYFRAMES ───────────────────────────────────────────────────────
+
+// Desktop: each table row fades in and slides up from below
+@keyframes reco-row-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// (Removed @keyframes reco-merge-shimmer to unify colors and remove multi-colored motion)
+
+// Mobile: each card slides up into view
+@keyframes reco-card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── TABLE CONTAINER ───────────────────────────────────────────────────────────
+// On desktop: horizontal scroll is a safe fallback.
+// On mobile (<640px): the table reflows to cards, so no overflow needed.
 .table-container {
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
   margin-top: 1rem;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 0.5rem; /* Space for the scrollbar */
+  -webkit-overflow-scrolling: touch; // Smooth momentum scroll on iOS
+  padding-bottom: 0.5rem;
+
+  // On mobile: no overflow scroll needed (cards don't scroll horizontally).
+  // Add horizontal padding so cards don't touch the screen edge.
+  @media (max-width: 639.98px) {
+    overflow-x: visible;
+    padding: 0 14px 0 14px; // Keep cards away from screen edges on all phones
+    padding-bottom: 0;
+  }
 }
 
+// ── BASE TABLE STYLES ─────────────────────────────────────────────────────────
 .recommendations-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
   border-spacing: 0;
-  border: 0.5px solid var(--border-green-light);
+  font-size: 0.88rem;
+  // Refined earthy border — replaces the jarring lime #93d500
+  border: 1px solid var(--gray-300);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   margin-inline: auto;
   table-layout: auto;
-}
-.recommendations-table thead {
-  color: white;
-}
 
-.recommendations-table thead th {
-  background: rgba(46, 125, 50, 0.1);
-  color: var(--primary-light); /* NEW: green header text */
-  vertical-align: middle;
-  text-align: center;
-}
+  // ── HEADER STYLES ───────────────────────────────────────────────────────────
+  thead {
+    // Add a single, unified solid border to the bottom of the entire header block
+    // This fixes the uneven "lego" look where different cells had different bottom borders
+    border-bottom: 2px solid var(--ef-green);
 
-.recommendations-table th {
-  padding: 1rem;
-  text-align: left;
-}
+    // Row 1: "Application Rate" (colspan=2) + "Crop" + "Time of Application"
+    tr:first-child th {
+      background: var(--reco-header-bg);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      vertical-align: middle;
+      text-align: center;
+      padding: 0.9rem 1rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.3); // Consistent, clean inner grid
+      border-bottom: none; // Let the thead handle the bottom border
+    }
 
-.recommendations-table th,
-.recommendations-table td {
-  border: 1px solid rgba(46, 125, 50, 0.22); /* subtle Eurofert green */
-}
+    // "Crop" column header — spans 2 rows, left-aligned
+    // Icon is rendered by the PHP <i class="fa-solid fa-seedling"> tag — no ::before needed
+    tr:first-child th:first-child {
+      width: 20%;
+      text-align: left;
+      padding-left: 1.25rem;
+    }
 
-.recommendations-table tbody tr {
-  border-bottom: 1px solid #e5e7eb;
-}
+    // "Application Rate" merged header — centers between its two sub-columns
+    tr:first-child th[colspan="2"] {
+      width: 55%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3); // Separate from the sub-headers below it
+    }
 
-.recommendations-table tbody tr:nth-child(even) {
-  background-color: #f3f4f6;
-}
+    // "Time of Application" header
+    // Icon is rendered by the PHP <i class="fa-solid fa-clock"> tag — no ::before needed
+    tr:first-child th:last-child {
+      width: 25%;
+      border-right: none; // No right border on the very last cell
+      text-align: center !important; // Strict centering
+    }
 
-.recommendations-table tbody tr:nth-child(odd) {
-  background-color: #ffffff;
-}
+    // Row 2: "Fertigation" and "Foliar ml/100 L" sub-headers
+    tr:nth-child(2) th {
+      background: var(--reco-header-bg);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.7rem 1rem;
+      text-align: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      border-bottom: none; // Let the thead handle the bottom border
+    }
 
-.recommendations-table td {
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: #1f2937;
-  border-right: 1px solid #e5e7eb;
-  line-height: 1.7;
-  vertical-align: middle;
-  word-break: normal;
-  overflow-wrap: normal;
-  white-space: normal;
-}
-
-.recommendations-table td:last-child {
-  border-right: none;
-}
-
-/* Distribution */
-
-.recommendations-table thead tr:first-child th:first-child {
-  width: 20%;
-}
-.recommendations-table thead tr:first-child th[colspan="2"] {
-  width: 55%;
-}
-
-.recommendations-table thead tr:nth-child(2) th {
-  font-weight: 700;
-}
-.recommendations-table tbody td {
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: var(--font-color);
-
-  line-height: 1.7;
-}
-
-.recommendations-table tbody td:nth-child(2),
-.recommendations-table tbody td:nth-child(3) {
-  font-weight: 600;
-}
-
-/* NEW: green-tinted zebra striping */
-.recommendations-table tbody tr:nth-child(odd) td {
-  background: var(--ef-green-soft-2);
-}
-.recommendations-table tbody tr:nth-child(even) td {
-  background: var(--ef-green-soft);
-}
-
-.recommendations-table td:last-child {
-  border-right: none;
-}
-
-@media (hover: hover) {
-  .recommendations-table tbody tr:hover td {
-    background: rgba(46, 125, 50, 0.06);
+    // Style the FA6 <i> icons injected by PHP in all header cells
+    // Single source of truth: icons live in PHP, colors controlled here
+    th i.fa-solid {
+      color: #ffffff;     // White to match text
+      opacity: 0.9;
+      margin-right: 0.3em;
+      font-size: 0.9em;
+    }
   }
-}
 
-@media (max-width: 575.98px) {
-  .recommendations-table {
-    /* Let the browser squeeze the table to the absolute minimum size the text allows */
-    min-width: 450px;
+  // ── SHARED CELL BORDERS ─────────────────────────────────────────────────────
+  td {
+    border: 1px solid var(--reco-border);
   }
-  .recommendations-table thead th,
-  .recommendations-table tbody td {
-    padding: 0.6rem 0.5rem; /* NEW */
-    font-size: 0.875rem; /* NEW */
+
+  // ── BODY ROW STYLES ─────────────────────────────────────────────────────────
+  tbody {
+
+    // ── ZEBRA STRIPING — brand-coherent green tints ──────────────────────────
+    // Odd rows: very light green tint (brand-coherent, replaces cold grey)
+    tr:nth-child(odd) td  { background: var(--reco-row-odd); }
+    // Even rows: pure white (clean contrast)
+    tr:nth-child(even) td { background: var(--reco-row-even); }
+
+    // ── ALL BODY CELLS ────────────────────────────────────────────────────────
+    td {
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--font-color);
+      line-height: 1.7;
+      vertical-align: middle;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+    }
+
+    // Remove right border on last cell in each row
+    td:last-child { border-right: none; }
+
+    // ── CROP COLUMN (1st cell) ────────────────────────────────────────────────
+    // Left-aligned and bold — primary visual anchor for each row
+    td:first-child {
+      font-weight: 700;
+      text-align: left;
+      padding-left: 1.25rem;
+      color: var(--ef-green);
+    }
+
+    // ── DOSAGE COLUMNS (Fertigation / Foliar) ────────────────────────────────
+    // BUG FIX: Old rule used nth-child(2) and nth-child(3) which accidentally
+    // bolded the Time column on merged rows (where Time shifts to 3rd child).
+    // Fix: target all non-first, non-last cells — these are always the dosage cells.
+    td:not(:first-child):not(:last-child) {
+      font-weight: 600;
+      text-align: center;
+    }
+
+    // ── TIME COLUMN (last cell) ───────────────────────────────────────────────
+    // Always the last td regardless of colspan state — this ensures consistent
+    // styling across ALL rows (merged and non-merged alike).
+    td:last-child {
+      font-weight: 500;     // Medium weight — lighter than dosage values
+      font-style: italic;   // Visual distinction: time is contextual, not a quantity
+      color: var(--gray-700);
+      text-align: center !important;
+      border-right: none;
+    }
+
+    // ── MERGED CELL (colspan=2) ──────────────────────────────────────────────
+    // A soft green-tinted background differentiates merged cells from regular
+    // single cells — signaling the dosage spans both columns.
+    td[colspan="2"] {
+      text-align: center;
+      background: var(--reco-merge-bg) !important; // Override zebra striping for visibility
+      font-weight: 600;
+
+      // When the merged rate is shared across multiple rows (like Field Crops & Forages),
+      // we highlight them with the heavier left border for a grouped, consistent look.
+      &.reco-shared-rate {
+        border-left: 3px solid var(--primary-light) !important;
+      }
+    }
+  }
+
+  // ── DESKTOP ROW STAGGER ANIMATION ───────────────────────────────────────────
+  // @for loop generates animation-delay for up to 10 rows.
+  // Products with fewer rows simply won't use the later rules — no waste.
+  @for $i from 1 through 10 {
+    tbody tr:nth-child(#{$i}) {
+      animation: reco-row-in 0.4s ease both;
+      animation-delay: #{$i * 55}ms; // Each row appears 55ms after the previous
+    }
+  }
+
+  // ── DESKTOP HOVER — pointer devices only ────────────────────────────────────
+  // @media (hover: hover) prevents the hover state from triggering on touch screens
+  @media (hover: hover) {
+    tbody tr {
+      transition: transform 0.15s ease; // Smooth nudge transition
+
+      &:hover {
+        transform: translateX(3px); // Subtle rightward nudge — the row feels alive
+      }
+
+      &:hover td {
+        background: var(--reco-hover-bg) !important; // Unified hover color overrides zebra stripes
+        transition: background-color 0.2s ease;
+      }
+    }
+  }
+
+  // ── ACCESSIBILITY — users who prefer no motion ───────────────────────────────
+  @media (prefers-reduced-motion: reduce) {
+    // Disable all animations and transitions in the table
+    &,
+    & tbody tr,
+    & tbody td { animation: none !important; transition: none !important; }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // MOBILE CARD LAYOUT  (<= 639.98px)
+  // Strategy: CSS display:block reflows the table into stacked cards.
+  // HTML table structure stays 100% intact — only the visual presentation changes.
+  // data-label attributes on each <td> provide column names as mobile labels.
+  // ══════════════════════════════════════════════════════════════════════════════
+
+  @media (max-width: 639.98px) {
+
+    // ── RESET TABLE DISPLAY ─────────────────────────────────────────────────
+    // Force every table element to render as a block element (stacks vertically)
+    &,
+    thead,
+    tbody,
+    tr,
+    th,
+    td { display: block; }
+
+    // Remove outer table border and shadow in card mode
+    border: none;
+    background: transparent;
+    min-width: 0; // Remove old 450px min-width that caused horizontal scroll
+    width: 100%;
+
+    // Hide the real <thead> — column names come from data-label CSS instead
+    thead { display: none; }
+
+    // ── EACH <tr> = ONE CARD ────────────────────────────────────────────────
+    tbody tr {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+      margin-bottom: 10px;
+      border: 1px solid var(--gray-300);
+      border-left: 3px solid var(--primary); // Brand accent on left edge
+      overflow: hidden;
+
+      // Zebra striping makes no sense for cards — remove it
+      &:nth-child(odd) td,
+      &:nth-child(even) td { background: transparent; }
+    }
+
+    // ── ALL BODY CELLS IN CARD MODE ─────────────────────────────────────────
+    tbody td {
+      display: block;               // Each cell = full-width row inside the card
+      padding: 8px 12px;            // Tier 1 (320px): tight padding
+      font-size: 0.85rem;
+      border: none;                 // No individual cell borders in card mode
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06); // Subtle row separator
+      line-height: 1.5;
+      text-align: left !important;  // Left-align all cells (override desktop center)
+      font-weight: 400;             // Reset inherited weights
+      font-style: normal;           // Reset italic on Time cell
+      color: var(--font-color);
+
+      // Remove bottom border on the last cell in each card
+      &:last-child { border-bottom: none; }
+
+      // FIX: The PHP template outputs <span style="white-space: nowrap"> on every value.
+      // In card mode, that causes long values to overflow the card edge.
+      // We must override the inline style with !important to allow text to wrap.
+      span {
+        white-space: normal !important; // Allow values like "2 - 4 kg/ 500 m²" to wrap
+        display: block !important;      // Stack each value line vertically
+        overflow-wrap: break-word;      // Break long words/units if absolutely necessary
+      }
+    }
+
+    // ── CROP CELL = CARD HEADER STRIP ────────────────────────────────────────
+    // The crop name becomes a full-width green header at the top of each card
+    tbody td:first-child {
+      background: var(--reco-header-gradient) !important; // Override transparent from zebra reset
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;            // Tier 1 base size
+      padding: 10px 12px;
+      border-bottom: none;
+      border-radius: 0;             // Card already has radius
+
+      // Seedling icon floated to the right of the crop name
+      // Explicitly white so it contrasts with the green gradient background
+      &::after {
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        content: "\f4d8";           // fa-seedling
+        float: right;
+        color: #fff;                // Explicit white — visible on green card header
+        opacity: 0.65;              // Slightly more visible than 0.5
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+    }
+
+    // ── DATA-LABEL INJECTION ─────────────────────────────────────────────────
+    // The ::before pseudo-element reads the HTML data-label attribute and
+    // renders it as the column name above (Tier 1) or beside (Tier 3+) the value.
+    tbody td[data-label]::before {
+      content: attr(data-label);    // e.g. "Fertigation", "Time of Application"
+      display: block;
+      font-weight: 700;
+      font-size: 0.7rem;            // Small label — doesn't compete with the value
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary-dark);
+      margin-bottom: 3px;
+
+      // Icon prefix per label type — font-family applies to the whole ::before
+      // FA6 unicode codepoints render in the FA font; label text falls back to body font
+      font-family: "Font Awesome 6 Free", sans-serif;
+    }
+
+    // Fertigation label: droplet icon prefix
+    tbody td[data-label="Fertigation"]::before {
+      content: "\f043  " attr(data-label); // fa-droplet
+    }
+
+    // Foliar label: leaf icon prefix
+    tbody td[data-label="Foliar ml/100 L"]::before {
+      content: "\f06c  " attr(data-label); // fa-leaf
+    }
+
+    // Time label: clock icon prefix
+    tbody td[data-label="Time of Application"]::before {
+      content: "\f017  " attr(data-label); // fa-clock (regular clock face)
+    }
+
+    // Merged cell (colspan=2) label: leaf icon (represents "Application Rate")
+    tbody td[data-label="Application Rate"]::before {
+      content: "\f06c  " attr(data-label); // fa-leaf
+    }
+
+    // ── MERGED CELL STYLING IN CARD MODE ─────────────────────────────────────
+    tbody td[colspan="2"] {
+      background: var(--reco-merge-bg) !important; // Harmonized background
+      font-weight: 600;
+      border-left: none !important; // Card already has the left accent
+      animation: none;   // No shimmer in card mode — not needed
+    }
+
+    // ── CARD ENTRANCE ANIMATIONS ─────────────────────────────────────────────
+    // @for loop staggers each card with an increasing delay (70ms per card).
+    // Supports up to 10 rows — covers all current products with room to grow.
+    @for $i from 1 through 10 {
+      tbody tr:nth-child(#{$i}) {
+        animation: reco-card-in 0.35s ease both;
+        animation-delay: #{$i * 70}ms;
+      }
+    }
+
+    // Touch press feedback — subtle scale-down on tap
+    tbody tr:active {
+      transform: scale(0.985);
+      transition: transform 0.1s ease;
+    }
+
+    // ── TIER 2: 360px — Samsung A series, Galaxy S8+ ────────────────────────
+    @media (min-width: 360px) {
+      tbody td {
+        padding: 9px 14px;
+        font-size: 0.875rem;
+      }
+      tbody td[data-label]::before { font-size: 0.72rem; }
+      tbody td:first-child {
+        font-size: 0.925rem;
+        padding: 11px 14px;
+      }
+    }
+
+    // ── TIER 3: 375px — iPhone SE, 6/7/8, 13 Mini ───────────────────────────
+    // At 375px labels still stack ABOVE the value — there isn't enough room
+    // for inline label+value when values are long (e.g. "2 - 4 kg/ 500 m²").
+    // Only minor sizing bump at this tier.
+    @media (min-width: 375px) {
+      tbody td {
+        padding: 10px 14px;
+        font-size: 0.875rem;
+      }
+      tbody td[data-label]::before {
+        font-size: 0.73rem;
+      }
+      tbody td:first-child {
+        font-size: 0.93rem;
+        padding: 11px 14px;
+      }
+    }
+
+    // ── TIER 4: 400px — Start of inline label+value layout ──────────────────
+    // At 400px we have enough horizontal room to show label and value on one line.
+    // The label gets a fixed width; the value takes the rest with min-width:0
+    // so it can shrink and wrap instead of overflowing.
+    @media (min-width: 400px) {
+      tbody td[data-label] {
+        display: flex;              // Label and value sit on the same line
+        align-items: baseline;
+        gap: 10px;
+        padding: 11px 16px;
+      }
+      tbody td[data-label]::before {
+        flex: 0 0 120px;            // Fixed label column — values align vertically
+        font-size: 0.75rem;
+        margin-bottom: 0;           // No bottom gap — now inline
+        white-space: nowrap;        // Prevent label from wrapping mid-word
+      }
+      // Value text must have min-width:0 so flex doesn't prevent it from shrinking
+      tbody td[data-label] span {
+        min-width: 0;
+        flex: 1;
+      }
+      tbody td:first-child { font-size: 0.95rem; padding: 12px 16px; }
+    }
+
+    // ── TIER 5: 412px — iPhone 12/13/14/15 Pro, iPhone 16, larger Androids ──
+    @media (min-width: 412px) {
+      tbody td {
+        padding: 11px 18px;
+        font-size: 0.9rem;
+      }
+      tbody td[data-label]::before { flex: 0 0 128px; font-size: 0.78rem; }
+      tbody td:first-child { font-size: 0.97rem; padding: 12px 18px; }
+      tbody tr {
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 12px;
+      }
+    }
+
+    // ── TIER 5: 412px — Pixel 7/8, Samsung Galaxy S20/S21/S22 Ultra ─────────
+    @media (min-width: 412px) {
+      tbody td {
+        padding: 12px 20px;
+        font-size: 0.925rem;
+      }
+      tbody td[data-label]::before { flex: 0 0 138px; font-size: 0.8rem; }
+      tbody td:first-child { padding: 13px 20px; font-size: 1rem; }
+      tbody tr { border-radius: 10px; margin-bottom: 14px; }
+    }
+
+    // ── TIER 6: 430px — iPhone 14/15/16 Pro Max, large flagships ────────────
+    @media (min-width: 430px) {
+      tbody td {
+        padding: 13px 22px;
+        font-size: 0.95rem;
+      }
+      tbody td[data-label]::before { flex: 0 0 148px; font-size: 0.82rem; }
+      tbody td:first-child {
+        padding: 14px 22px;
+        font-size: 1.05rem;
+        &::after { font-size: 1.1rem; opacity: 0.6; } // Larger icon on big phones
+      }
+      tbody tr {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.09);
+        margin-bottom: 16px;
+        border-radius: 10px;
+      }
+    }
+
+    // ── ACCESSIBILITY IN CARD MODE ───────────────────────────────────────────
+    @media (prefers-reduced-motion: reduce) {
+      tbody tr {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  }
+
+  // ── RESTORE FULL TABLE LAYOUT at 640px+ ──────────────────────────────────────
+  // At 640px+ (tablets, laptops, desktops) the table reverts to its native layout.
+  // display:revert restores each element's intrinsic table-related display value.
+  @media (min-width: 640px) {
+    &       { display: table; border: 1px solid var(--gray-300); }
+    thead   { display: table-header-group; }
+    tbody   { display: table-row-group; }
+    tr      { display: table-row; }
+    th, td  { display: table-cell; }
+
+    // Restore thead visibility
+    thead { visibility: visible; }
   }
 }
 /*
@@ -542,11 +926,11 @@ Desktop Product details
    */
   .product-details__container {
     display: grid;
-    /* Narrower image col gives text more horizontal breathing room */
-    grid-template-columns: minmax(200px, 240px) minmax(0, 520px);
+    /* Image col grows for formula readability; gap tightens to absorb the extra width */
+    grid-template-columns: minmax(240px, 300px) minmax(0, 520px);
     align-items: start; /* ← PRIMARY FIX: top-align both columns */
     justify-content: center;
-    gap: 3rem;
+    gap: 2rem; /* Reduced from 3rem — keeps total within the 800px container cap */
   }
 
   /*
@@ -566,7 +950,7 @@ Desktop Product details
 
   .product-details-image__container img {
     object-fit: contain;
-    max-width: 220px; /* Portrait images stay proportionate at this width */
+    max-width: 300px; /* Tablet: matches image column max — formula label readable */
     width: 100%;
     height: auto;
     border-radius: 8px;
@@ -613,17 +997,26 @@ Desktop Product details
   /* Table containers take full width with padding */
   .table-container {
     padding: 0 2rem;
+    overflow-x: auto; // Keep horizontal scroll as a fallback on small tablets
   }
 
-  .recommendations-table {
-    min-width: 0;
-  }
-
+  // Desktop table refinements — more generous padding and centered values
   .recommendations-table th,
   .recommendations-table td {
     padding: 1.125rem 1.25rem;
     font-size: 0.975rem;
     text-align: center;
+  }
+
+  // Keep crop column left-aligned on desktop
+  .recommendations-table tbody td:first-child {
+    text-align: left;
+  }
+
+  // Keep thead left-aligned overrides for Crop and Time headers
+  .recommendations-table thead tr:first-child th:first-child,
+  .recommendations-table thead tr:first-child th:last-child {
+    text-align: left;
   }
 
   .benefits-heading {
@@ -707,6 +1100,16 @@ Desktop Product details
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  /* IMAGE COLUMN: Grow image at desktop — drawer lives outside this grid, no conflict */
+  .product-details__container {
+    grid-template-columns: minmax(260px, 320px) minmax(0, 520px);
+    gap: 2rem;
+  }
+
+  .product-details-image__container img {
+    max-width: 320px; /* Desktop: formula label clearly readable */
   }
 
   /* TITLES LEFT ALIGNED: Titles sit at the left padding gutter, creating the indentation space for the content underneath */
@@ -824,6 +1227,16 @@ Desktop Product details
   .content-section {
     padding-top: 100px;
     padding-bottom: 100px; /* Exact Compo Value */
+  }
+
+  /* IMAGE: Maximum breathing room on very large screens */
+  .product-details__container {
+    grid-template-columns: minmax(300px, 360px) minmax(0, 520px);
+    gap: 2.5rem;
+  }
+
+  .product-details-image__container img {
+    max-width: 360px; /* Large desktop: very comfortable formula readability */
   }
 }
 

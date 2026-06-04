@@ -29,6 +29,7 @@
           $line = trim($line);
 
           $line = preg_replace('/[ \t]+/', ' ', $line);
+          $line = preg_replace('/(\d+)\s*-\s*(\d+)/', '$1 - $2', $line);
 
           return $line;
         },
@@ -674,6 +675,18 @@
             'time'        => $time,
           ];
         } //end of for loop
+
+        // Count occurrences of merged rates to identify shared dosages dynamically (case-insensitive)
+        $merged_rate_counts = [];
+        foreach ($recom_rows as $row) {
+          if ($row['fertigation'] === $row['foliar']) {
+            $rate = trim($row['fertigation']);
+            if ($rate !== '') {
+              $key = strtolower($rate);
+              $merged_rate_counts[$key] = ($merged_rate_counts[$key] ?? 0) + 1;
+            }
+          }
+        }
         ?>
 
         <?php if (!empty($recom_rows)) { ?>
@@ -692,27 +705,31 @@
                 <table class="recommendations-table">
                   <thead>
                     <tr>
-                      <th rowspan="2">Crop</th>
+                      <!-- FA6 icons added directly in HTML for cross-browser reliability -->
+                      <th rowspan="2"><i class="fa-solid fa-seedling" aria-hidden="true"></i> Crop</th>
                       <th colspan="2">Application Rate</th>
-                      <th rowspan="2">Time of Application</th>
+                      <th rowspan="2"><i class="fa-solid fa-clock" aria-hidden="true"></i> Time of Application</th>
                     </tr>
                     <tr>
-                      <th>Fertigation</th>
-                      <th>Foliar ml/100 L</th>
+                      <th><i class="fa-solid fa-droplet" aria-hidden="true"></i> Fertigation</th>
+                      <th><i class="fa-solid fa-leaf" aria-hidden="true"></i> Foliar ml/100 L</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php foreach ($recom_rows as $data_rows) { ?>
                       <tr>
-                        <!-- nl2br converts "\n" inside the cell into <br> for HTML display -->
+                        <!-- Crop cell: no data-label — becomes the green header strip on mobile -->
                         <td><?php echo nl2br(esc_html($data_rows['crop'])); ?></td>
 
-                        <!-- conditional check foliar and fert -->
+                        <!-- If fertigation === foliar: render a single merged colspan=2 cell -->
                         <?php if ($data_rows['fertigation'] === $data_rows['foliar']) {
-
+                          $rate_val = trim($data_rows['fertigation']);
+                          $key = strtolower($rate_val);
+                          $is_shared = isset($merged_rate_counts[$key]) && $merged_rate_counts[$key] > 1;
+                          $class_attr = $is_shared ? 'class="reco-shared-rate"' : '';
                         ?>
-                          <td colspan="2">
-
+                          <!-- Merged cell: data-label="Application Rate" so mobile card shows the right label -->
+                          <td colspan="2" data-label="Application Rate" <?php echo $class_attr; ?>>
                             <?php
                             $fert_lines = explode("\n", $data_rows['fertigation']);
                             foreach ($fert_lines as $line) {
@@ -723,40 +740,35 @@
                             }
                             ?>
                           </td>
-                        <?php } else { // print both independently  
-                        ?>
-                          <td> <!-- Fertigation cell -->
+                        <?php } else { // Separate cells when fertigation !== foliar ?>
+                          <!-- Fertigation cell -->
+                          <td data-label="Fertigation">
                             <?php
-                            // get foliar fertigation as separate values
                             $fert_lines = explode("\n", $data_rows['fertigation']);
-
                             foreach ($fert_lines as $line) {
                               $line = trim($line);
                               if (!empty($line)) {
                                 echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
                               }
-                            } //end of for loop 
+                            }
                             ?>
-
                           </td>
-                          <td>
-                            <!-- Foliar cell-->
-                            <?php $foliar_lines = explode("\n", $data_rows['foliar']);
+                          <!-- Foliar cell -->
+                          <td data-label="Foliar ml/100 L">
+                            <?php
+                            $foliar_lines = explode("\n", $data_rows['foliar']);
                             foreach ($foliar_lines as $line) {
                               $line = trim($line);
-
                               if (!empty($line)) {
                                 echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
                               }
-                            } //end for loop for foliar data 
-
+                            }
                             ?>
-
                           </td>
-                        <?php } //closing else 
-                        ?>
+                        <?php } ?>
 
-                        <td><?php echo nl2br(esc_html($data_rows['time'])); ?></td>
+                        <!-- Time of Application cell -->
+                        <td data-label="Time of Application"><?php echo nl2br(esc_html($data_rows['time'])); ?></td>
                       </tr>
                     <?php } ?>
                   </tbody>

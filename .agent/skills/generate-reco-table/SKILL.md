@@ -61,11 +61,9 @@ A valid JSON array, like:
    - JSON: `"fertigation": "1.5 - 3 L / GH/500 m²\n10 - 20 L / Ha"`
 
 6. **Fertigation & Foliar Rates**:
-   - **Duplicate (Default for single values)**: If a row provides only one rate (e.g., a visually merged cell, or plain text missing a column like `Field crops | 8-10 L/Ha`), duplicate that value into BOTH `fertigation` and `foliar`.
-   - **Empty Foliar**: Set `foliar` to `""` ONLY IF:
-     1. The entire table lacks a Foliar column.
-     2. The specific cell is visually empty in an image/document (do not assume it is merged).
-     3. The text row explicitly ends with `[foliar-empty]` (strip this tag from the final JSON).
+   - **Duplicate (Default for single values / Merged Columns)**: If a row has only one rate because the cell is visually merged across the columns (i.e. there is no vertical divider line `|` between them for that row, or the text is centered across both columns), duplicate that value into BOTH `fertigation` and `foliar`. This triggers a `colspan="2"` in the product page template, displaying it as a single merged column.
+   - **Empty Foliar**: Set `foliar` to `""` ONLY IF there is a clear vertical line/border separating the columns in that row and the foliar cell is left empty (blank). Do not assume it is merged if the border line is clearly separating them.
+   - **Explicit Flags**: Set `foliar` to `""` if the entire table lacks a Foliar column, or if the text row explicitly ends with `[foliar-empty]` (strip this tag from the final JSON).
 
 7. **Ignore decoration**: footnotes, asterisks pointing to commentary (`**Not recommended for…`), highlighted backgrounds, merged-header decorations, table column-group labels like "Application Rate". Extract only the text content of data cells.
 
