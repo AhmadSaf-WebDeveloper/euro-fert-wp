@@ -122,7 +122,7 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
               </div>
               <div class="product-grid__content">
                 <div class="card-body product-grid__body">
-                  <h5 class="product-grid__title"> <?php echo esc_html(get_the_title()); ?></h5>
+                  <h5 class="product-grid__title"> <?php echo esc_html(get_product_base_name(get_the_title())); ?></h5>
                   <?php if (!empty($product_formula)): ?>
                     <p class="product-grid__formula">
                       <?php echo esc_html($product_formula) ?>

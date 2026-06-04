@@ -115,6 +115,28 @@ function format_product_name(string $title): string
     return esc_html($title);
 }
 
+/**
+ * Strips the formula / numeric part from the product title on display.
+ * For example, "Colfert Power 12-61-0" becomes "Colfert Power".
+ *
+ * @param string $title Raw product name.
+ * @return string Product name without formula, trimmed of special chars like - and .
+ */
+function get_product_base_name(string $title): string
+{
+    $title = trim($title);
+    
+    // Split at the first space followed by a digit, %, or + (which denotes start of formula)
+    $pattern_simple = '/\s(?=[0-9]|%|\+)/u';
+    if (preg_match($pattern_simple, $title, $match, PREG_OFFSET_CAPTURE)) {
+        $pos = $match[0][1];
+        $title = mb_substr($title, 0, $pos, 'UTF-8');
+    }
+    
+    // Trim trailing spaces, hyphens, and dots
+    return trim($title, " \t\n\r\0\x0B-.");
+}
+
 require_once get_theme_file_path('/inc/cmb2-application-recommendations.php');
 
 /**

@@ -410,7 +410,7 @@
                   echo esc_html($categoryname);
                   ?>
                 </p>
-                <h1 class="product-name" id="productTitle"><?php the_title(); ?></h1>
+                <h1 class="product-name" id="productTitle"><?php echo esc_html(get_product_base_name(get_the_title())); ?></h1>
 
                 <?php
                 if (!empty($formula)) {
