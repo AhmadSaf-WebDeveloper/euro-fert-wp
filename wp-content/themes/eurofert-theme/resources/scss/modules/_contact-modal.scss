@@ -1,0 +1,516 @@
+@use "../base/colors" as *;
+
+// ─── Molecule SVG watermark (transparent background, dark-green lines only) ───
+$molecule-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cg fill='none' stroke='%232e7d32' stroke-width='2.5' opacity='1'%3E%3Cpolygon points='60,20 90,37 90,72 60,89 30,72 30,37'/%3E%3Cpolygon points='150,20 180,37 180,72 150,89 120,72 120,37'/%3E%3Cpolygon points='240,20 270,37 270,72 240,89 210,72 210,37'/%3E%3Cpolygon points='330,20 360,37 360,72 330,89 300,72 300,37'/%3E%3Cline x1='90' y1='54' x2='120' y2='54'/%3E%3Cline x1='180' y1='54' x2='210' y2='54'/%3E%3Cline x1='270' y1='54' x2='300' y2='54'/%3E%3Cline x1='60' y1='20' x2='60' y2='0'/%3E%3Cline x1='150' y1='20' x2='150' y2='0'/%3E%3Cline x1='240' y1='20' x2='240' y2='0'/%3E%3Cpolygon points='105,107 135,124 135,159 105,176 75,159 75,124'/%3E%3Cpolygon points='195,107 225,124 225,159 195,176 165,159 165,124'/%3E%3Cpolygon points='285,107 315,124 315,159 285,176 255,159 255,124'/%3E%3Cline x1='90' y1='72' x2='75' y2='107'/%3E%3Cline x1='180' y1='72' x2='165' y2='107'/%3E%3Cline x1='270' y1='72' x2='255' y2='107'/%3E%3Cline x1='135' y1='141' x2='165' y2='141'/%3E%3Cline x1='225' y1='141' x2='255' y2='141'/%3E%3Ccircle cx='105' cy='107' r='4' fill='%232e7d32' stroke='none'/%3E%3Ccircle cx='195' cy='107' r='4' fill='%232e7d32' stroke='none'/%3E%3Cpolygon points='60,195 90,212 90,247 60,264 30,247 30,212'/%3E%3Cpolygon points='150,195 180,212 180,247 150,264 120,247 120,212'/%3E%3Cpolygon points='240,195 270,212 270,247 240,264 210,247 210,212'/%3E%3Cline x1='75' y1='159' x2='60' y2='195'/%3E%3Cline x1='165' y1='159' x2='150' y2='195'/%3E%3Cline x1='255' y1='159' x2='240' y2='195'/%3E%3Cline x1='90' y1='229' x2='120' y2='229'/%3E%3Cline x1='180' y1='229' x2='210' y2='229'/%3E%3Cpolygon points='105,282 135,299 135,334 105,351 75,334 75,299'/%3E%3Cpolygon points='195,282 225,299 225,334 195,351 165,334 165,299'/%3E%3Cline x1='90' y1='247' x2='75' y2='282'/%3E%3Cline x1='180' y1='247' x2='165' y2='282'/%3E%3Cline x1='135' y1='316' x2='165' y2='316'/%3E%3C/g%3E%3C/svg%3E");
+
+// ═══════════════════════════════════════════════════════════════════════
+//  MODAL OVERLAY
+// ═══════════════════════════════════════════════════════════════════════
+.contact-modal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999; // Site header is 99999, modal must be higher
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+
+  // Hidden by default
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: all;
+    visibility: visible;
+
+    .contact-modal__dialog {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .contact-modal__molecule {
+      opacity: 1;
+    }
+  }
+}
+
+// Backdrop — lets the front-page hero show through at all edges
+// cursor:pointer is required for iOS Safari to fire click events on divs
+.contact-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 20, 10, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  cursor: pointer; // iOS Safari fix — makes backdrop tappable
+}
+
+// Mobile hint: "Tap outside to close" — removed since we now have the explicit X button on mobile
+.contact-modal__tap-hint {
+  display: none;
+}
+
+// ─── Molecule watermarks: transparent SVG, left & right flanks only ────────
+.contact-modal__molecule {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(80px, 14vw, 220px);
+  background-image: $molecule-svg;
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.1s;
+  pointer-events: none;
+  z-index: 1;
+
+  // Hidden on very small screens — they don't have the gutter space
+  @media (max-width: 640px) {
+    display: none;
+  }
+
+  &--left {
+    left: 0;
+    mask-image: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+    -webkit-mask-image: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+  }
+
+  &--right {
+    right: 0;
+    mask-image: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+    -webkit-mask-image: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  DIALOG WRAPPER
+//  Holds both the card and the close button so the close button can be
+//  positioned outside without being cropped by the card's overflow: hidden.
+// ═══════════════════════════════════════════════════════════════════════
+.contact-modal__dialog {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+
+  // Entrance animation applied to the whole dialog
+  transform: translateY(28px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  CENTRAL CARD  — constrained to viewport, never overflows
+// ═══════════════════════════════════════════════════════════════════════
+.contact-modal__card {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 32px 72px rgba(0, 0, 0, 0.5);
+
+  // KEY: never taller than the viewport minus header + admin bar
+  max-height: calc(100dvh - 120px);
+  max-height: calc(100vh - 120px); // fallback
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  CLOSE BUTTON — positioned inside dialog wrapper, but visually outside
+// ═══════════════════════════════════════════════════════════════════════
+.contact-modal__close {
+  position: absolute;
+  z-index: 20;
+
+  // On Mobile: Move it completely OUTSIDE the card, into the top background
+  top: -48px;
+  right: 0; // Align to the right edge of the card
+
+  // Square with white border — transparent background
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #ffffff;
+    transform: rotate(90deg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #93d500;
+    outline-offset: 2px;
+  }
+
+  // ── DESKTOP: Move it to the left side, outside the card ──
+  @media (min-width: 992px) {
+    top: 0;
+    left: -54px; // Pushed outside the card's left boundary
+    right: auto; // Reset mobile right alignment
+    border-color: rgba(255, 255, 255, 0.4);
+    
+    &:hover {
+      border-color: #ffffff;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  LAYOUT GRID  — mobile: stacked, desktop: side-by-side
+// ═══════════════════════════════════════════════════════════════════════
+.contact-modal__grid {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden; // card manages overflow
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  LEFT COLUMN — solid brand green
+// ═══════════════════════════════════════════════════════════════════════
+.contact-modal__info {
+  background-color: #2e7d32;
+  padding: 20px 20px 16px;
+  position: relative;
+  flex-shrink: 0; // Don't compress on mobile
+
+  // On mobile: compact horizontal-style strip at the top
+  @media (max-width: 767px) {
+    // Only show brand name + icons in a row — no working hours
+    padding: 36px 20px 16px; // extra top so close button doesn't overlap brand name
+
+    .contact-modal__hours {
+      display: none; // Hide working hours on mobile to save space
+    }
+
+    .contact-modal__brand {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+    }
+
+    .contact-modal__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+
+    .contact-modal__list-item {
+      flex: 1 1 calc(50% - 10px);
+      min-width: 140px;
+      margin-bottom: 0;
+      gap: 8px;
+
+      p { font-size: 0.8rem; }
+      strong { font-size: 0.8rem; }
+    }
+
+    .contact-modal__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+
+      i { font-size: 0.9rem; }
+    }
+  }
+
+  // Desktop: fixed width side panel
+  @media (min-width: 768px) {
+    width: 38%;
+    flex-shrink: 0;
+    padding: 36px 28px 28px; // top offset for close button clearance
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+
+  // Subtle molecule watermark inside the green panel
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: $molecule-svg;
+    background-size: 160px 160px;
+    background-repeat: repeat;
+    opacity: 0.08;
+    pointer-events: none;
+    filter: invert(1) brightness(2);
+  }
+}
+
+.contact-modal__info-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-modal__brand {
+  color: #ffffff;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 700;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 3px solid #93d500;
+  line-height: 1.3;
+}
+
+.contact-modal__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.contact-modal__list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  &:last-child { margin-bottom: 0; }
+
+  strong {
+    display: block;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+.contact-modal__icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    color: #ffffff;
+    font-size: 1rem;
+  }
+}
+
+.contact-modal__email {
+  color: #93d500;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.contact-modal__hours {
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #93d500;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 20px;
+
+  h4 {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+
+    i { margin-right: 6px; color: #93d500; }
+  }
+
+  p {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.82rem;
+    margin-bottom: 3px;
+
+    strong { color: #ffffff; }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  RIGHT COLUMN — pure white, scrollable form
+// ═══════════════════════════════════════════════════════════════════════
+.contact-modal__form-col {
+  background: #ffffff;
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; // Form scrolls if needed, never overflows the card
+
+  @media (min-width: 768px) {
+    padding: 36px 32px 28px;
+  }
+}
+
+.contact-modal__form-title {
+  color: #1f291f;
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-weight: 700;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8e2;
+}
+
+.contact-modal__response {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+
+  &.success {
+    background: rgba(46, 125, 50, 0.08);
+    color: #2e7d32;
+    border: 1px solid rgba(46, 125, 50, 0.2);
+  }
+
+  &.error {
+    background: rgba(220, 53, 69, 0.08);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+  }
+}
+
+// Two fields side by side
+.contact-modal__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  // Stack on very small phones
+  @media (max-width: 400px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-modal__field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+  &--full {
+    grid-column: 1 / -1;
+    margin-bottom: 10px;
+  }
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1f291f;
+    margin-bottom: 4px;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  input,
+  textarea {
+    background-color: #ffffff;
+    border: 1.5px solid #d8e0d8;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.9rem;
+    color: #1f291f;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    // Minimum touch target
+    min-height: 42px;
+
+    &::placeholder {
+      color: #adb5bd;
+    }
+
+    &:focus {
+      border-color: #2e7d32;
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+    }
+  }
+
+  textarea {
+    resize: none; // No resize — preserves modal height integrity
+    height: 78px;
+    min-height: unset;
+  }
+}
+
+.contact-modal__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background-color: #2e7d32;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  margin-top: 6px;
+  // Minimum touch target
+  min-height: 48px;
+
+  &:hover {
+    background-color: #1b5e20;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// ─── Prevent body scroll when modal is open ────────────────────────────────
+body.contact-modal-open {
+  overflow: hidden;
+  // Prevent iOS Safari bounce scroll
+  touch-action: none;
+}

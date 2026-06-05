@@ -262,7 +262,7 @@ img {
 }
 
 .btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:focus-visible {
   background-color: var(--primary-dark);
   border-color: var(--primary-dark);
   color: white !important;
@@ -275,7 +275,7 @@ img {
 }
 
 .btn-outline-primary:hover,
-.btn-outline-primary:focus {
+.btn-outline-primary:focus-visible {
   background-color: var(--primary);
   border: 2px solid var(--primary);
   color: white !important;
@@ -289,7 +289,7 @@ img {
 }
 
 .btn-outline-light:hover,
-.btn-outline-light:focus {
+.btn-outline-light:focus-visible {
   background-color: white;
   border: 2px solid white;
   color: var(--primary) !important;
