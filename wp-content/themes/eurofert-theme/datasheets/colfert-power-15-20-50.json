@@ -1,0 +1,38 @@
+[
+  {
+    "crop": "Vegetables\nGreen houses\nOpen Field",
+    "fertigation": "2 - 4 kg/ 500 m²\n12 - 15 kg/ha",
+    "foliar": "",
+    "time": "During fruit development stage"
+  },
+  {
+    "crop": "Field crops",
+    "fertigation": "12 - 15 Kg/ha",
+    "foliar": "",
+    "time": "During heading stage"
+  },
+  {
+    "crop": "Forages",
+    "fertigation": "12 - 15 Kg/ha",
+    "foliar": "",
+    "time": "After each cut"
+  },
+  {
+    "crop": "Fruit trees",
+    "fertigation": "12 - 15 kg/ha",
+    "foliar": "",
+    "time": "During fruit development stage"
+  },
+  {
+    "crop": "Ornamentals",
+    "fertigation": "12 - 15 kg/ha",
+    "foliar": "",
+    "time": "Upon need"
+  },
+  {
+    "crop": "Nurseries",
+    "fertigation": "100 - 150 gm/100 L water",
+    "foliar": "",
+    "time": "Upon need"
+  }
+]
