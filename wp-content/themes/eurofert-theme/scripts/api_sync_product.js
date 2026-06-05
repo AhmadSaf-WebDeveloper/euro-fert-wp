@@ -2,7 +2,9 @@ const fs = require("fs"); //Node js Module called file system = fs ,
 // Purpose: To read, write, and manipulate files and directories.
 const path = require("path");
 const xlsx = require("xlsx");
-require("dotenv").config({ path: path.join(__dirname, "../.env") }); // Load environment variables from .env file
+const useLocal = process.argv.includes('--local') || process.argv.includes('local');
+const envFileName = useLocal ? "../.env.local" : "../.env";
+require("dotenv").config({ path: path.join(__dirname, envFileName) }); // Load environment variables from .env or .env.local file
 
 // --- CONFIGURATION ---
 const LIVE_SERVER_URL = process.env.LIVE_SERVER_URL;
@@ -18,7 +20,7 @@ const authHeader = "Basic " + Buffer.from(`${USERNAME}:${APP_PASSWORD}`).toStrin
 
 const BASE_IMAGE_DIR = process.env.LOCAL_IMAGE_DIR;
 const BASE_JSON_DIR = path.join(__dirname, "../datasheets/");
-const PROGRESS_FILE = path.join(__dirname, ".sync_progress.json");
+const PROGRESS_FILE = path.join(__dirname, useLocal ? ".sync_progress.local.json" : ".sync_progress.json");
 
 if (!BASE_IMAGE_DIR) {
   throw new Error("Missing required env var: LOCAL_IMAGE_DIR must be set in your .env file.");
