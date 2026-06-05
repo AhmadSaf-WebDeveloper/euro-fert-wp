@@ -19,7 +19,7 @@
 
       <div class="hero-section__buttons">
         <a href="" class="btn btn-primary btn-explore">Explore Products</a>
-        <a href="#contact" class="btn btn-outline-light">Contact Us</a>
+        <a href="<?php echo esc_url(site_url('/contact-us/')); ?>" class="btn btn-outline-light">Contact Us</a>
       </div>
     </div>
 
