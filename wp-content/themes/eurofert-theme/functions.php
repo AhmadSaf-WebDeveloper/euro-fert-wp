@@ -138,6 +138,7 @@ function get_product_base_name(string $title): string
 }
 
 require_once get_theme_file_path('/inc/cmb2-application-recommendations.php');
+require_once get_theme_file_path('/inc/contact-backend.php');
 
 /**
  * Eurofert helper: detect strings for nutrient parsing.
