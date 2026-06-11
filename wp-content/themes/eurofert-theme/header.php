@@ -17,7 +17,7 @@
     <nav class="site-nav">
       <a class="brand-logo" href="<?php echo esc_url(home_url('/')); ?>">
         <img
-          src="<?php echo esc_url(get_theme_file_uri('/images/eurofert-logo.png')); ?>"
+          src="<?php echo esc_url(get_theme_file_uri('/resources/images/eurofert-logo.png')); ?>"
           alt="Eurofert Logo"
           class="logo"
           loading="eager"
@@ -69,29 +69,29 @@
             // Build category URLs dynamically from WP taxonomy slugs
             $cat_base = 'fertilizer_category';
             $cats = array(
-              array( 'slug' => 'colfert-essential',  'label' => 'Colfert Essential'  ),
-              array( 'slug' => 'colfert-power',      'label' => 'Colfert Power NP'   ),
-              array( 'slug' => 'colfert-npk',        'label' => 'Colfert NPK'        ),
-              array( 'slug' => 'colfert-foliar',     'label' => 'Colfert Foliar'     ),
-              array( 'slug' => 'colfert-trace',      'label' => 'Colfert Trace'      ),
-              array( 'slug' => 'colfert-special',    'label' => 'Colfert Special'    ),
-              array( 'slug' => 'colfert-terra',      'label' => 'Colfert Terra'      ),
+              array('slug' => 'colfert-essential',  'label' => 'Colfert Essential'),
+              array('slug' => 'colfert-power',      'label' => 'Colfert Power NP'),
+              array('slug' => 'colfert-npk',        'label' => 'Colfert NPK'),
+              array('slug' => 'colfert-foliar',     'label' => 'Colfert Foliar'),
+              array('slug' => 'colfert-trace',      'label' => 'Colfert Trace'),
+              array('slug' => 'colfert-special',    'label' => 'Colfert Special'),
+              array('slug' => 'colfert-terra',      'label' => 'Colfert Terra'),
             );
             ?>
             <ul class="dropdown-menu submenu-items">
               <li class="submenu-item submenu-title">
-                <a class="submenu__link" href="<?php echo esc_url( home_url( '/product-category/' ) ); ?>">
+                <a class="submenu__link" href="<?php echo esc_url(home_url('/product-category/')); ?>">
                   Product Categories Overview</a>
               </li>
 
               <div>
-                <?php foreach ( $cats as $cat ) :
-                  $term = get_term_by( 'slug', $cat['slug'], $cat_base );
-                  $url  = $term ? esc_url( get_term_link( $term ) ) : '#';
+                <?php foreach ($cats as $cat) :
+                  $term = get_term_by('slug', $cat['slug'], $cat_base);
+                  $url  = $term ? esc_url(get_term_link($term)) : '#';
                 ?>
-                <li class="submenu-item">
-                  <a href="<?php echo $url; ?>" class="submenu__link"><?php echo esc_html( $cat['label'] ); ?></a>
-                </li>
+                  <li class="submenu-item">
+                    <a href="<?php echo $url; ?>" class="submenu__link"><?php echo esc_html($cat['label']); ?></a>
+                  </li>
                 <?php endforeach; ?>
               </div>
             </ul>
@@ -129,7 +129,10 @@
 
       <!-- Close button -->
       <button class="contact-modal__close" id="contact-modal-close" aria-label="Close contact form">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
       </button>
 
       <!-- Central contact card -->
@@ -137,85 +140,85 @@
 
         <div class="contact-modal__grid">
 
-        <!-- LEFT: Brand Info (Solid Green) -->
-        <div class="contact-modal__info">
-          <div class="contact-modal__info-inner">
-            <h2 class="contact-modal__brand">Eurofert Fertilizers &mdash; Egypt</h2>
+          <!-- LEFT: Brand Info (Solid Green) -->
+          <div class="contact-modal__info">
+            <div class="contact-modal__info-inner">
+              <h2 class="contact-modal__brand">Eurofert Fertilizers &mdash; Egypt</h2>
 
-            <ul class="contact-modal__list">
-              <li class="contact-modal__list-item">
-                <span class="contact-modal__icon"><i class="fas fa-map-marker-alt"></i></span>
-                <div>
-                  <strong>Headquarters &amp; Factory</strong>
-                  <p>4th Industrial Zone, Block 16<br>Borg El Arab Industrial City, Alexandria, Egypt</p>
-                </div>
-              </li>
-              <li class="contact-modal__list-item">
-                <span class="contact-modal__icon"><i class="fas fa-phone-alt"></i></span>
-                <div>
-                  <strong>Phone</strong>
-                  <p>Tel.: 002 03 5890223 4 / 5 / 6</p>
-                </div>
-              </li>
-              <li class="contact-modal__list-item">
-                <span class="contact-modal__icon"><i class="fas fa-envelope"></i></span>
-                <div>
-                  <strong>Email</strong>
-                  <p><a href="mailto:info@eurofert-fertilizers.com" class="contact-modal__email">info@eurofert-fertilizers.com</a></p>
-                </div>
-              </li>
-            </ul>
+              <ul class="contact-modal__list">
+                <li class="contact-modal__list-item">
+                  <span class="contact-modal__icon"><i class="fas fa-map-marker-alt"></i></span>
+                  <div>
+                    <strong>Headquarters &amp; Factory</strong>
+                    <p>4th Industrial Zone, Block 16<br>Borg El Arab Industrial City, Alexandria, Egypt</p>
+                  </div>
+                </li>
+                <li class="contact-modal__list-item">
+                  <span class="contact-modal__icon"><i class="fas fa-phone-alt"></i></span>
+                  <div>
+                    <strong>Phone</strong>
+                    <p>Tel.: 002 03 5890223 4 / 5 / 6</p>
+                  </div>
+                </li>
+                <li class="contact-modal__list-item">
+                  <span class="contact-modal__icon"><i class="fas fa-envelope"></i></span>
+                  <div>
+                    <strong>Email</strong>
+                    <p><a href="mailto:info@eurofert-fertilizers.com" class="contact-modal__email">info@eurofert-fertilizers.com</a></p>
+                  </div>
+                </li>
+              </ul>
 
-            <div class="contact-modal__hours">
-              <h4><i class="far fa-clock"></i> Working Hours</h4>
-              <p><span>Sunday &ndash; Thursday:</span> <strong>8:00 AM &ndash; 4:00 PM</strong></p>
-              <p><span>Friday &ndash; Saturday:</span> <strong>Closed</strong></p>
+              <div class="contact-modal__hours">
+                <h4><i class="far fa-clock"></i> Working Hours</h4>
+                <p><span>Sunday &ndash; Thursday:</span> <strong>8:00 AM &ndash; 4:00 PM</strong></p>
+                <p><span>Friday &ndash; Saturday:</span> <strong>Closed</strong></p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- RIGHT: Contact Form (Pure White) -->
-        <div class="contact-modal__form-col">
-          <h3 class="contact-modal__form-title">Send us a Message</h3>
+          <!-- RIGHT: Contact Form (Pure White) -->
+          <div class="contact-modal__form-col">
+            <h3 class="contact-modal__form-title">Send us a Message</h3>
 
-          <form id="eurofert-contact-form" class="contact-modal__form" method="post" novalidate>
-            <div id="contact-response-message" class="contact-modal__response" style="display:none;"></div>
+            <form id="eurofert-contact-form" class="contact-modal__form" method="post" novalidate>
+              <div id="contact-response-message" class="contact-modal__response" style="display:none;"></div>
 
-            <div class="contact-modal__row">
-              <div class="contact-modal__field">
-                <label for="user_name">Your Name</label>
-                <input type="text" id="user_name" name="user_name" placeholder="Full name" required>
+              <div class="contact-modal__row">
+                <div class="contact-modal__field">
+                  <label for="user_name">Your Name</label>
+                  <input type="text" id="user_name" name="user_name" placeholder="Full name" required>
+                </div>
+                <div class="contact-modal__field">
+                  <label for="user_email">Your Email</label>
+                  <input type="email" id="user_email" name="user_email" placeholder="email@domain.com" required>
+                </div>
               </div>
-              <div class="contact-modal__field">
-                <label for="user_email">Your Email</label>
-                <input type="email" id="user_email" name="user_email" placeholder="email@domain.com" required>
+
+              <div class="contact-modal__row">
+                <div class="contact-modal__field">
+                  <label for="user_phone">Phone Number</label>
+                  <input type="tel" id="user_phone" name="user_phone" placeholder="+20 000 000 0000">
+                </div>
+                <div class="contact-modal__field">
+                  <label for="user_subject">Subject</label>
+                  <input type="text" id="user_subject" name="user_subject" placeholder="Inquiry about...">
+                </div>
               </div>
-            </div>
 
-            <div class="contact-modal__row">
-              <div class="contact-modal__field">
-                <label for="user_phone">Phone Number</label>
-                <input type="tel" id="user_phone" name="user_phone" placeholder="+20 000 000 0000">
+              <div class="contact-modal__field contact-modal__field--full">
+                <label for="user_message">Your Message</label>
+                <textarea id="user_message" name="user_message" rows="4" placeholder="Write your message here..." required></textarea>
               </div>
-              <div class="contact-modal__field">
-                <label for="user_subject">Subject</label>
-                <input type="text" id="user_subject" name="user_subject" placeholder="Inquiry about...">
-              </div>
-            </div>
 
-            <div class="contact-modal__field contact-modal__field--full">
-              <label for="user_message">Your Message</label>
-              <textarea id="user_message" name="user_message" rows="4" placeholder="Write your message here..." required></textarea>
-            </div>
+              <button type="submit" class="contact-modal__submit">
+                <span>Submit Inquiry</span>
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
 
-            <button type="submit" class="contact-modal__submit">
-              <span>Submit Inquiry</span>
-              <i class="fas fa-paper-plane"></i>
-            </button>
-          </form>
-        </div>
-
-      </div><!-- /.contact-modal__grid -->
-    </div><!-- /.contact-modal__card -->
-  </div><!-- /.contact-modal__dialog -->
-</div><!-- /#contact-modal -->
+        </div><!-- /.contact-modal__grid -->
+      </div><!-- /.contact-modal__card -->
+    </div><!-- /.contact-modal__dialog -->
+  </div><!-- /#contact-modal -->

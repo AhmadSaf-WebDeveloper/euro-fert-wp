@@ -75,9 +75,9 @@ Hero Section (Image + Key Facts Only)
 .product-details-image__container img {
   display: block;
   background: #f2f7f7;
-  padding: 1.25rem;
+  padding: 0.875rem;  /* reduced from 1.25rem — tighter frame frees layout space */
   border-radius: 8px;
-  max-width: 280px; /* Mobile: stacked above text — larger for formula readability */
+  max-width: 220px; /* Mobile: reduced from 280px — creates room for back button */
   width: 100%;
   height: auto;
   object-fit: contain;
@@ -950,12 +950,12 @@ Desktop Product details
 
   .product-details-image__container img {
     object-fit: contain;
-    max-width: 300px; /* Tablet: matches image column max — formula label readable */
+    max-width: 240px; /* Tablet: reduced from 300px */
     width: 100%;
     height: auto;
     border-radius: 8px;
     background: #f2f7f7;
-    padding: 1.25rem;
+    padding: 0.875rem; /* reduced from 1.25rem */
   }
 
   .product-details__content {
@@ -1102,14 +1102,14 @@ Desktop Product details
     margin-right: auto;
   }
 
-  /* IMAGE COLUMN: Grow image at desktop — drawer lives outside this grid, no conflict */
+  /* IMAGE COLUMN: Slightly narrowed — frees layout room for back button */
   .product-details__container {
-    grid-template-columns: minmax(260px, 320px) minmax(0, 520px);
+    grid-template-columns: minmax(220px, 270px) minmax(0, 520px); /* reduced from minmax(260px, 320px) */
     gap: 2rem;
   }
 
   .product-details-image__container img {
-    max-width: 320px; /* Desktop: formula label clearly readable */
+    max-width: 260px; /* Desktop: reduced from 320px */
   }
 
   /* TITLES LEFT ALIGNED: Titles sit at the left padding gutter, creating the indentation space for the content underneath */
@@ -1229,14 +1229,14 @@ Desktop Product details
     padding-bottom: 100px; /* Exact Compo Value */
   }
 
-  /* IMAGE: Maximum breathing room on very large screens */
+  /* IMAGE: Proportionally reduced at XL to stay consistent */
   .product-details__container {
-    grid-template-columns: minmax(300px, 360px) minmax(0, 520px);
+    grid-template-columns: minmax(240px, 300px) minmax(0, 520px); /* reduced from minmax(300px, 360px) */
     gap: 2.5rem;
   }
 
   .product-details-image__container img {
-    max-width: 360px; /* Large desktop: very comfortable formula readability */
+    max-width: 290px; /* XL: reduced from 360px */
   }
 }
 
@@ -1312,5 +1312,26 @@ Desktop Product details
     font-size: 1.0625rem !important; /* ~17px */
     line-height: 1.7; /* Tighten line-height slightly for small screens */
     max-width: 100%; /* Let it fill the container padding on mobile */
+  }
+}
+
+/* =====================================================
+   Product page: back navigation link positioning
+   .product-back-nav extends .back-nav-link (in _product-grid.scss)
+   and adds page-specific placement inside .product-details__wrapper
+   ===================================================== */
+.product-back-nav {
+  display: inline-flex;
+  /* Sits flush at the top-left, outside the content sections */
+  margin: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 5vw, 2rem);
+}
+
+/* On desktop with the side drawer: respect the content left gutter */
+@media (min-width: 1024px) {
+  .product-back-nav {
+    /* Matches the overview-section padding-left (clamp(2rem, 3vw, 4rem)) */
+    margin-left: clamp(2rem, 3vw, 4rem);
+    margin-top: 1.5rem;
+    margin-bottom: 0;
   }
 }

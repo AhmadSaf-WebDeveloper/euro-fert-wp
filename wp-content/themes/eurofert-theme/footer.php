@@ -7,7 +7,7 @@
                 <div class="footer-top-left-col">
                     <!-- Column 1: logo and tagline -->
                     <div class="content-wrapper">
-                        <img class="footer-logo" src="<?php echo get_template_directory_uri(); ?>/images/eurofert-logo.png" alt="Eurofert Logo">
+                        <img class="footer-logo" src="<?php echo get_template_directory_uri(); ?>/resources/images/eurofert-logo.png" alt="Eurofert Logo">
 
                         <p class="footer-subtitle">
                             Sustainable agricultural solutions for modern farming needs. Trusted by farmers worldwide since 1985.

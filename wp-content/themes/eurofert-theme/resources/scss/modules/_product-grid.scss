@@ -3,157 +3,190 @@ to represent the product inside the single category. 00
 =========================================================
    Category  Page Hero Banner
    ========================================================= */
-$card-inline-padding: var(--space-sm);
-/* 1. Kill ALL default browser margins on the children */
-.category-info .category-title,
-.category-info .category-description,
-.category-info .button-container {
-  margin: 0 !important;
-}
+/* =========================================================
+   Category Page Hero Banner
+   ========================================================= */
 
 .category-hero {
-  background: linear-gradient(180deg, #ffffff 0%, #f0f7f2 100%);
-  border-bottom: 1px solid #e2e8e4; /* Optional: A very faint border to define the edge */
-  padding: 3.5rem 1.25rem;
-  border-bottom: 1px solid #e2e8e4;
-  text-align: center;
-}
-
-/* FIX: Image centers correctly and sits on top */
-.category-hero .image-wrapper {
-  order: 1;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem; /* Adds space between bottles and title */
-  width: 100%;
-}
-
-.category-hero .category-container {
-  order: 2; /* Moves text to the bottom of the stack */
-  padding-bottom: 1rem;
-}
-
-.category-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-}
-
-.category-description {
-  text-align: center;
-}
-
-/* 1. Global Paragraph Base */
-.category-hero .category-description p {
-  font-size: 1.15rem !important;
-  line-height: 1.7;
-  color: var(--gray-700);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.category-hero .category-description p:first-of-type {
-  width: 100%;
-  max-width: 75ch; /* Generous width so it doesn't look squished */
-  margin-bottom: 1rem;
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  font-family: var(--font-primary);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.category-title {
-  font-size: clamp(2rem, 8vw, 3.5rem) !important;
-  color: var(--primary-dark);
-}
-
-/* =========================================================
-   2. TABLET & LAPTOP (768px - 1599px)
-   ========================================================= */
-@media (min-width: 768px) {
-  /* Product Grid: Card improvements */
-  .category-card .category-short-description {
-    padding: 0 1rem;
-    font-size: 0.85rem;
+  /* The soft green background behind everything */
+  background: linear-gradient(135deg, #f0f7f2 0%, #e2eedb 100%);
+  padding-top: calc(var(--header-offset, 80px) + 2.5rem) !important;
+  overflow: hidden;
+  padding-bottom: 0;
+  @media (min-width: 992px) {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: calc(var(--header-offset, 80px) + clamp(1rem, 2vh, 2rem)) !important;
+    padding-bottom: clamp(1rem, 2vh, 2rem);
   }
-}
 
-/* smaller desktops, tables, medium screen */
-@media (min-width: 992px) {
-  .category-hero {
-    padding: 2.5rem 0;
-  }
-  .category-hero .category-container {
-    order: 1; /* Moves text to the bottom of the stack */
-    padding: 32px 0;
-  }
-  /* Caps the image size so it matches the 1600px desktop look */
-  .image-wrapper .category-hero-img {
+  &__layout {
+    /* The Inner White Panel */
+    background: #ffffff;
+    border-radius: clamp(24px, 4vw, 40px);
+    /* Generous padding inside the white card */
+    padding: clamp(2rem, 4vw, 4rem);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.04);
+
+    display: flex;
+    flex-direction: column; /* Mobile Stack */
+    gap: 1.5rem;
+    align-items: center;
     width: 100%;
+    /* Tighter max-width for a more premium, compact card centered on large screens */
+    max-width: 1080px;
+    margin: 0 auto; /* Ensure it stays perfectly centered */
+
+    @media (min-width: 992px) {
+      flex-direction: row; /* Tablet/Desktop Side-by-Side */
+      justify-content: center; /* Cluster content in the center to avoid massive gaps */
+      gap: clamp(2rem, 5vw, 6rem); /* Controlled, elegant gap matching mockup */
+      /* Vertical (top/bottom): reduced to prevent vertical overflow on smaller laptops */
+      padding-block: clamp(1.5rem, 3vh, 3rem);
+      /* Horizontal (left/right): scales with screen WIDTH for consistent side margins */
+      padding-inline: clamp(2rem, 3vw, 4rem);
+    }
   }
 
-  .category-hero-img {
-    max-width: 320px; /* Allow slightly larger bottles on desktop */
-  }
-  .category-hero .btn-attention {
-    width: auto;
-  } /* Returns to natural size */
-}
+  &__content {
+    text-align: center;
+    order: 2; /* Mobile: text below image */
+    width: 100%;
 
-/* =========================================================
-   3. ULTRA-WIDE HYBRID (1600px+)
-   ========================================================= */
-
-/* 2. DESKTOP TAKEOVER: >= 992px */
-@media (min-width: 1600px) {
-  .category-hero .container {
-    position: relative;
-  }
-  .category-hero .row {
-    justify-content: center !important;
-  }
-  .category-hero .category-container {
-    order: 1; /* Moves text to the bottom of the stack */
+    @media (min-width: 992px) {
+      text-align: left;
+      order: 1; /* Tablet/Desktop: text on left */
+      flex: 0 1 48%; /* Increased width so text doesn't flow vertically as much */
+      max-width: 48%;
+    }
   }
 
-  /* Center text area - 
-     Release the text from its col-lg constraint so it finds true center 
-     */
-  .category-hero .category-container {
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
-    z-index: 2; /* Keeps text and buttons clickable above the image */
+  /* Read More Truncation Styles */
+  &__description-text {
+    transition: max-height 0.3s ease;
+
+    &.is-truncated {
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+
+      /* Force paragraph inside truncated block to act inline for smooth clamping */
+      p {
+        display: inline;
+        margin-bottom: 0;
+      }
+    }
   }
 
-  .category-hero .category-info {
-    max-width: 800px;
+  &__read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 700;
+    color: #2b7a0b;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-size: 0.95rem;
+    text-decoration: underline;
+
+    &:hover {
+      color: #1a2b22;
+    }
+
+    .read-more-arrows {
+      font-size: 1.1em;
+      line-height: 1;
+    }
   }
 
-  /* Pull the image out of the column flow and pin it to the right */
-  .category-hero .image-wrapper {
-    /*
-    we had to rely on hybrid absolute, cz the bootstrap column system  
-      was taking too much text width making it look very narrow 
-      */
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: -55px;
-    /* Override the col-lg width constraint */
-    flex: 0 0 auto !important;
-    width: 280px;
-    z-index: 2;
+  &__title {
+    color: #1a2b22;
+    font-size: clamp(2.25rem, 5vw, 3.5rem) !important;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-top: 0 !important; /* Eliminate massive whitespace above title */
+    margin-bottom: 1rem;
+
+    /* Mobile Responsiveness */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+
+    @media (min-width: 768px) {
+      max-width: 9ch; /* Force natural 2-line wrap on desktop */
+    }
   }
 
-  .category-hero-img {
-    max-height: 340px;
+  &__description {
+    margin-bottom: 2rem;
+
+    p {
+      font-size: 1.125rem !important;
+      line-height: 1.4;
+      color: var(--gray-700);
+      margin: 0;
+
+      &:not(:last-child) {
+        margin-bottom: 1.25rem;
+      }
+    }
+
+    @media (min-width: 992px) {
+      max-width: 65ch; /* Optimal line length for readability */
+    }
+  }
+
+  &__actions {
+    .btn-attention {
+      font-family: var(--font-primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 8px; /* Slightly rounder button */
+
+      @media (max-width: 767.98px) {
+        width: 100%;
+        max-width: 320px;
+        padding: 1rem 1.5rem !important;
+        font-size: 1.1rem !important;
+      }
+    }
+  }
+
+  &__media {
+    flex: 0 1 35%;
+    width: 100%;
+    order: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (min-width: 992px) {
+      order: 2;
+      flex: 0 1 32%; /* Reduced to match mockup and make image less wide */
+      max-width: 32%;
+      justify-content: flex-end; /* Align image to the right edge of the card*/
+    }
+  }
+
+  &__img {
+    width: 100%;
+    max-width: 100%; /* Let the flex container define its width */
+    aspect-ratio: 4 / 3;
+    @media (min-width: 992px) {
+      aspect-ratio: 4 / 5; /* Taller rectangular aspect ratio matching option B */
+      max-height: clamp(250px, 42vh, 400px); /* Protects vertical height from overflowing small laptops */
+    }
+    object-fit: cover;
+    border-radius: 16px; /* Soft framing */
+    box-shadow: 0 20px 40px rgba(46, 125, 50, 0.15); /* Premium depth */
   }
 }
 
@@ -185,7 +218,9 @@ $card-inline-padding: var(--space-sm);
     border: 1px solid var(--gray-300);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(31, 41, 31, 0.06), 0 1px 3px rgba(31, 41, 31, 0.04);
+    box-shadow:
+      0 2px 8px rgba(31, 41, 31, 0.06),
+      0 1px 3px rgba(31, 41, 31, 0.04);
     transition:
       transform 0.3s ease,
       box-shadow 0.3s ease,
@@ -193,7 +228,9 @@ $card-inline-padding: var(--space-sm);
 
     &:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 28px rgba(31, 41, 31, 0.1), 0 4px 10px rgba(31, 41, 31, 0.06);
+      box-shadow:
+        0 12px 28px rgba(31, 41, 31, 0.1),
+        0 4px 10px rgba(31, 41, 31, 0.06);
       border-color: var(--primary-light);
       .product-grid__media::after {
         transform: scaleX(1);
@@ -338,5 +375,93 @@ $card-inline-padding: var(--space-sm);
     line-height: 1.6;
     max-width: 65ch; /* Limits line length for better mobile reading */
     margin: 0 auto 1.5rem auto; /* Centers the block and adds bottom breathing room */
+  }
+}
+
+/* =====================================================
+   Back Navigation Link
+   Shared: taxonomy-fertilizer_category.php + single-eurofert_product.php
+   Design: green circle-arrow — matches brand icon language (organic/natural)
+   ===================================================== */
+
+.back-nav-link {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  /* Typography */
+  text-decoration: none;
+  color: var(--ef-green); /* #2e7d32 — brand functional green */
+  font-weight: 600;
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1;
+
+  /* Padding = clickable area */
+  padding: 0.5rem 0;
+
+  /* Reset */
+  border: none;
+  background: none;
+
+  /* Micro-interaction */
+  transition:
+    color 0.2s ease,
+    gap 0.2s ease;
+}
+
+/* Hover + keyboard focus */
+.back-nav-link:hover,
+.back-nav-link:focus-visible {
+  color: var(--primary-dark); /* #007934 */
+  gap: 0.75rem; /* arrow slides away from label */
+  text-decoration: none;
+}
+
+.back-nav-link:hover .back-nav-link__arrow,
+.back-nav-link:focus-visible .back-nav-link__arrow {
+  transform: translateX(-4px);
+  background-color: rgba(46, 125, 50, 0.14);
+}
+
+/* Accessible focus ring */
+.back-nav-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Circle icon container */
+.back-nav-link__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem; /* 34px */
+  height: 2.125rem;
+  border-radius: 50%;
+  background-color: rgba(46, 125, 50, 0.09);
+  color: var(--ef-green);
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.25s ease;
+}
+
+.back-nav-link__label {
+  line-height: 1;
+}
+
+/* Mobile — larger touch target */
+@media (max-width: 767.98px) {
+  .back-nav-link {
+    font-size: 0.875rem;
+    padding: 0.375rem 0;
+  }
+
+  .back-nav-link__arrow {
+    width: 2.375rem; /* 38px */
+    height: 2.375rem;
+    font-size: 0.875rem;
   }
 }

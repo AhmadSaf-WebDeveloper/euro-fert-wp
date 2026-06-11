@@ -20,9 +20,22 @@ $category_desc = ($category_desc_input !== '')
   : 'Explore our range of products within this category.';
 
 
-// get the image for the hero section 
-$category_hero_img = get_page_by_path('eurofert-category-hero-bottles-HD', OBJECT, 'attachment');
-$category_hero_id = $category_hero_img ? (int) $category_hero_img->ID : 0;
+// Hero image: read per-category ACF field 'category_featured_image'.
+// Falls back to ID 52 (generic bottles image, derivatives intact) if field is empty.
+$category_hero_id = 0;
+if ( function_exists( 'get_field' ) && isset( $category_obj->term_id ) ) {
+  $hero_field = get_field( 'category_featured_image', 'term_' . $category_obj->term_id );
+  if ( is_array( $hero_field ) && isset( $hero_field['ID'] ) ) {
+    $category_hero_id = (int) $hero_field['ID'];
+  } elseif ( is_numeric( $hero_field ) ) {
+    $category_hero_id = (int) $hero_field;
+  } elseif ( is_object( $hero_field ) && isset( $hero_field->ID ) ) {
+    $category_hero_id = (int) $hero_field->ID;
+  }
+}
+if ( ! $category_hero_id ) {
+  $category_hero_id = 52; // Fallback: eurofert-category-hero-bottles-hd (derivatives exist)
+}
 
 // Category Brochure — ACF field 'category_brochure' returns a file attachment ID.
 // We resolve it to a URL so we can build a real download link.
@@ -35,49 +48,52 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
 }
 ?>
 <main class="content">
-  <section class="category-hero py-5">
-    <div class="container">
-      <div class="row align-items-stretch">
+  <section class="category-hero">
+    <div class="container category-hero__layout">
 
-        <div class="category-container  d-flex col-12 col-lg-8 justify-content-center">
-          <div class="category-info text-center">
-
-            <h1 class="category-title display-4 fw-bold">
-              <?php echo esc_html($category_name); ?>
-            </h1>
-            <div class="category-description" id="pageHeaderLead">
-              <?php echo wpautop(esc_html($category_desc)); ?>
-            </div>
-            <?php if ($brochure_url): ?>
-            <div class="button-container mt-4">
-              <a href="<?php echo esc_url($brochure_url); ?>" class="btn btn-primary btn-attention" download>
-                <i class="fas fa-file-pdf me-2"></i>Download Brochure
-              </a>
-            </div>
-            <?php endif; ?>
+      <div class="category-hero__content">
+        <h1 class="category-hero__title fw-bold">
+          <?php echo esc_html($category_name); ?>
+        </h1>
+        
+        <div class="category-hero__description" id="pageHeaderLead">
+          <div class="category-hero__description-text is-truncated" id="heroDescText">
+            <?php echo wpautop(esc_html($category_desc)); ?>
           </div>
+          <button class="category-hero__read-more" id="heroReadMoreBtn" aria-expanded="false" style="display: none;">
+            Read more <span class="read-more-arrows">&raquo;</span>
+          </button>
         </div>
-
-        <div class="col-12 col-lg-4 image-wrapper">
-          <?php if ($category_hero_id):
-            echo wp_get_attachment_image(
-              $category_hero_id,
-              'full',
-              false,
-              array(
-                'class' => 'category-hero-img',
-                'alt' => '',
-                'aria-hidden' => 'true',
-                'loading' => 'eager',
-                'decoding' => 'async',
-                'sizes' => '(max-width: 767.98px) 100vw, (max-width: 1199.98px) 50vw, 800px'
-              )
-            );
-          // END wp_get_attachment_image()
-          endif;
-          ?>
+        
+        <?php if ($brochure_url): ?>
+        <div class="category-hero__actions">
+          <a href="<?php echo esc_url($brochure_url); ?>" class="btn btn-primary btn-attention" download>
+            <i class="fas fa-file-pdf me-2"></i>Download Brochure
+          </a>
         </div>
+        <?php endif; ?>
       </div>
+
+      <div class="category-hero__media">
+        <?php if ($category_hero_id):
+          echo wp_get_attachment_image(
+            $category_hero_id,
+            'full',
+            false,
+            array(
+              'class' => 'category-hero__img',
+              'alt' => '',
+              'aria-hidden' => 'true',
+              'loading' => 'eager',
+              'decoding' => 'async',
+              'sizes' => '(max-width: 767.98px) 100vw, (max-width: 1199.98px) 50vw, 800px'
+            )
+          );
+        // END wp_get_attachment_image()
+        endif;
+        ?>
+      </div>
+      
     </div>
   </section>
 
@@ -85,8 +101,13 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
   <section class="product-section" id="productGridContainer">
     <div class="container">
       <div class="d-flex justify-content-between align-items-center m-4">
-        <a class="btn btn-outline-secondary" href="<?php echo esc_url(home_url('/')); ?>">
-          <i class="fas fa-arrow-left me-2"></i>Back to Categories
+        <a class="back-nav-link"
+           href="<?php echo esc_url(home_url('/#categories-grid')); ?>"
+           aria-label="Back to product categories on the homepage">
+          <span class="back-nav-link__arrow" aria-hidden="true">
+            <i class="fa-solid fa-arrow-left"></i>
+          </span>
+          <span class="back-nav-link__label">Back to Home</span>
         </a>
       </div>
 

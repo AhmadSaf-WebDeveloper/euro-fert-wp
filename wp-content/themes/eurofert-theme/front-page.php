@@ -130,7 +130,7 @@
 
 
   ?>
-  <section class="category-preview" id="products-preview">
+  <section class="category-preview" id="categories-grid">
     <div class="container">
       <!-- Section Title-->
 
