@@ -17,7 +17,7 @@
     <nav class="site-nav">
       <a class="brand-logo" href="<?php echo esc_url(home_url('/')); ?>">
         <img
-          src="<?php echo esc_url(get_theme_file_uri('/resources/images/eurofert-logo.png')); ?>"
+          src="<?php echo esc_url(get_theme_file_uri('/images/eurofert-logo.png')); ?>"
           alt="Eurofert Logo"
           class="logo"
           loading="eager"
