@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SVG Mask Preview</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #e8f3e9, #ffffff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #1a2b22;
+  }
+  .preview-container {
+    text-align: center;
+  }
+  h2 { margin-bottom: 10px; }
+  p { margin-bottom: 40px; color: #555; }
+  
+  /* The Rectangle Photograph */
+  .masked-image {
+    width: 500px;
+    height: 375px; /* 4:3 aspect ratio */
+    /* We use your goal mockup as a dummy photograph to prove it works */
+    background-image: url('wp-content/themes/eurofert-theme/goal-mockup.png'); 
+    background-size: cover;
+    background-position: center;
+    
+    /* THE MAGIC: Applying the black SVG file as a cookie-cutter */
+    -webkit-mask-image: url('wp-content/themes/eurofert-theme/resources/images/hero-mask.svg');
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    
+    mask-image: url('wp-content/themes/eurofert-theme/resources/images/hero-mask.svg');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+
+    /* A nice shadow to show it off */
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+  <div class="preview-container">
+    <h2>Live CSS Masking Preview</h2>
+    <p>This proves the black "dark spot" is just a cookie-cutter.</p>
+    
+    <!-- This div holds the photograph, but CSS cuts it into the blob shape! -->
+    <div class="masked-image"></div>
+    
+  </div>
+</body>
+</html>
