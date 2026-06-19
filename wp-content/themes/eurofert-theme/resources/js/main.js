@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
   safeInit(initViewportAnimations, "initViewportAnimations");
   safeInit(initProductDrawerNavDash, "initProductDrawerNavDash");
   safeInit(initReadMoreToggle, "initReadMoreToggle");
+  safeInit(initScrollIndicator, "initScrollIndicator");
 });
 
 function safeInit(fn, name) {
@@ -41,17 +42,17 @@ function safeInit(fn, name) {
 function initReadMoreToggle() {
   var descText = qs("#heroDescText");
   var readMoreBtn = qs("#heroReadMoreBtn");
-  
+
   if (!descText || !readMoreBtn) return;
-  
+
   // Check if text is truncated by comparing scrollHeight with clientHeight
-  setTimeout(function() {
+  setTimeout(function () {
     if (descText.scrollHeight > descText.clientHeight) {
       readMoreBtn.style.display = "inline-flex";
     }
   }, 100);
-  
-  addListener(readMoreBtn, "click", function() {
+
+  addListener(readMoreBtn, "click", function () {
     if (descText.classList.contains("is-truncated")) {
       descText.classList.remove("is-truncated");
       readMoreBtn.innerHTML = 'Read less <span class="read-more-arrows">&laquo;</span>';
@@ -62,6 +63,81 @@ function initReadMoreToggle() {
       readMoreBtn.setAttribute("aria-expanded", "false");
     }
   });
+}
+
+/* -----------------------------
+   Scroll Indicator (Category Hero)
+   - Fixed to viewport bottom, visible while user is in the hero section
+   - Disappears the moment the product grid enters the viewport
+   - Reappears if the user scrolls back up to the hero
+   - Mobile: indicator has display:none via CSS — this JS runs but does nothing visible
+------------------------------ */
+function initScrollIndicator() {
+  var indicator = qs("#heroScrollIndicator");
+
+  // Exit silently on all pages where the indicator wasn't rendered by PHP:
+  // - Non-category pages
+  // - Category pages with no products (PHP conditional skipped rendering it)
+  if (!indicator) return;
+
+  var grid = qs("#productGridContainer");
+
+  // --- Step 1: Release the CSS animation lock after the fade-in finishes ---
+  //
+  // The CSS has: animation: indicatorFadeIn 0.6s ease 1s both
+  // animation-fill-mode:both holds the element at its final animation state (opacity:1).
+  // This runs at the ANIMATION layer of the CSS cascade — which beats regular class styles.
+  // So when IntersectionObserver adds .is-hidden { opacity:0 }, the animation layer wins
+  // and the element stays visible. The class change has zero visual effect.
+  //
+  // Fix: as soon as the one-time fade-in animation ends, clear animation entirely.
+  // This releases the lock and hands full opacity control back to the CSS transition,
+  // which is what .is-hidden uses to smoothly show/hide.
+  indicator.addEventListener("animationend", function (e) {
+    if (e.animationName === "indicatorFadeIn") {
+      indicator.style.animation = "none"; // Remove fade-in; scrollBounce on child is unaffected
+    }
+  });
+
+  // --- Step 2: Click — smooth scroll to product grid ---
+  // which triggers the IntersectionObserver below — so the indicator disappears automatically.
+  addListener(indicator, "click", function () {
+    if (grid) {
+      grid.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+
+  if (!grid) return;
+
+  // --- Step 3: IntersectionObserver — watch the product grid ---
+  //
+  // IntersectionObserver fires whenever the observed element crosses the viewport boundary.
+  // We observe #productGridContainer. The logic:
+  //   - Grid enters viewport → products are visible → indicator is no longer needed → hide it
+  //   - Grid leaves viewport → user scrolled back to hero → indicator is needed again → show it
+  //
+  // This covers all four user actions automatically:
+  //   1. Scroll down to grid          → grid enters  → indicator hides
+  //   2. Click indicator              → scroll brings grid in → grid enters → indicator hides
+  //   3. Scroll back up from grid     → grid exits   → indicator reappears
+  //   4. Any other page               → #heroScrollIndicator not in DOM → function returned early
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          indicator.classList.add("is-hidden");
+        } else {
+          indicator.classList.remove("is-hidden");
+        }
+      });
+    },
+    {
+      threshold: 0, // Fire the moment even 1px of the grid crosses the boundary
+      rootMargin: "0px 0px 0px 0px" // No offset — hide exactly when grid becomes visible
+    }
+  );
+
+  observer.observe(grid);
 }
 
 /* -----------------------------

@@ -23,17 +23,17 @@ $category_desc = ($category_desc_input !== '')
 // Hero image: read per-category ACF field 'category_featured_image'.
 // Falls back to ID 52 (generic bottles image, derivatives intact) if field is empty.
 $category_hero_id = 0;
-if ( function_exists( 'get_field' ) && isset( $category_obj->term_id ) ) {
-  $hero_field = get_field( 'category_featured_image', 'term_' . $category_obj->term_id );
-  if ( is_array( $hero_field ) && isset( $hero_field['ID'] ) ) {
+if (function_exists('get_field') && isset($category_obj->term_id)) {
+  $hero_field = get_field('category_featured_image', 'term_' . $category_obj->term_id);
+  if (is_array($hero_field) && isset($hero_field['ID'])) {
     $category_hero_id = (int) $hero_field['ID'];
-  } elseif ( is_numeric( $hero_field ) ) {
+  } elseif (is_numeric($hero_field)) {
     $category_hero_id = (int) $hero_field;
-  } elseif ( is_object( $hero_field ) && isset( $hero_field->ID ) ) {
+  } elseif (is_object($hero_field) && isset($hero_field->ID)) {
     $category_hero_id = (int) $hero_field->ID;
   }
 }
-if ( ! $category_hero_id ) {
+if (! $category_hero_id) {
   $category_hero_id = 52; // Fallback: eurofert-category-hero-bottles-hd (derivatives exist)
 }
 
@@ -53,9 +53,13 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
 
       <div class="category-hero__content">
         <h1 class="category-hero__title fw-bold">
-          <?php echo esc_html($category_name); ?>
+          <?php if (function_exists('format_category_title'))
+            echo format_category_title($category_name);
+          else {
+            echo esc_html($category_name);
+          } ?>
         </h1>
-        
+
         <div class="category-hero__description" id="pageHeaderLead">
           <div class="category-hero__description-text is-truncated" id="heroDescText">
             <?php echo wpautop(esc_html($category_desc)); ?>
@@ -64,13 +68,13 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
             Read more <span class="read-more-arrows">&raquo;</span>
           </button>
         </div>
-        
+
         <?php if ($brochure_url): ?>
-        <div class="category-hero__actions">
-          <a href="<?php echo esc_url($brochure_url); ?>" class="btn btn-primary btn-attention" download>
-            <i class="fas fa-file-pdf me-2"></i>Download Brochure
-          </a>
-        </div>
+          <div class="category-hero__actions">
+            <a href="<?php echo esc_url($brochure_url); ?>" class="btn btn-primary btn-attention" download>
+              <i class="fas fa-file-pdf me-2"></i>Download Brochure
+            </a>
+          </div>
         <?php endif; ?>
       </div>
 
@@ -93,17 +97,27 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
         endif;
         ?>
       </div>
-      
+
     </div>
+
+    <?php if ( have_posts() ) : ?>
+      <!-- Scroll indicator: only shown when products exist below the fold -->
+      <div class="category-hero__scroll-indicator" id="heroScrollIndicator" aria-hidden="true">
+        <span class="category-hero__scroll-chevron"></span>
+      </div>
+      <?php rewind_posts(); // Reset the loop pointer so the product grid below iterates correctly ?>
+    <?php endif; ?>
+
   </section>
+
 
   <!-- Product Grid -->
   <section class="product-section" id="productGridContainer">
     <div class="container">
       <div class="d-flex justify-content-between align-items-center m-4">
         <a class="back-nav-link"
-           href="<?php echo esc_url(home_url('/#categories-grid')); ?>"
-           aria-label="Back to product categories on the homepage">
+          href="<?php echo esc_url(home_url('/#categories-grid')); ?>"
+          aria-label="Back to product categories on the homepage">
           <span class="back-nav-link__arrow" aria-hidden="true">
             <i class="fa-solid fa-arrow-left"></i>
           </span>

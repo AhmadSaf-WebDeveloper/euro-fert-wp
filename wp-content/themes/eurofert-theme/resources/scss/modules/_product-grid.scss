@@ -13,6 +13,7 @@ to represent the product inside the single category. 00
   padding-top: calc(var(--header-offset, 80px) + 2.5rem) !important;
   overflow: hidden;
   padding-bottom: 0;
+  position: relative; /* Required so the absolute scroll indicator is anchored to this section */
   @media (min-width: 992px) {
     min-height: 100dvh;
     display: flex;
@@ -69,7 +70,7 @@ to represent the product inside the single category. 00
 
     &.is-truncated {
       display: -webkit-box;
-      -webkit-line-clamp: 6;
+      -webkit-line-clamp: 8;
       -webkit-box-orient: vertical;
       overflow: hidden;
 
@@ -118,10 +119,6 @@ to represent the product inside the single category. 00
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
-
-    @media (min-width: 768px) {
-      max-width: 9ch; /* Force natural 2-line wrap on desktop */
-    }
   }
 
   &__description {
@@ -159,7 +156,7 @@ to represent the product inside the single category. 00
       }
     }
   }
-
+  /* category image container*/
   &__media {
     flex: 0 1 35%;
     width: 100%;
@@ -170,27 +167,104 @@ to represent the product inside the single category. 00
 
     @media (min-width: 992px) {
       order: 2;
-      flex: 0 1 32%; /* Reduced to match mockup and make image less wide */
-      max-width: 32%;
-      justify-content: flex-end; /* Align image to the right edge of the card*/
+      flex: 0 1 42%; /* Increased to give the product more presence */
+      max-width: 42%;
+      justify-content: center; /* Align center for free-floating product */
     }
   }
 
+  /* category image - category img*/
   &__img {
+    // Using SCSS variables ($) instead of CSS Custom Properties (--)
+    $hero-img-radius: clamp(16px, 2vw, 24px);
+    $hero-shadow-base: rgba(46, 125, 50, 0.08);
+    $hero-shadow-deep: rgba(46, 125, 50, 0.15);
+    $hero-shadow-hover: rgba(46, 125, 50, 0.25);
+
     width: 100%;
-    max-width: 100%; /* Let the flex container define its width */
-    aspect-ratio: 4 / 3;
+    max-width: 100%;
+
+    aspect-ratio: 3 / 2;
+    object-fit: contain; // Best for avoiding crops if mix-blend-mode is used
+    mix-blend-mode: multiply;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.08));
+    transition:
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, box-shadow;
+
     @media (min-width: 992px) {
-      aspect-ratio: 4 / 5; /* Taller rectangular aspect ratio matching option B */
-      max-height: clamp(250px, 42vh, 400px); /* Protects vertical height from overflowing small laptops */
+      max-height: clamp(250px, 42vh, 400px);
     }
-    object-fit: cover;
-    border-radius: 16px; /* Soft framing */
-    box-shadow: 0 20px 40px rgba(46, 125, 50, 0.15); /* Premium depth */
+
+    &:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow:
+        0 12px 24px $hero-shadow-base,
+        0 32px 64px $hero-shadow-hover;
+    }
+  }
+  /* Animated scroll indicator — fixed to viewport bottom on desktop, hidden on mobile */
+  &__scroll-indicator {
+    display: none; /* Hidden on mobile — hero is not 100dvh there, grid peeks naturally */
+
+    @media (min-width: 992px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+
+      /* Fixed to the viewport — always visible regardless of card/hero height */
+      position: fixed;
+      bottom: 1.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10; /* Sits above page content but below modals/header */
+
+      color: #2b7a0b;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer; /* Hand cursor — makes it clear this is clickable */
+
+      opacity: 1;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      animation: indicatorFadeIn 0.6s ease 0.3s both; /* Slight delayed fade-in: does not compete with page load but feels snappy */
+
+      /* Fades out when JS adds this class (user scrolled past hero) */
+      &.is-hidden {
+        opacity: 0;
+        pointer-events: none; /* Only disable interaction when invisible */
+        transform: translateX(-50%) translateY(8px);
+      }
+    }
+  }
+
+  &__scroll-chevron {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-right: 2.5px solid #2b7a0b;
+    border-bottom: 2.5px solid #2b7a0b;
+    transform: rotate(45deg);
+    animation: scrollBounce 1.4s ease-in-out infinite;
   }
 }
 
+/* Scroll indicator keyframes */
+@keyframes scrollBounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50%       { transform: rotate(45deg) translateY(6px); }
+}
+
+@keyframes indicatorFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
 /* =========================================================
+
           Product Grid                                       
   ==========================================================*/
 .product-section {
