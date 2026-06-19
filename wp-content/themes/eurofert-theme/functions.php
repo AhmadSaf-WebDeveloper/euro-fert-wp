@@ -125,16 +125,26 @@ function format_product_name(string $title): string
 function get_product_base_name(string $title): string
 {
     $title = trim($title);
-    
+
     // Split at the first space followed by a digit, %, or + (which denotes start of formula)
     $pattern_simple = '/\s(?=[0-9]|%|\+)/u';
     if (preg_match($pattern_simple, $title, $match, PREG_OFFSET_CAPTURE)) {
         $pos = $match[0][1];
         $title = mb_substr($title, 0, $pos, 'UTF-8');
     }
-    
+
     // Trim trailing spaces, hyphens, and dots
     return trim($title, " \t\n\r\0\x0B-.");
+}
+
+function format_category_title(string $title): string
+{
+    $words = explode(' ', trim($title));
+    if (count($words) >= 3) {
+        $last_word = array_pop($words);
+        return esc_html(implode(' ', $words)) . '<br>' . esc_html($last_word);
+    }
+    return esc_html($title);
 }
 
 require_once get_theme_file_path('/inc/cmb2-application-recommendations.php');
