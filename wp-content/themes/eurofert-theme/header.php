@@ -35,26 +35,37 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <!-- navbar collapse parent -->
-      <div class="main-menu collapse navbar-collapse-container" id="navbarSupportedContent">
+      <div class="main-menu collapse navbar-collapse-container" id="navbarSupportedContent" tabindex="-1">
         <div class="menu-header">
-          <h5 class="menu-title">Menu Navigation</h5>
+          <h5 class="menu-title">SITE NAVIGATION</h5>
         </div>
+
 
         <!-- Nav menu list-->
         <ul class="nav-menu">
           <li class="nav-item">
-            <a class="nav-link active" href="<?php echo esc_url(home_url('/')); ?>"><span>Home</span></a>
+            <a class="nav-link active" href="<?php echo esc_url(home_url('/')); ?>">
+              <i class="fas fa-house nav-icon"></i>
+              <span>Home</span>
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo esc_url(site_url('/contact-us/')); ?>" id="contact-modal-trigger" aria-haspopup="dialog" aria-controls="contact-modal"><span>Contact us</span></a>
+            <a class="nav-link" href="<?php echo esc_url(site_url('/contact-us/')); ?>" id="contact-modal-trigger" aria-haspopup="dialog" aria-controls="contact-modal">
+              <i class="far fa-envelope nav-icon"></i>
+              <span>Contact us</span>
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="about.html"><span>About Us</span></a>
+            <a class="nav-link" href="about.html">
+              <i class="fas fa-info-circle nav-icon"></i>
+              <span>About Us</span>
+            </a>
           </li>
 
           <!-- Dropdown list Product Categories-->
           <li class="nav-item has-dropdown" data-toggle="dropdown">
             <a class="nav-link parent-link">
+              <i class="fas fa-seedling nav-icon"></i>
               <span class="link-title">Products</span>
             </a>
 

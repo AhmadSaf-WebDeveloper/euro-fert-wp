@@ -56,8 +56,10 @@
 }
 
 .menu-title {
-  font-weight: 700;
-  font-size: 1.125rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--gray-600); /* Muted gray text color */
   margin: 0;
   padding-top: 1rem;
@@ -266,12 +268,12 @@
     border: 1px solid var(--gray-400);
     border-radius: 0.25rem;
     background: white;
-    /* Independent timings for slide (translate) and spin (rotate) */
+    /* Independent timings for slide (translate) and spin (rotate) - default closed state */
     transition:
-      background-color 0.65s ease,
-      border-color 0.65s ease,
-      translate 0.65s cubic-bezier(0.25, 1, 0.5, 1),
-      /* THE SLIDE */ rotate 0.75s ease-in-out; /* THE SPIN */
+      background-color 0.5s ease,
+      border-color 0.5s ease,
+      translate 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+      rotate 0.5s ease-in-out;
     will-change: translate, rotate;
 
     display: flex;
@@ -388,6 +390,11 @@
     translate: calc(0.6rem - min(80vw, 360px)) -50%;
     rotate: 90deg;
     transform: none !important;
+    transition:
+      translate 0.65s cubic-bezier(0.25, 1, 0.5, 1),
+      rotate 0.75s ease-in-out,
+      background-color 0.65s ease,
+      border-color 0.65s ease;
   }
 
   /* CLOSED  state */
@@ -397,18 +404,16 @@
     translate: 0 -50% !important;
     rotate: 0deg !important;
     transform: none !important;
+    transition:
+      translate 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+      rotate 0.5s ease-in-out,
+      background-color 0.5s ease,
+      border-color 0.5s ease;
   }
 
   /* END OF TOGGLER ICON , TOGGLER ANIMATION*/
 
-  /* Prevent body scroll when menu is open.
-     overflow:hidden alone is sufficient — the drawer is position:fixed and covers
-     the full screen independently. position:fixed was removed because it caused
-     the browser to visually snap the page to scrollY=0, forcing the header to
-     re-expand and triggering a cascade of wrong --header-offset measurements. */
-  body.menu-open {
-    overflow: hidden;
-  }
+  /* Removed body scroll lock reflow bottleneck */
 
   .navbar-toggler:focus {
     outline: none;
@@ -417,7 +422,8 @@
 
   /*Mobile main menu  
   Mobile side bar */
-  .site-nav > .navbar-collapse-container {
+  .site-nav > .navbar-collapse-container,
+  .site-nav > .navbar-collapse-container.collapse:not(.show) {
     position: fixed;
     top: var(--wp-admin-bar-h, 0px);
     right: 0;
@@ -431,8 +437,8 @@
     border-left: 1px solid var(--gray-300);
     transform: translateX(100%);
     transition:
-      transform 0.65s cubic-bezier(0.25, 1, 0.5, 1),
-      visibility 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+      transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+      visibility 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform, visibility;
     flex-basis: auto;
     flex-grow: 0;
@@ -453,21 +459,23 @@
     pointer-events: auto; /* Enable clicking */
     max-height: 100dvh; /* modern viewport height (better than 100vh on mobile) */
     overscroll-behavior: contain;
+    transition:
+      transform 0.65s cubic-bezier(0.25, 1, 0.5, 1),
+      visibility 0.65s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .drawer-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 2004; /* Behind drawer but above content */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    touch-action: none; /* Disable touch gestures (scroll block on backdrop) */
     transition:
-      opacity 0.65s cubic-bezier(0.25, 1, 0.5, 1),
-      visibility 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+      opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+      visibility 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: opacity, visibility;
   }
 
@@ -475,12 +483,16 @@
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    transition:
+      opacity 0.65s cubic-bezier(0.25, 1, 0.5, 1),
+      visibility 0.65s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   /* link items - Mobile menu items  */
   .nav-menu > .nav-item.has-dropdown,
   .nav-menu > .nav-item {
-    border-top: 1px solid var(--drawer-divider); /* Menu Borders */
+    border: none;
+    border-top: 1px solid var(--reco-border); /* Soft green transparent border */
     min-height: var(--mobile-nav-row); /* Set height here */
     height: auto;
   }
@@ -496,13 +508,62 @@
     height: var(--mobile-nav-row); /* Stable height */
     padding-left: 1rem;
     padding-block: 0; /* Remove padding since height is fixed */
+    gap: clamp(
+      0.35rem,
+      0.8vw,
+      0.75rem
+    ); /* Responsive gap instead of hard margin to prevent collision on medium screens */
   }
 
+  .nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem; /* Slightly wider to accommodate bigger icons */
+    height: 1.5rem;
+    font-size: 1.25rem; /* Increased size as requested */
+    color: var(--primary); /* Reverted to original green globally */
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+  }
+
+
+
+  .nav-link:hover .nav-icon {
+    color: var(--primary);
+  }
   .nav-link span {
     text-align: left;
   }
+
+  /* ── Mobile Only Typography, Sizing & Colors ── */
+  @media (max-width: 767.98px) {
+    .navbar-collapse-container {
+      font-family: var(--font-button); /* Poppins for geometric look */
+    }
+    .nav-menu {
+      color: var(--gray-700); /* Slate gray default text */
+    }
+    .nav-menu > .nav-item {
+      min-height: 68px; /* Taller touch targets matching goal image */
+    }
+    .nav-menu > .nav-item > .nav-link {
+      font-size: 1.05rem; /* Larger text */
+      height: 68px; /* Match taller target */
+      gap: 1.25rem; /* Generous wide gap between icon and text */
+      padding-left: 1.5rem; /* Indent items further right like the goal image */
+    }
+    .nav-icon {
+      width: 1.85rem; /* Fixed width footprint for mobile */
+      font-size: 1.6rem; /* Bigger size as requested */
+    }
+    .menu-title {
+      font-size: 0.95rem; /* Bigger title */
+      padding-bottom: 0.75rem; /* More space under the title */
+    }
+  }
   .nav-menu > .nav-item:last-child {
-    border-bottom: 1px solid var(--drawer-divider);
+    border-bottom: 1px solid var(--reco-border);
   }
 
   body.menu-open .navbar-toggler {
@@ -559,9 +620,9 @@
       padding 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* When the menu is open, keep the bottom border so the arrow square stays intact */
+  /* Removed border when menu is open */
   .nav-menu .nav-item.has-dropdown.open {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    border-bottom: none;
   }
 
   /*Mobile Arrow container  - Mobile Opener */
@@ -580,31 +641,32 @@
     padding: 0;
     border: none;
     border-radius: 0;
-    background: rgba(147, 213, 0, 0.03); /* Subtle green tint closed */
+    background: transparent;
     box-shadow: none;
     outline: none;
     -webkit-appearance: none;
     appearance: none;
-
-    /* Highlighted green borders for the button box */
-    border-left: 1px solid var(--border-green-light);
-    border-top: 1px solid var(--border-green-light);
-    border-bottom: 1px solid var(--border-green-light);
 
     transition:
       background-color 0.2s ease,
       transform 0.1s ease;
   }
 
-  /* Tactile active press feedback */
-  .nav-opener:active {
-    background-color: rgba(46, 125, 50, 0.12);
-    transform: scale(0.96);
+  /* Highlight state when open for the entire Products row */
+  .nav-item.open {
+    background-color: rgba(147, 213, 0, 0.08); /* Soft green background like the goal image */
   }
 
-  /* Highlight state when open */
-  .nav-item.open > .nav-opener {
-    background-color: rgba(46, 125, 50, 0.08);
+  .nav-item.open > .nav-link,
+  .nav-item.open > .nav-link .nav-icon {
+    color: var(--primary); /* Green text and icon */
+    font-weight: 600;
+  }
+
+  /* Transparent active press */
+  .nav-opener:active {
+    opacity: 0.7;
+    transform: scale(0.96);
   }
 
   /* ─── Mobile submenu item animation ─── */
@@ -661,7 +723,7 @@
     text-align: left;
     padding: 1rem 20px;
     line-height: 1.3;
-    font-size: 0.875rem;
+    font-size: 0.95rem; /* Increased from 0.875rem for better readability */
     font-weight: 500;
     background-color: transparent;
     text-decoration: none;
@@ -761,11 +823,18 @@ Desktop main menu - 768px and above**/
   /* Desktop Nav link styling */
   .nav-menu > .nav-item > .nav-link {
     background: transparent;
+    display: inline-flex;
+    align-items: center;
     flex: 0 0 auto;
     letter-spacing: 0.05rem;
     font-size: clamp(0.78rem, 1.1vw, 1rem);
     padding: 5px clamp(8px, 1.2vw, 20px);
     min-height: 65px;
+    gap: 0.5rem; /* Clean gap between icon and text */
+  }
+
+  .nav-menu > .nav-item > .nav-link i.fa-house.nav-icon {
+    transform: translateY(-2px);
   }
 
   .nav-link.active {
@@ -803,7 +872,9 @@ Desktop main menu - 768px and above**/
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 12px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 12px 36px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.04);
     z-index: 2100;
     display: none;
     list-style: none;
@@ -994,7 +1065,7 @@ Desktop main menu - 768px and above**/
   .nav-item.has-dropdown > .nav-link.parent-link .link-title {
     display: inline-flex;
     align-items: center;
-    line-height: 1; 
+    line-height: 1;
   }
 
   .nav-item.has-dropdown > .nav-link {
@@ -1037,7 +1108,9 @@ Desktop main menu - 768px and above**/
     border-bottom: 2px solid var(--primary-dark);
     /* point down initially */
     transform: translateY(-2px) rotate(45deg);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+    transition:
+      transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s ease;
     border-radius: 1px; /* Slight rounding for a premium feel */
     display: block;
     box-sizing: border-box;
