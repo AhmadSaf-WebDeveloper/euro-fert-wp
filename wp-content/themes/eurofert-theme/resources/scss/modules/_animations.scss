@@ -223,30 +223,6 @@
   }
 }
 
-@media (max-width: 991.98px) {
-  /* Initial closed state for dropdown menus on mobile */
-  .nav-item.has-dropdown .dropdown-menu {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      max-height 0.3s ease,
-      opacity 0.2s ease 0.1s,
-      visibility 0s linear 0.3s;
-  }
-  /* Open state: dropdown menu slides down */
-  .nav-item.has-dropdown.open .dropdown-menu,
-  .nav-item.dropdown.show .dropdown-menu {
-    max-height: 300px; /* allow enough height for menu items (adjust if needed) */
-    opacity: 1;
-    visibility: visible;
-    transition:
-      max-height 0.3s ease,
-      opacity 0.2s ease,
-      visibility 0s linear 0s;
-  }
-}
 /* 2) OPTIONAL: also show on hover for desktop navs */
 @media (min-width: 768px) {
   /* Dropdown menu animation */
@@ -401,6 +377,24 @@
 }
 .product-grid-item:nth-child(16) {
   transition-delay: 1.6s;
+}
+
+/* 
+ * ==========================================
+ * FIXED OVERLAY DRAWER: ELEVATOR & TUNNEL ANIMATIONS
+ * ==========================================
+ * Performance Review: We strictly use `transform: translateY` because transforms 
+ * are hardware-accelerated by the GPU and do not trigger expensive browser layout 
+ * recalculations (reflows).
+ */
+
+/* Base transition for the Tunnel Reveal (Open) and Elevator Collapse (Close) */
+.overlay-drawer-slide {
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              background-color 0.4s ease, 
+              backdrop-filter 0.4s ease,
+              box-shadow 0.4s ease;
+  will-change: transform;
 }
 
 /* Media queries for animations */

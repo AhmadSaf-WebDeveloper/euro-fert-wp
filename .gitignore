@@ -3,7 +3,8 @@
 /category-images/
 *.pdf
 
-
+# Temp files
+trace.json
 
 # IntelliJ IDEA Metadata
 .idea/

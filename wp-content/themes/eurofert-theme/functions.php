@@ -225,3 +225,11 @@ function eurofert_format_chemical_formula($string)
     // 3. If no numbers exist, return the original string untouched
     return $string;
 }
+
+/* 
+ * Inject the Fixed Social Overlay globally into the footer 
+ */
+add_action('wp_footer', 'eurofert_inject_social_overlay');
+function eurofert_inject_social_overlay() {
+    get_template_part('template-parts/components/fixed-overlay-drawer');
+}

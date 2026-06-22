@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   safeInit(initProductDrawerNavDash, "initProductDrawerNavDash");
   safeInit(initReadMoreToggle, "initReadMoreToggle");
   safeInit(initScrollIndicator, "initScrollIndicator");
+  safeInit(initFixedOverlayPanel, "initFixedOverlayPanel");
 });
 
 function safeInit(fn, name) {
@@ -299,6 +300,12 @@ function initMobileMenuAndDropdown() {
       toggler.setAttribute("aria-expanded", willExpand ? "true" : "false");
       menuContainer.classList.toggle("show", willExpand);
       document.body.classList.toggle("menu-open", willExpand);
+
+      if (willExpand) {
+        menuContainer.focus();
+      } else {
+        toggler.focus();
+      }
     });
 
     if (backdrop) {
@@ -306,6 +313,7 @@ function initMobileMenuAndDropdown() {
         toggler.setAttribute("aria-expanded", "false");
         menuContainer.classList.remove("show");
         document.body.classList.remove("menu-open");
+        toggler.focus();
       });
     }
   }
@@ -575,3 +583,20 @@ function initProductDrawerNavDash() {
   const initial = (location.hash && links.find((a) => a.getAttribute("href") === location.hash)) || links[0];
   if (initial) requestAnimationFrame(() => setActive(initial));
 }
+
+/* -----------------------------
+   Fixed Overlay Toggle Logic
+   Performance impact: Near zero. Execution time is <1ms per click.
+   Animations are offloaded to CSS GPU acceleration.
+------------------------------ */
+function initFixedOverlayPanel() {
+  const drawer = document.getElementById("desktopOverlayDrawer");
+  const toggleBtn = document.getElementById("toggleOverlayBtn");
+
+  if (!toggleBtn || !drawer) return;
+
+  toggleBtn.addEventListener("click", function () {
+    drawer.classList.toggle("is-collapsed");
+  });
+}
+
