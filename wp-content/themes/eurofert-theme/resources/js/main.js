@@ -271,7 +271,7 @@ function initScrollHeaderAndBackToTop() {
 }
 
 /* -----------------------------
-   2) Mobile menu (Bootstrap Collapse) + Dropdown submenu
+   2) Mobile menu (Custom GPU transitions) + Dropdown submenu
    - Works for WP templates that include your header
 ------------------------------ */
 function initMobileMenuAndDropdown() {
@@ -281,32 +281,41 @@ function initMobileMenuAndDropdown() {
   // Dropdown open/close behavior for "Product Categories"
   initHeaderDropdownToggles();
 
-  // --- Optional but recommended: keep "menu-open" in sync with the real menu state ---
-  // This makes your hide-on-scroll header stop hiding while the menu is open.
-  var collapseEl = qs("#navbarSupportedContent") || qs(".navbar-collapse");
+  var toggler = qs(".navbar-toggler");
+  var menuContainer = qs("#navbarSupportedContent") || qs(".navbar-collapse-container");
+  var backdrop = qs(".drawer-backdrop") || qs("[data-drawer-backdrop]");
 
-  if (collapseEl && typeof bootstrap !== "undefined") {
-    addListener(collapseEl, "shown.bs.collapse", function () {
-      document.body.classList.add("menu-open");
-      // syncHeaderOffset() removed: body.menu-open no longer uses position:fixed
-      // so the page no longer snaps to scrollY=0 — no false re-measurement needed.
+  if (toggler && menuContainer) {
+    toggler.removeAttribute("data-bs-toggle");
+    toggler.removeAttribute("data-bs-target");
+
+    addListener(toggler, "click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var isExpanded = toggler.getAttribute("aria-expanded") === "true";
+      var willExpand = !isExpanded;
+
+      toggler.setAttribute("aria-expanded", willExpand ? "true" : "false");
+      menuContainer.classList.toggle("show", willExpand);
+      document.body.classList.toggle("menu-open", willExpand);
     });
 
-    addListener(collapseEl, "hidden.bs.collapse", function () {
-      document.body.classList.remove("menu-open");
-      // syncHeaderOffset() removed: fired mid CSS-transition, captured wrong height.
-    });
+    if (backdrop) {
+      addListener(backdrop, "click", function () {
+        toggler.setAttribute("aria-expanded", "false");
+        menuContainer.classList.remove("show");
+        document.body.classList.remove("menu-open");
+      });
+    }
   }
 
-  // --- Single document click listener (replaces the two you currently have) ---
   addListener(document, "click", function (e) {
     var target = e.target;
 
-    // 1) Navbar toggler clicked
-    var toggler = target && target.closest && target.closest(".navbar-toggler");
-    if (toggler) {
-      // syncHeaderOffset() calls removed — collapse events handle state,
-      // and measuring during menu animation captures wrong values.
+    // 1) Navbar toggler clicked (custom logic handles it now)
+    var togglerBtn = target && target.closest && target.closest(".navbar-toggler");
+    if (togglerBtn) {
       return;
     }
 
