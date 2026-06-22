@@ -18,6 +18,7 @@ function addListener(el, eventName, handler, options) {
    Entry point (runs once)
 ------------------------------ */
 document.addEventListener("DOMContentLoaded", function () {
+  safeInit(freezeHeroHeight, "freezeHeroHeight"); // must run first — freezes mobile hero padding before any scroll
   safeInit(initScrollHeaderAndBackToTop, "initScrollHeaderAndBackToTop");
   safeInit(initMobileMenuAndDropdown, "initMobileMenuAndDropdown");
   safeInit(initTestimonialCarousel, "initTestimonialCarousel");
@@ -141,7 +142,33 @@ function initScrollIndicator() {
 }
 
 /* -----------------------------
-   Keep CSS --header-offset in sync with real header height
+   Freeze the expanded header height for mobile hero padding.
+   Called ONCE at DOMContentLoaded — before any user scrolling.
+   Writes --header-height-top which the mobile CSS uses for
+   main > *:first-child padding-top. This value never changes,
+   making the hero padding immune to the header shrink animation.
+   Desktop is unaffected — it continues to use --header-offset.
+------------------------------ */
+function freezeHeroHeight() {
+  var header = qs("#header") || qs(".header");
+  if (!header) return;
+
+  // If the page loaded with a scroll position (e.g. back/forward navigation),
+  // temporarily remove the scrolled class so we measure the TRUE expanded height.
+  var wasScrolled = header.classList.contains("header--scrolled");
+  header.classList.remove("header--scrolled");
+
+  var h = Math.ceil(header.getBoundingClientRect().height);
+  document.documentElement.style.setProperty("--header-height-top", h + "px");
+
+  // Restore the class if we temporarily removed it
+  if (wasScrolled) header.classList.add("header--scrolled");
+}
+
+/* -----------------------------
+   Keep CSS --header-offset in sync with real header height.
+   Called on: page load, window resize.
+   NOT called from scroll or menu events (would capture mid-animation values).
 ------------------------------ */
 function syncHeaderOffset() {
   var header = qs("#header") || qs(".header");
@@ -167,12 +194,14 @@ function initScrollHeaderAndBackToTop() {
   function updateHeaderOnScroll() {
     var currentY = window.scrollY || 0;
 
-    // 1) shrink header (resync offset only when state changes)
+    // 1) shrink header (class toggle only — no syncHeaderOffset here).
+    // syncHeaderOffset() fires mid-CSS-transition and captures a wrong
+    // intermediate height, causing --header-offset to get stuck at the
+    // shrunk value even after the header re-expands. Removed.
     var shouldBeScrolled = currentY > 50;
     if (shouldBeScrolled !== isScrolled) {
       header.classList.toggle("header--scrolled", shouldBeScrolled);
       isScrolled = shouldBeScrolled;
-      syncHeaderOffset();
     }
 
     // if menu open, do not auto-hide
@@ -259,12 +288,13 @@ function initMobileMenuAndDropdown() {
   if (collapseEl && typeof bootstrap !== "undefined") {
     addListener(collapseEl, "shown.bs.collapse", function () {
       document.body.classList.add("menu-open");
-      syncHeaderOffset();
+      // syncHeaderOffset() removed: body.menu-open no longer uses position:fixed
+      // so the page no longer snaps to scrollY=0 — no false re-measurement needed.
     });
 
     addListener(collapseEl, "hidden.bs.collapse", function () {
       document.body.classList.remove("menu-open");
-      syncHeaderOffset();
+      // syncHeaderOffset() removed: fired mid CSS-transition, captured wrong height.
     });
   }
 
@@ -275,14 +305,8 @@ function initMobileMenuAndDropdown() {
     // 1) Navbar toggler clicked
     var toggler = target && target.closest && target.closest(".navbar-toggler");
     if (toggler) {
-      // If Bootstrap events exist, they'll handle syncing precisely.
-      // Fallback: sync after the UI has had time to update.
-      if (!collapseEl) {
-        setTimeout(syncHeaderOffset, 250);
-      } else {
-        // Even with Bootstrap events, a micro-sync is harmless and can help on some themes
-        setTimeout(syncHeaderOffset, 0);
-      }
+      // syncHeaderOffset() calls removed — collapse events handle state,
+      // and measuring during menu animation captures wrong values.
       return;
     }
 

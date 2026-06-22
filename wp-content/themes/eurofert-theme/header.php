@@ -55,7 +55,7 @@
           <!-- Dropdown list Product Categories-->
           <li class="nav-item has-dropdown" data-toggle="dropdown">
             <a class="nav-link parent-link">
-              <span class="link-title">Product Categories</span>
+              <span class="link-title">Products</span>
             </a>
 
             <!-- dropdown list Opener-->
@@ -66,33 +66,33 @@
 
             <!-- Mobile and Desktop Categories Sub-menu -->
             <?php
-            // Build category URLs dynamically from WP taxonomy slugs
             $cat_base = 'fertilizer_category';
-            $cats = array(
-              array('slug' => 'colfert-essential',  'label' => 'Colfert Essential'),
-              array('slug' => 'colfert-power',      'label' => 'Colfert Power NP'),
-              array('slug' => 'colfert-npk',        'label' => 'Colfert NPK'),
-              array('slug' => 'colfert-foliar',     'label' => 'Colfert Foliar'),
-              array('slug' => 'colfert-trace',      'label' => 'Colfert Trace'),
-              array('slug' => 'colfert-special',    'label' => 'Colfert Special'),
-              array('slug' => 'colfert-terra',      'label' => 'Colfert Terra'),
-            );
+            $product_categories = get_terms(array(
+              'taxonomy'   => $cat_base,
+              'hide_empty' => false,
+              'orderby'    => 'name',
+              'order'      => 'ASC',
+            ));
             ?>
             <ul class="dropdown-menu submenu-items">
               <li class="submenu-item submenu-title">
                 <a class="submenu__link" href="<?php echo esc_url(home_url('/product-category/')); ?>">
-                  Product Categories Overview</a>
+                  Products Overview</a>
               </li>
 
               <div>
-                <?php foreach ($cats as $cat) :
-                  $term = get_term_by('slug', $cat['slug'], $cat_base);
-                  $url  = $term ? esc_url(get_term_link($term)) : '#';
+                <?php
+                if (!is_wp_error($product_categories) && !empty($product_categories)) :
+                  foreach ($product_categories as $single_category) :
+                    $url = esc_url(get_term_link($single_category));
                 ?>
                   <li class="submenu-item">
-                    <a href="<?php echo $url; ?>" class="submenu__link"><?php echo esc_html($cat['label']); ?></a>
+                    <a href="<?php echo $url; ?>" class="submenu__link"><?php echo esc_html($single_category->name); ?></a>
                   </li>
-                <?php endforeach; ?>
+                <?php
+                  endforeach;
+                endif;
+                ?>
               </div>
             </ul>
           </li>
@@ -170,8 +170,8 @@
               </ul>
 
               <div class="contact-modal__hours">
-                <h4><i class="far fa-clock"></i> Working Hours</h4>
-                <p><span>Sunday &ndash; Thursday:</span> <strong>8:00 AM &ndash; 4:00 PM</strong></p>
+                <h4><i class="far fa-clock"></i> Opening Hours</h4>
+                <p><span>Sunday &ndash; Thursday:</span> <strong>8:00 AM &ndash; 5:00 PM</strong></p>
                 <p><span>Friday &ndash; Saturday:</span> <strong>Closed</strong></p>
               </div>
             </div>

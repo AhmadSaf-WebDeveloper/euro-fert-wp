@@ -28,7 +28,8 @@ $first-section-pad-default: 3rem;
   --space-xl: 2.7rem; /* 48px - Extra large spacing */
   --space-2xl: 3rem; /* 64px - Section spacing */
   --space-3xl: 4rem; /* 80px - Major section spacing */
-  --header-offset: 72px; /* header spacing mobile default */
+  --header-offset: 72px; /* header spacing — updated by JS on load + resize */
+  --header-height-top: 78px; /* frozen expanded height — set once by JS, mobile hero uses this */
   --section-xpad: clamp(1rem, 3vw, 2rem);
   --page-gutter-x: clamp(16px, 4vw, 36px);
   --page-gutter-y: clamp(28px, 6vw, 64px);
@@ -99,6 +100,17 @@ main > *:first-child {
   //prettier-ignore
   padding-top: calc(
     var(--header-offset)); //var(--wp-admin-bar-h)
+}
+
+/* Mobile only: use the frozen expanded height.
+   --header-offset changes during the header shrink animation (mid-transition
+   measurement), causing the hero padding to jump. --header-height-top is set
+   once at DOMContentLoaded and never changes, making the hero fully immune.
+   Desktop continues to use --header-offset (dynamic) — no change there. */
+@media (max-width: 767.98px) {
+  main > *:first-child {
+    padding-top: var(--header-height-top);
+  }
 }
 
 img {

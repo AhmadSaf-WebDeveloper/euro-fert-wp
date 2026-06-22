@@ -374,8 +374,10 @@
               </span>
               <span class="back-nav-link__label">Back to Category</span>
             </a>
-          <?php endif; ?>
+          <?php endif;  //end of if that checks for back_url 
+          ?>
 
+          <!-- Product Navigation Panel (Right Drawer) -->
           <nav class="product-navigation-panel">
             <ul class="nav-panel-list">
               <li>
@@ -415,7 +417,7 @@
                   data-section="application-recommendations"><span class="nav-link-text">Application Recommendations</span><span class="menu-dash" aria-hidden="true"></span></a>
               </li>
             </ul>
-          </nav>
+          </nav> <!-- end of Drawer Navigation Panel -->
 
           <!--  First Product Section -->
           <section class="overview-section no-borders-section" id="hero">
@@ -597,7 +599,7 @@
           <?php } ?>
 
           <?php
-          // Internal staff notice block , Prompting Staff  
+          // ERROR Handling :  Internal staff notice block , Prompting Staff  
           if ($is_internal_user && ($nutrient_state != 'ok' || !empty($nutrient_autofixed_lines))) :
             if (!empty($nutrient_autofixed_lines)) : ?>
               <div class="editor-only-prompt" role="note">
@@ -680,7 +682,7 @@
               </div>
             <?php endif; ?>
 
-          <?php endif; // END is_internal_user 
+          <?php endif; //end check for internal user and nutrient state
           ?>
 
           <!-- NEW START: Build a cleaned rows array (separate from raw meta) !-->
@@ -688,6 +690,7 @@
           <?php
           $recom_rows = [];
 
+          //Loading #Recommendations_Table Rows from ACF meta field (reco_rows)
           foreach ($recom_table_rows as $row) {
             if (!is_array($row)) {
               continue;
@@ -699,110 +702,169 @@
             $time        = normalize_string($row['time'] ?? '');
 
             if ($crop === '' && $fertigation === '' && $foliar === '' && $time === '')
-              continue;
+              continue; // Skip empty rows
 
+            //associative array for each row
             $recom_rows[] = [
               'crop'        => $crop,
               'fertigation' => $fertigation,
               'foliar'      => $foliar,
               'time'        => $time,
             ];
-          } //end of for loop
+          } //end of for loop that builds $recom_rows 
 
-          // Count occurrences of merged rates to identify shared dosages dynamically (case-insensitive)
+          // Count occurrences of merged rates to identify shared values dynamically (case-insensitive)
           $merged_rate_counts = [];
           foreach ($recom_rows as $row) {
+            // check if fertigation and foliar are equal and non-empty, then count them 
             if ($row['fertigation'] === $row['foliar']) {
               $rate = trim($row['fertigation']);
               if ($rate !== '') {
-                $key = strtolower($rate);
+                $key = strtolower($rate); // store in lowercase for case-insensitive counting
                 $merged_rate_counts[$key] = ($merged_rate_counts[$key] ?? 0) + 1;
               }
             }
           }
+
+          // --- FOLIAR DETECTION -- 
+          // Scans every row for this product. Stays false unless at least one. 
+          // row has a non-empty foliar value. Drives thead + tbody branching below.
+          $has_foliar = false;
+          foreach ($recom_rows as $row) {
+            if ($row['foliar'] !== '') {
+              $has_foliar = true;
+              break; // one match is enough — stop early
+            }
+          }
           ?>
 
-          <?php if (!empty($recom_rows)) { ?>
+          <?php if (!empty($recom_rows)) // ! is a negation operator 
+          { ?>
 
             <div class="section-divider" aria-hidden="true">
               <div class="separator-line"></div>
             </div>
 
-            <!-- Adding Data to Application Recommendations Table -->
+            <!-- #Recommendations_Table HTML -->
             <section
               class="content-section application-recommendations-section no-borders-section"
               id="application-recommendations">
               <h2 class="section-heading">Application Recommendations</h2>
               <div class="inner__content">
                 <div class="table-container">
-                  <table class="recommendations-table">
+                  <table class="recommendations-table
+                  <?php echo $has_foliar ? '' : ' recommendations-table--no-foliar'; ?>">
                     <thead>
                       <tr>
                         <!-- FA6 icons added directly in HTML for cross-browser reliability -->
                         <th rowspan="2"><i class="fa-solid fa-seedling" aria-hidden="true"></i> Crop</th>
-                        <th colspan="2">Application Rate</th>
+                        <?php if ($has_foliar) : ?>
+                          <!-- colspan=2: spans Fertigation + Foliar sub-columns -->
+                          <th colspan="2">Application Rate</th>
+                        <?php else : ?>
+                          <!-- colspan=1: Foliar column does not exist for this product -->
+                          <th colspan="1">Application Rate</th>
+                        <?php endif; ?>
                         <th rowspan="2"><i class="fa-solid fa-clock" aria-hidden="true"></i> Time of Application</th>
                       </tr>
                       <tr>
                         <th><i class="fa-solid fa-droplet" aria-hidden="true"></i> Fertigation</th>
-                        <th><i class="fa-solid fa-leaf" aria-hidden="true"></i> Foliar ml/100 L</th>
+                        <?php if ($has_foliar) : ?>
+                          <!-- Foliar sub-header: only rendered when product has foliar data -->
+                          <th><i class="fa-solid fa-leaf" aria-hidden="true"></i> Foliar ml/100 L</th>
+                        <?php endif; ?>
                       </tr>
                     </thead>
                     <tbody>
                       <?php foreach ($recom_rows as $data_rows) { ?>
                         <tr>
                           <!-- Crop cell: no data-label — becomes the green header strip on mobile -->
-                          <td><?php echo nl2br(esc_html($data_rows['crop'])); ?></td>
+                          <td><?php echo esc_html($data_rows['crop']); ?></td>
 
-                          <!-- If fertigation === foliar: render a single merged colspan=2 cell -->
-                          <?php if ($data_rows['fertigation'] === $data_rows['foliar']) {
-                            $rate_val = trim($data_rows['fertigation']);
-                            $key = strtolower($rate_val);
-                            $is_shared = isset($merged_rate_counts[$key]) && $merged_rate_counts[$key] > 1;
-                            $class_attr = $is_shared ? 'class="reco-shared-rate"' : '';
-                          ?>
-                            <!-- Merged cell: data-label="Application Rate" so mobile card shows the right label -->
-                            <td colspan="2" data-label="Application Rate" <?php echo $class_attr; ?>>
-                              <?php
-                              $fert_lines = explode("\n", $data_rows['fertigation']);
-                              foreach ($fert_lines as $line) {
-                                $line = trim($line);
-                                if (!empty($line)) {
-                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                          <!-- Fertigation + Foliar cells: conditional logic based on $has_foliar -->
+                          <?php if ($has_foliar) : ?>
+                            <!-- HAS-FOLIAR PATH 
+                             Scenario A:  at least one row has foliar data, so we render both Fertigation and Foliar columns for ALL rows. 
+                                 Runs unchanged for every product that has foliar data.
+                                 
+                            Smart merge: if fertigation === foliar → single colspan=2 cell.
+                                             if fertigation !== foliar → two separate cells. -->
+                            <?php if ($data_rows['fertigation'] === $data_rows['foliar']) {
+                              $rate_val = trim($data_rows['fertigation']);
+                              $key = strtolower($rate_val);
+                              $is_shared = isset($merged_rate_counts[$key]) && $merged_rate_counts[$key] > 1;
+                              $class_attr = $is_shared ? 'class="reco-shared-rate"' : '';
+                            ?>
+                              <!-- Merged cell: data-label="Application Rate" so mobile card shows the correct label -->
+                              <td colspan="2" data-label="Application Rate" <?php echo $class_attr; ?>>
+                                <?php
+                                $fert_lines = explode("\n", $data_rows['fertigation']);
+                                $output_lines = [];
+                                foreach ($fert_lines as $line) {
+                                  $line = trim($line);
+                                  if (!empty($line)) {
+                                    $output_lines[] = '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span>';
+                                  }
                                 }
-                              }
-                              ?>
-                            </td>
-                          <?php } else { // Separate cells when fertigation !== foliar 
-                          ?>
-                            <!-- Fertigation cell -->
+                                echo implode('<br/>', $output_lines);
+                                ?>
+                              </td>
+                            <?php } // end of if fertigation === foliar, the html is inside the if statement
+                            else { // Separate cells when fertigation !== foliar
+                            ?>
+                              <!-- Fertigation cell -->
+                              <td data-label="Fertigation">
+                                <?php
+                                $fert_lines = explode("\n", $data_rows['fertigation']);
+                                $output_lines = [];
+                                foreach ($fert_lines as $line) {
+                                  $line = trim($line);
+                                  if (!empty($line)) {
+                                    $output_lines[] = '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span>';
+                                  }
+                                }
+                                echo implode('<br/>', $output_lines);
+                                ?>
+                              </td>
+                              <!-- Foliar cell -->
+                              <td data-label="Foliar ml/100 L">
+                                <?php
+                                $foliar_lines = explode("\n", $data_rows['foliar']);
+                                $output_lines = [];
+                                foreach ($foliar_lines as $line) {
+                                  $line = trim($line);
+                                  if (!empty($line)) {
+                                    $output_lines[] = '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span>';
+                                  }
+                                }
+                                echo implode('<br/>', $output_lines);
+                                ?>
+                              </td>
+                            <?php }  //end of else in case fertigation !== foliar 
+                            ?>
+
+                          <?php else : ?>
+                            <!-- NO-FOLIAR scenario  : foliar is empty     -->
+
                             <td data-label="Fertigation">
                               <?php
                               $fert_lines = explode("\n", $data_rows['fertigation']);
+                              $output_lines = [];
                               foreach ($fert_lines as $line) {
                                 $line = trim($line);
                                 if (!empty($line)) {
-                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
+                                  $output_lines[] = '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span>';
                                 }
                               }
+                              echo implode('<br/>', $output_lines);
                               ?>
                             </td>
-                            <!-- Foliar cell -->
-                            <td data-label="Foliar ml/100 L">
-                              <?php
-                              $foliar_lines = explode("\n", $data_rows['foliar']);
-                              foreach ($foliar_lines as $line) {
-                                $line = trim($line);
-                                if (!empty($line)) {
-                                  echo '<span style="white-space: nowrap; display: inline-block;">' . esc_html($line) . '</span><br/>';
-                                }
-                              }
-                              ?>
-                            </td>
-                          <?php } ?>
+                            <!-- Foliar <td> intentionally absent: $has_foliar = false -->
+
+                          <?php endif; ?>
 
                           <!-- Time of Application cell -->
-                          <td data-label="Time of Application"><?php echo nl2br(esc_html($data_rows['time'])); ?></td>
+                          <td data-label="Time of Application"><?php echo esc_html($data_rows['time']); ?></td>
                         </tr>
                       <?php } ?>
                     </tbody>

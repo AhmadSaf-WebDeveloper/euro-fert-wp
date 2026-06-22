@@ -386,12 +386,13 @@
 
   /* END OF TOGGLER ICON , TOGGLER ANIMATION*/
 
-  /* Prevent body scroll when menu is open */
+  /* Prevent body scroll when menu is open.
+     overflow:hidden alone is sufficient — the drawer is position:fixed and covers
+     the full screen independently. position:fixed was removed because it caused
+     the browser to visually snap the page to scrollY=0, forcing the header to
+     re-expand and triggering a cascade of wrong --header-offset measurements. */
   body.menu-open {
     overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
   }
 
   .navbar-toggler:focus {
