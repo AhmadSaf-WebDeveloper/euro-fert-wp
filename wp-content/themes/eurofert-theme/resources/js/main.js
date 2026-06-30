@@ -250,19 +250,37 @@ function initScrollHeaderAndBackToTop() {
     { passive: true }
   );
 
-  // Mobile Back-to-Top Fade Out: Detect when footer enters viewport
+  // Footer visibility: drives body.footer-visible (mobile back-to-top) + overlay auto-collapse (desktop)
   if (footer) {
     var footerObserver = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
+            // 1. Mobile: fade back-to-top button
             document.body.classList.add("footer-visible");
+
+            // 2. Desktop: auto-collapse the overlay if it is currently open.
+            //    Only acts when the user has the drawer open — never touches an already-closed drawer.
+            var drawer = document.getElementById("desktopOverlayDrawer");
+            if (drawer && !drawer.classList.contains("is-collapsed")) {
+              drawer.classList.add("is-collapsed");
+              drawer.dataset.autoCollapsed = "true"; // flag: system did this, not the user
+            }
           } else {
+            // Footer left the viewport — restore previous state
             document.body.classList.remove("footer-visible");
+
+            // Restore overlay only if the system auto-collapsed it.
+            // If the user manually closed it, data-auto-collapsed is empty → we do nothing.
+            var drawer = document.getElementById("desktopOverlayDrawer");
+            if (drawer && drawer.dataset.autoCollapsed === "true") {
+              drawer.classList.remove("is-collapsed");
+              drawer.dataset.autoCollapsed = "";
+            }
           }
         });
       },
-      { rootMargin: "0px 0px 0px 0px" }
+      { rootMargin: "0px 0px -10px 0px" } // fires just before the footer edge reaches viewport bottom
     );
     footerObserver.observe(footer);
   }

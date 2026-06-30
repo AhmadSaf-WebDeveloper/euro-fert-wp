@@ -1,17 +1,21 @@
-/*Footer Design updated 1.1 version at 27/02/2026 */
-/*footer main parent*/
+/* Footer Design v2.0 — feat/footer-redesign */
+
+/* ─── Footer root background ─────────────────────────────── */
 .footer {
-  background: #222; /* use your real footer background color here */
+  background: var(--footer-bg);
 }
 
+/* ─── Main container — mobile-first column stack ─────────── */
 .footer-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 1rem;
+  padding-top: 2rem;
   padding-inline: clamp(1rem, 3vw, 2rem);
+  gap: 1.25rem;
 }
-/* Mobile-first: upper and lower also stack */
+
+/* ─── Upper + lower are flex columns on mobile ───────────── */
 .footer-upper,
 .footer-lower {
   display: flex;
@@ -19,372 +23,284 @@
   gap: 1.25rem;
 }
 
-/* Separator is now a real line between upper and lower */
+/* ─── Separator ──────────────────────────────────────────── */
 .footer-separator {
   width: 100%;
   border: 0;
-  border-top: 1px solid #fff;
+  border-top: 1px solid var(--footer-separator);
   margin: 0;
 }
 
-/* ---------------------------------------------------------
-   Mobile 
-   - Center logo, but keep text left aligned.
-   --------------------------------------------------------- */
-.footer-top-left-col {
-  width: 100%;
-  text-align: center;
-}
+/* ─── Logo ───────────────────────────────────────────────── */
 .footer-top-left-col .content-wrapper > .footer-logo {
   display: block;
-  width: clamp(220px, 52vw, 320px);
+  width: clamp(180px, 48vw, 280px);
   max-width: 100%;
   height: auto;
   margin: 0 auto;
   filter: brightness(0) invert(1);
 }
 
-/*subtitle  */
-.footer-top-left-col .content-wrapper > .footer-subtitle {
-  line-height: 1.5;
+/* ─── Tagline ────────────────────────────────────────────── */
+.footer-subtitle {
+  color: var(--footer-text-tagline);
+  font-size: clamp(0.8rem, 1vw, 0.92rem);
+  line-height: 1.55;
+  margin: 0.5rem 0 0;
   text-align: left;
 }
 
-/* ---------------------------------------------------------
-   Copyright wrapper + text
-   --------------------------------------------------------- */
-.footer-lower .footer-copyright-col {
-  width: 100%;
+/* ─── Nav label (used by both Quick Links and Follow Us) ─── */
+.footer-nav-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--footer-accent);
+  margin-bottom: 0.65rem;
 }
 
-.footer-lower .copyright-text {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.9rem;
-}
-
-/* ---------------------------------------------------------
-    LIST : Featured Products become wrapping chips
-   --------------------------------------------------------- */
-/*reset default for links*/
-.footer-links {
+/* ─── Quick Links: horizontal pipe-separated nav ─────────── */
+.footer-quick-nav-list {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-
-.footer-product-links {
-  list-style: none; /* remove bullets */
-  display: flex; /* horizontal layout */
-  flex-wrap: wrap; /* allow wrapping into rows */
-  justify-content: center; /* center the chip group */
-  gap: 0.5rem; /* space between chips */
-}
-
-.footer-product-links a,
-.footer-quick-links a {
-  display: inline-block;
-  color: #fff;
-  font-size: 0.95rem;
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-}
-
-/* --------------------------------------------------------------
-    Mobile: keep "Featured Products" heading + list as ONE centered unit
-   (prevents the list from drifting wider/narrower than the heading)
----------------------------------------------------------------------------*/
-.upper-list-wrapper {
   display: flex;
-  max-width: 32rem; /* keeps the unit from stretching too wide on mobile */
-  margin: 0 auto; /* centers the whole unit inside the column */
-  flex-direction: column; /* heading sits above the list */
-  align-items: center; /* centers heading + list together as a single block */
-}
-.footer-heading {
-  text-align: center; /* centers the "Featured Products" label */
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
-}
-/* desktop footer */
-@media (min-width: 768px) {
-  .footer-container {
-    display: grid;
-    grid-template-columns: 1.2fr 1.6fr 1.2fr;
-    grid-template-rows: auto auto auto;
-    gap: 0 clamp(1rem, 2vw, 2rem);
+  flex-wrap: wrap;
+  align-items: center;
+
+  /* Pipe separator between items via ::before on li + li */
+  li + li::before {
+    content: "|";
+    padding: 0 0.5rem;
+    color: var(--footer-separator);
+    font-size: 0.75rem;
   }
 
-  /* upper footer grid */
+  a {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    border-bottom: none !important;
+
+    &:hover { color: var(--footer-accent); }
+  }
+}
+
+/* ─── Social badge block ─────────────────────────────────── */
+.footer-social-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-social-icons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Circular social badges with frosted-glass look */
+.footer-social-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--footer-social-bg);
+  border: 1px solid var(--footer-social-border) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none !important;
+  box-shadow: none !important;
+  transition: background 0.22s ease, color 0.22s ease, transform 0.18s ease;
+
+  &::after, &::before { display: none !important; }
+
+  &:hover {
+    background: var(--footer-social-hover-bg);
+    color: var(--footer-social-hover-fg);
+    transform: translateY(-3px);
+  }
+}
+
+/* ─── Lower bar ──────────────────────────────────────────── */
+.copyright-text {
+  margin: 0;
+  color: var(--footer-text-muted);
+  font-size: 0.9rem;
+}
+
+.footer-legal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.footer-legal-list li::before { content: none; } /* prevent bullet bleed */
+
+.footer-legal-link {
+  display: inline-block;
+  white-space: nowrap;
+  color: var(--footer-text-muted);
+  text-decoration: none;
+  font-size: clamp(0.75rem, 0.18vw + 0.76rem, 0.9rem);
+  transition: color 0.2s ease;
+  border-bottom: none !important;
+
+  &:hover { color: var(--footer-accent); }
+}
+
+/* Get in Touch CTA — lower-right slot, same level as legal links */
+.footer-cta-btn {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--footer-cta-border) !important;
+  border-radius: 4px;
+  color: var(--footer-accent);
+  font-size: clamp(0.75rem, 0.18vw + 0.76rem, 0.88rem);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+  &::after, &::before { display: none !important; }
+
+  &:hover {
+    background: var(--footer-accent);
+    color: var(--footer-bg);
+    border-color: var(--footer-accent) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DESKTOP ≥ 1200px  — 3-column grid layout
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 1200px) {
+  .footer-container {
+    display: grid;
+    grid-template-columns: 1.3fr 1.2fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0 clamp(1rem, 2vw, 2rem);
+    padding-top: 2.5rem;
+  }
+
+  /* Upper spans all 3 cols as a subgrid row */
   .footer-upper {
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    grid-template-rows: minmax(clamp(190px, 12vw, 240px), auto);
-    align-items: stretch;
+    grid-template-rows: minmax(clamp(160px, 11vw, 220px), auto);
+    align-items: center;
+    gap: 0;
   }
 
-  .footer-upper .footer-top-left-col {
-    grid-column: 1;
+  .footer-upper .footer-top-left-col { grid-column: 1; }
+  .footer-upper .footer-center-col   { grid-column: 2; }
+  .footer-upper .footer-end-col      { grid-column: 3; }
+
+  /* Logo: left-aligned on desktop */
+  .footer-top-left-col {
+    text-align: left;
+  }
+  .footer-top-left-col .content-wrapper > .footer-logo {
+    margin: 0;
+    width: clamp(200px, 18vw, 280px);
   }
 
-  .footer-upper .footer-center-col {
-    grid-column: 2;
+  .footer-subtitle {
+    max-width: 30ch;
   }
 
-  .footer-upper .footer-end-col {
-    grid-column: 3;
-    justify-self: center;
-  }
-
+  /* Separator full-width */
   .footer-separator {
     grid-column: 1 / -1;
     margin-block: 0.75rem;
   }
 
-  /* bottom footer Parent grid*/
+  /* Lower bar spans all 3 cols as a subgrid row */
   .footer-lower {
     display: grid;
     grid-template-columns: subgrid;
     align-items: center;
-    grid-column: 1/-1;
-    padding-bottom: 1rem;
-  }
-
-  .footer-lower > * {
-    min-width: 0;
-  }
-
-  /* footer upper children sections left center and end */
-  .footer-center-col,
-  .footer-end-col {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  /* parent containers for lower footer content*/
-  .footer-lower .footer-copyright-col {
-    grid-column: 1;
-    justify-self: start;
-    align-self: center;
-  }
-
-  .footer-lower .footer-social-col {
-    grid-column: 3;
-    display: flex;
-    justify-self: center;
-  }
-
-  /****  =================================================================
-                          Footer content 
-    =======================================================================  *****/
-
-  /**   =======================================
-                Footer logo - brand logo **/
-
-  .footer-top-left-col .content-wrapper > .footer-logo {
-    margin: 0;
-    width: clamp(260px, 20vw, 340px);
-    max-width: 100%;
-  }
-
-  /** =======================================  **/
-
-  /* list container quicks links and featured products */
-  .upper-list-wrapper {
-    gap: clamp(0.5rem, 0.5rem + 0.2vw, 0.875rem);
-    flex: 1;
-    max-width: none; /* cancel mobile/global width cap */
-    margin: 0; /* cancel mobile auto-centering */
-    align-items: flex-start; /* ensure children (heading + list) are centered within the wrapper */
-  }
-
-  .footer-end-col .upper-list-wrapper {
-    align-items: flex-start;
-  }
-
-  .footer-center-col .upper-list-wrapper {
-    align-self: center;
-  }
-
-  /* main ul list for both products and quick links*/
-  .footer-links {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    padding-left: 0; /* no asymmetric indent on center col — keeps list box symmetric for centering */
-    margin: 0;
+    grid-column: 1 / -1;
+    padding-bottom: 1.25rem;
+    flex-direction: unset;
     gap: 0;
-    justify-content: space-between;
-    flex: 1;
   }
 
-  /* list items inside footer */
-  .footer-product-links li,
-  .footer-quick-links li {
-    position: relative;
-    padding-inline-start: clamp(0.6rem, 0.8vw, 1rem);
-    text-align: left;
-  }
-
-  .footer-product-links li::before,
-  .footer-quick-links li::before {
-    content: "•";
-    color: var(--primary);
-    position: absolute;
-    left: 0;
-  }
-
-  .footer-product-links a,
-  .footer-quick-links a {
-    padding: 0;
-  }
-
-  /* Product list header desktop */
-  .upper-list-wrapper .footer-heading {
-    display: inline-block;
-    position: relative;
-    margin: 0;
-    padding-bottom: 0.45rem;
-    font-family: var(--font-primary);
-    font-weight: 600;
-    font-size: clamp(1.05rem, 0.4vw + 0.95rem, 1.25rem);
-  }
-
-  /* list header green bars */
-  .footer-center-col .footer-heading::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 0;
-    width: 115%;
-    height: 1px;
-    background: var(--primary);
-    opacity: 0.5;
-  }
-
-  .footer-end-col .footer-heading::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background: var(--primary);
-    opacity: 0.5;
-  }
-
-  /*****
-   
-  Social media icons container 
-   
-   *****/
-
-  .footer-social-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: clamp(180px, 22vw, 220px);
-    gap: 0.75rem;
-  }
-
-  .footer-lower .copyright-text {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: clamp(0.76rem, 0.14vw + 0.72rem, 0.9rem);
-    white-space: nowrap;
-  }
-  /* legal links grid item */
-  .footer-lower .footer-legal-col {
-    grid-column: 2;
-    justify-self: center;
-    width: 100%;
-    width: clamp(22rem, 30vw, 28rem);
-    max-width: 100%;
-  }
-
-  /* Desktop legal links list */
-  .footer-legal-list {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: clamp(1rem, 1.8vw, 2rem);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    padding-left: 0.5rem;
-  }
-
-  .footer-legal-link {
-    display: inline-block;
-    white-space: nowrap;
-    font-size: clamp(0.75rem, 0.18vw + 0.76rem, 0.9rem);
-    text-decoration: none;
-  }
-
-  .social-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    text-decoration: none;
-  }
-
-  .social-link:hover,
-  .social-link:focus,
-  .social-link:active {
-    text-decoration: none;
-  }
-}
-
-/* =========================================================
-   Medium screens: 2-column footer upper layout
-   Range: 768px - 1200px
-   Goal:
-   - Logo/tagline spans full width on top
-   - Featured Products on left
-   - Quick Links on right
-   ========================================================= */
-
-/** Responsive medium screen layout 
-   content-based breakpoint **/
-@media (min-width: 768px) and (max-width: 1200px) {
-  /**  Two columns layout **/
-  .footer-container {
-    grid-template-columns: 1fr 1fr;
-    padding-inline: clamp(1rem, 3vw, 2rem);
-  }
-
-  .footer-upper {
-    grid-template-rows: auto minmax(210px, auto);
-    row-gap: 1.25rem;
-  }
-
-  .footer-lower {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    column-gap: clamp(1rem, 2vw, 1.75rem);
-  }
+  .footer-lower > * { min-width: 0; }
 
   .footer-lower .footer-copyright-col {
     grid-column: 1;
     justify-self: start;
+    align-self: center;
   }
 
   .footer-lower .footer-legal-col {
     grid-column: 2;
     justify-self: center;
     width: auto;
-    max-width: 100%;
   }
 
-  .footer-lower .footer-social-col {
+  .footer-lower .footer-legal-list {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: clamp(1rem, 1.8vw, 2rem);
+  }
+
+  .footer-legal-link {
+    font-size: clamp(0.75rem, 0.18vw + 0.76rem, 0.9rem);
+  }
+
+  .footer-lower .copyright-text {
+    font-size: clamp(0.76rem, 0.14vw + 0.72rem, 0.9rem);
+    white-space: nowrap;
+  }
+
+  /* CTA in lower-right — aligns with social block column above */
+  .footer-lower .footer-cta-col {
     grid-column: 3;
-    justify-self: end;
+    justify-self: start;
+    align-self: center;
   }
 
-  /* Row 1: logo spans full width, centered left-col becomes central col */
+  /* Social block: left-aligned inside right column */
+  .footer-social-block {
+    align-items: flex-start;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TABLET  768px – 1199px  — logo full-width top, 2-col below
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .footer-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-inline: clamp(1rem, 3vw, 2rem);
+  }
+
+  .footer-upper {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    row-gap: 1.25rem;
+    align-items: start;
+  }
+
+  /* Row 1: logo spans full width centered */
   .footer-upper .footer-top-left-col {
     grid-column: 1 / -1;
     text-align: center;
@@ -392,59 +308,36 @@
     flex-direction: column;
     align-items: center;
   }
-  /* Center the logo visually in the full-width top row */
+
   .footer-top-left-col .content-wrapper > .footer-logo {
     margin: 0 auto;
-    width: clamp(280px, 34vw, 380px);
-    max-width: 100%;
+    width: clamp(200px, 30vw, 320px);
   }
 
-  /* Keep the subtitle readable and centered under the logo */
-  .footer-top-left-col .content-wrapper > .footer-subtitle {
+  .footer-subtitle {
     text-align: center;
     max-width: 40ch;
     margin-inline: auto;
   }
 
-  /* Second row: Featured Products goes in left column */
-  .footer-upper .footer-center-col {
-    grid-column: 1;
-    min-width: 0;
-  }
-  /* Second row: Quick Links goes in right column */
-  .footer-upper .footer-end-col {
-    grid-column: 2;
-    min-width: 0;
-  }
+  /* Row 2: Quick Links left, Social right */
+  .footer-upper .footer-center-col { grid-column: 1; }
+  .footer-upper .footer-end-col    { grid-column: 2; }
 
-  .footer-end-col .footer-quick-links {
-    padding-left: 0.5rem;
-  }
-  .footer-center-col .footer-product-links {
-    padding-right: 0.5rem;
-  }
-  .footer-center-col .upper-list-wrapper,
-  .footer-end-col .upper-list-wrapper {
-    gap: clamp(0.65rem, 0.7vw, 1rem);
-    min-height: 100%;
-  }
-}
-
-/* lower footer stack 2 column layout on small-meduim screens */
-
-@media (min-width: 768px) and (max-width: 992px) {
+  /* Separator */
   .footer-separator {
-    margin-block: 1.5rem;
+    grid-column: 1 / -1;
+    margin-block: 1rem;
   }
 
+  /* Lower bar: 3 flex items stacked then re-ordered */
   .footer-lower {
-    width: 100%;
+    grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 0;
+    gap: 1rem;
+    padding-bottom: 1rem;
   }
 
   .footer-lower > * {
@@ -453,184 +346,103 @@
     justify-content: center;
   }
 
-  /* Row 1: social */
-  .footer-lower .footer-social-col {
-    order: 1;
-  }
+  .footer-lower .footer-social-col { display: none; } /* moved to upper */
 
-  .footer-social-wrapper {
-    width: auto;
-    justify-content: center;
-    align-items: center;
-    gap: clamp(1.25rem, 2.6vw, 1.75rem);
-  }
+  .footer-lower .footer-copyright-col { order: 3; justify-content: center; }
+  .footer-lower .footer-legal-col     { order: 1; }
+  .footer-lower .footer-cta-col       { order: 2; }
 
-  .social-link {
-    font-size: clamp(1.25rem, 0.3vw + 1.18rem, 1.4rem);
-  }
-
-  /* Row 2: legal */
-  .footer-lower .footer-legal-col {
-    order: 2;
-    width: 100%;
-    max-width: 100%;
-  }
   .footer-legal-list {
-    width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    gap: clamp(1.25rem, 3vw, 2.25rem);
-    padding-left: 0;
+    gap: 1rem;
   }
 
-  .footer-legal-link {
-    font-size: 1rem;
-  }
-
-  /* Row 3: copyright */
-  .footer-lower .footer-copyright-col {
-    order: 3;
-  }
-
-  .footer-lower .copyright-text {
-    text-align: center;
-  }
+  .copyright-text { text-align: center; }
 }
 
-/*Mobile footer specific media query */
+/* ═══════════════════════════════════════════════════════════
+   MOBILE  < 768px  — single column, all centered
+   ═══════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  /* Mobile bottom footer */
+  .footer-container {
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+
+  .footer-top-left-col {
+    width: 100%;
+    text-align: center;
+  }
+
+  .footer-top-left-col .content-wrapper > .footer-logo {
+    margin: 0 auto;
+  }
+
+  .footer-subtitle {
+    text-align: center;
+  }
+
+  /* Hide social block on mobile — separate plan */
+  .footer-social-block { display: none; }
+
+  /* Quick links wrap and center */
+  .footer-center-col {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-quick-nav { text-align: center; }
+
+  .footer-nav-label { text-align: center; }
+
+  .footer-quick-nav-list {
+    justify-content: center;
+  }
+
+  /* Lower stacked */
   .footer-lower {
     width: 100%;
     display: flex;
-    align-self: stretch; /* NEW: defeats parent .footer-container align-items:center */
     flex-direction: column;
     align-items: center;
     gap: 0.875rem;
   }
 
-  .footer-center-col,
-  .footer-end-col {
-    width: 100%;
-  }
-  /*Mobile vertical layout - flexbox Mobile */
-  .footer-lower .footer-legal-col,
-  .footer-lower .footer-social-col,
-  .footer-lower .footer-copyright-col {
+  .footer-lower > * {
     width: 100%;
     display: flex;
     justify-content: center;
   }
 
-  .footer-lower .footer-social-col {
-    order: 1;
-  }
-  .footer-lower .footer-legal-col {
-    order: 2;
-  }
-  .footer-lower .footer-copyright-col {
-    order: 3;
-  }
+  .footer-lower .footer-copyright-col { order: 3; }
+  .footer-lower .footer-legal-col     { order: 1; }
+  .footer-lower .footer-cta-col       { order: 2; }
 
   .footer-legal-list {
-    list-style: none;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 1rem;
-    margin: 0;
-    padding: 0;
-    font-size: 0.9rem;
   }
 
-  .footer-legal-list li::before {
-    content: none; /* NEW: safety reset so no bullets appear */
-  }
-
-  .footer-social-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-  }
-
-  .footer-lower .footer-copyright-col {
-    justify-content: center;
-  }
-
-  .footer-lower .copyright-text {
-    text-align: center;
-  }
-  .footer-container {
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  /*Quick links on Mobile*/
-  .footer-end-col .upper-list-wrapper {
-    margin: 0 auto;
-    align-items: flex-start;
-  }
-
-  .footer-quick-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem 1rem; /* row gap, column gap */
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    row-gap: 0.75rem;
-    column-gap: 1.5rem;
-  }
-  .footer-quick-links a {
-    display: inline-block;
-    padding: 0;
-    text-align: center;
-    white-space: normal;
-    padding: 0.15rem 0.25rem;
-    max-width: min(44vw, 13rem);
-    overflow-wrap: anywhere;
-  }
-  .footer-product-links {
-    display: flex;
-    width: 100%; /* ensures centering uses full row width */
-    flex-wrap: wrap;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-
-  .footer-center-col .footer-links li {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-  }
-
-  .footer-social-wrapper .social-link {
-    min-width: 2.25rem; /* NEW: bigger touch target */
-    min-height: 2.25rem; /* NEW: adds visual height */
-    font-size: 1.35rem; /* CHANGED: makes icon glyph larger */
-  }
-
-  .footer-lower .copyright-text {
-    white-space: normal;
-  }
+  .copyright-text { text-align: center; }
 }
 
-/*back to top button */
+/* ═══════════════════════════════════════════════════════════
+   BACK TO TOP BUTTON
+   ═══════════════════════════════════════════════════════════ */
 .back-to-top {
   position: fixed;
   bottom: calc(
     var(--back-top-footer-bottom, var(--back-top-bottom, 16px)) + var(--back-top-dynamic-offset, 0px) +
       env(safe-area-inset-bottom, 0px)
   );
-  right: var(--back-top-right); /* CHANGED: responsive gutter instead of hardcoded 20px */
-  width: var(--back-top-size); /* CHANGED */
-  height: var(--back-top-size); /* CHANGED */
+  right: var(--back-top-right);
+  width: var(--back-top-size);
+  height: var(--back-top-size);
   background-color: var(--primary);
   color: white;
   border-radius: 50%;
@@ -644,7 +456,7 @@
     opacity 0.2s ease,
     transform 0.2s ease,
     right 0.2s ease,
-    bottom 0.2s ease; /* CHANGED: animate position changes too */
+    bottom 0.2s ease;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   pointer-events: none;
 }
@@ -652,7 +464,7 @@
 .back-to-top.active {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto; /* CHANGED: clickable only when visible */
+  pointer-events: auto;
 }
 
 .back-to-top:hover {
@@ -661,51 +473,38 @@
   transform: translateY(-3px);
 }
 
-/* 
- * Desktop Spatial Harmony:
- * Shift the Back to Top button away from the right edge when the Social Media Drawer is open.
- * Wraps in Desktop media query so it doesn't accidentally trigger on Mobile.
+/*
+ * Desktop: shift button left when the social drawer is open.
  */
 @media (min-width: 992px) {
   body:has(.fixed-overlay-drawer:not(.is-collapsed)) .back-to-top {
-    right: calc(var(--back-top-right, 20px) + 85px); /* Increased for a cleaner gap */
+    right: calc(var(--back-top-right, 20px) + 70px); /* reduced offset — narrower overlay */
   }
 }
 
-/* 
- * Mobile UX Best Practice:
- * Disable dynamic push offset and fade the button out entirely when the footer is reached
- * so it never crashes into the main scrollable content.
+/*
+ * Mobile: ignore dynamic push; fade out when footer visible.
  */
 @media (max-width: 991.98px) {
   .back-to-top {
-    bottom: var(--back-top-footer-bottom, 16px) !important; /* Ignore JS dynamic push */
+    bottom: var(--back-top-footer-bottom, 16px) !important;
   }
-  
+
   body.footer-visible .back-to-top {
     opacity: 0 !important;
     pointer-events: none;
   }
 }
 
-/* Back to Top Button - responsive breakpoints */
-
+/* Back to Top — responsive bottom offsets */
 @media (min-width: 1200px) and (max-width: 1478px) {
-  .back-to-top {
-    bottom: 88px;
-  }
+  .back-to-top { bottom: 88px; }
 }
 
-/* Medium desktop / laptop range */
 @media (min-width: 992px) and (max-width: 1199.98px) {
-  .back-to-top {
-    bottom: 108px;
-  }
+  .back-to-top { bottom: 108px; }
 }
 
-/* IMPORTANT: 991px is still in your non-mobile footer layout */
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .back-to-top {
-    bottom: 156px; /* CHANGED: stronger lift to clear the social icons */
-  }
+  .back-to-top { bottom: 156px; }
 }

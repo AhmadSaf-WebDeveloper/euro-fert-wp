@@ -1,5 +1,5 @@
 <!-- Fixed Overlay Drawer (Desktop Only) -->
-<div id="desktopOverlayDrawer" class="fixed-overlay-drawer desktop-only overlay-drawer-slide">
+<div id="desktopOverlayDrawer" class="fixed-overlay-drawer desktop-only overlay-drawer-slide is-collapsed">
     
     <!-- Dynamic Toggle Button (Square <-> FAB) -->
     <button id="toggleOverlayBtn" class="toggle-overlay-btn" aria-label="Toggle social overlay">
