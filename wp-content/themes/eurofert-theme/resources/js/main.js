@@ -1,19 +1,28 @@
 "use strict";
-/* Updated : #1 bug : False Navigation active link  */
 
+/** Utility function to query a single element */
 function qs(selector, root) {
   return (root || document).querySelector(selector);
 }
 
+/** Utility function to query multiple elements */
 function qsa(selector, root) {
   return Array.prototype.slice.call((root || document).querySelectorAll(selector));
+  // Convert NodeList to Array for easier manipulation allowing forEach, map, filter, etc.
 }
-
+/** Utility function to add an event listener */
 function addListener(el, eventName, handler, options) {
   if (!el) return;
   el.addEventListener(eventName, handler, options || false);
 }
-
+/** Utility function to safely initialize a function and log errors */
+function safeInit(fn, name) {
+  try {
+    fn();
+  } catch (e) {
+    console.error(name + " failed:", e);
+  }
+}
 /* -----------------------------
    Entry point (runs once)
 ------------------------------ */
@@ -29,14 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
   safeInit(initScrollIndicator, "initScrollIndicator");
   safeInit(initFixedOverlayPanel, "initFixedOverlayPanel");
 });
-
-function safeInit(fn, name) {
-  try {
-    fn();
-  } catch (e) {
-    console.error(name + " failed:", e);
-  }
-}
 
 /* -----------------------------
    Read More Toggle (Category Hero)
@@ -75,26 +76,12 @@ function initReadMoreToggle() {
    - Mobile: indicator has display:none via CSS — this JS runs but does nothing visible
 ------------------------------ */
 function initScrollIndicator() {
+  // 1. Query the indicator and the target product grid
   var indicator = qs("#heroScrollIndicator");
-
-  // Exit silently on all pages where the indicator wasn't rendered by PHP:
-  // - Non-category pages
-  // - Category pages with no products (PHP conditional skipped rendering it)
-  if (!indicator) return;
-
   var grid = qs("#productGridContainer");
-
-  // --- Step 1: Release the CSS animation lock after the fade-in finishes ---
-  //
-  // The CSS has: animation: indicatorFadeIn 0.6s ease 1s both
-  // animation-fill-mode:both holds the element at its final animation state (opacity:1).
-  // This runs at the ANIMATION layer of the CSS cascade — which beats regular class styles.
-  // So when IntersectionObserver adds .is-hidden { opacity:0 }, the animation layer wins
-  // and the element stays visible. The class change has zero visual effect.
-  //
-  // Fix: as soon as the one-time fade-in animation ends, clear animation entirely.
-  // This releases the lock and hands full opacity control back to the CSS transition,
-  // which is what .is-hidden uses to smoothly show/hide.
+  // 2. Safety Check: If this page has no scroll indicator in the HTML, stop
+  if (!indicator) return;
+  /* --- Step 1: Release the CSS animation lock after the fade-in finishes --- */
   indicator.addEventListener("animationend", function (e) {
     if (e.animationName === "indicatorFadeIn") {
       indicator.style.animation = "none"; // Remove fade-in; scrollBounce on child is unaffected
@@ -111,7 +98,7 @@ function initScrollIndicator() {
 
   if (!grid) return;
 
-  // --- Step 3: IntersectionObserver — watch the product grid ---
+  /* --- Step 3: IntersectionObserver — watch the product grid ---
   //
   // IntersectionObserver fires whenever the observed element crosses the viewport boundary.
   // We observe #productGridContainer. The logic:
@@ -119,18 +106,15 @@ function initScrollIndicator() {
   //   - Grid leaves viewport → user scrolled back to hero → indicator is needed again → show it
   //
   // This covers all four user actions automatically:
-  //   1. Scroll down to grid          → grid enters  → indicator hides
-  //   2. Click indicator              → scroll brings grid in → grid enters → indicator hides
-  //   3. Scroll back up from grid     → grid exits   → indicator reappears
-  //   4. Any other page               → #heroScrollIndicator not in DOM → function returned early
+      1. Scroll down to grid          → grid enters  → indicator hides
+      2. Click indicator              → scroll brings grid in → grid enters → indicator hides
+      3. Scroll back up from grid     → grid exits   → indicator reappears
+      4. Any other page               → #heroScrollIndicator not in DOM → function returned early*/
   var observer = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          indicator.classList.add("is-hidden");
-        } else {
-          indicator.classList.remove("is-hidden");
-        }
+        if (entry.isIntersecting) indicator.classList.add("is-hidden");
+        else indicator.classList.remove("is-hidden");
       });
     },
     {
@@ -186,19 +170,16 @@ function syncHeaderOffset() {
 function initScrollHeaderAndBackToTop() {
   var header = qs("#header");
   var backToTopBtn = qs(".back-to-top");
-  var footer = qs("footer.footer") || qs(".footer");
+  var footer = qs("footer.footer") || qs(".footer"); // retrieving footer for mobile back to top button.
   if (!header) return;
 
   var lastScrollY = window.scrollY || 0;
   var isScrolled = null; // track header--scrolled state
 
+  // header shrink + auto-hide on scroll down, show on scroll up
   function updateHeaderOnScroll() {
     var currentY = window.scrollY || 0;
 
-    // 1) shrink header (class toggle only — no syncHeaderOffset here).
-    // syncHeaderOffset() fires mid-CSS-transition and captures a wrong
-    // intermediate height, causing --header-offset to get stuck at the
-    // shrunk value even after the header re-expands. Removed.
     var shouldBeScrolled = currentY > 50;
     if (shouldBeScrolled !== isScrolled) {
       header.classList.toggle("header--scrolled", shouldBeScrolled);
@@ -236,7 +217,10 @@ function initScrollHeaderAndBackToTop() {
       var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
       // Amount of footer that is currently visible at the bottom of the viewport.
-      var visibleFooter = viewportHeight - footerRect.top;
+      var rawVisibleFooter = viewportHeight - footerRect.top;
+
+      var visibleFooter = Math.max(0, Math.min(rawVisibleFooter, footerRect.height));
+
       if (visibleFooter > 0) {
         dynamicOffset = Math.ceil(visibleFooter + 12);
       }
@@ -245,9 +229,43 @@ function initScrollHeaderAndBackToTop() {
     backToTopBtn.style.setProperty("--back-top-dynamic-offset", dynamicOffset + "px");
   }
 
-  addListener(window, "scroll", updateHeaderOnScroll, { passive: true });
-  addListener(window, "scroll", updateBackToTopVisibility, { passive: true });
-  addListener(window, "scroll", updateBackToTopPosition, { passive: true });
+  // FIX: Layout Thrashing
+  // Group all scroll calculations into a single requestAnimationFrame loop.
+  // This guarantees layout math is only executed once per visual frame (60fps), eliminating CPU bottleneck.
+  var ticking = false;
+  addListener(
+    window,
+    "scroll",
+    function () {
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          updateHeaderOnScroll();
+          updateBackToTopVisibility();
+          updateBackToTopPosition();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  // Mobile Back-to-Top Fade Out: Detect when footer enters viewport
+  if (footer) {
+    var footerObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            document.body.classList.add("footer-visible");
+          } else {
+            document.body.classList.remove("footer-visible");
+          }
+        });
+      },
+      { rootMargin: "0px 0px 0px 0px" }
+    );
+    footerObserver.observe(footer);
+  }
 
   addListener(window, "resize", function () {
     syncHeaderOffset();
@@ -599,4 +617,3 @@ function initFixedOverlayPanel() {
     drawer.classList.toggle("is-collapsed");
   });
 }
-

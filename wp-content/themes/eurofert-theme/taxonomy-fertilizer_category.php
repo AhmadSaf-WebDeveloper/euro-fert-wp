@@ -62,7 +62,8 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
 
         <div class="category-hero__description" id="pageHeaderLead">
           <div class="category-hero__description-text is-truncated" id="heroDescText">
-            <?php echo wpautop(esc_html($category_desc)); ?>
+            <?php echo wpautop(esc_html($category_desc)); //wpautop adds <p> and <br> tags to plain text
+            ?>
           </div>
           <button class="category-hero__read-more" id="heroReadMoreBtn" aria-expanded="false" style="display: none;">
             Read more <span class="read-more-arrows">&raquo;</span>
@@ -100,12 +101,13 @@ if (function_exists('get_field') && isset($category_obj->term_id)) {
 
     </div>
 
-    <?php if ( have_posts() ) : ?>
+    <?php if (have_posts()) : ?>
       <!-- Scroll indicator: only shown when products exist below the fold -->
       <div class="category-hero__scroll-indicator" id="heroScrollIndicator" aria-hidden="true">
         <span class="category-hero__scroll-chevron"></span>
       </div>
-      <?php rewind_posts(); // Reset the loop pointer so the product grid below iterates correctly ?>
+      <?php rewind_posts(); // Reset the loop pointer so the product grid below iterates correctly 
+      ?>
     <?php endif; ?>
 
   </section>

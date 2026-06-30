@@ -1,5 +1,5 @@
 /* This is CSS is responsible for category single page, its called product grid 
-to represent the product inside the single category. 00
+to represent the product inside the single category. 
 =========================================================
    Category  Page Hero Banner
    ========================================================= */
@@ -10,7 +10,9 @@ to represent the product inside the single category. 00
 .category-hero {
   /* The soft green background behind everything */
   background: linear-gradient(135deg, #f0f7f2 0%, #e2eedb 100%);
-  padding-top: calc(var(--header-offset, 80px) + 2.5rem) !important;
+  padding-top: calc(
+    var(--header-offset, 80px) + 2.5rem
+  ); //padding top fixed value to avoid hero content being hidden behind header
   overflow: hidden;
   padding-bottom: 0;
   position: relative; /* Required so the absolute scroll indicator is anchored to this section */
@@ -206,7 +208,7 @@ to represent the product inside the single category. 00
   }
   /* Animated scroll indicator — fixed to viewport bottom on desktop, hidden on mobile */
   &__scroll-indicator {
-    display: none; /* Hidden on mobile — hero is not 100dvh there, grid peeks naturally */
+    display: none; /* Hidden on mobile*/
 
     @media (min-width: 992px) {
       display: flex;
@@ -229,7 +231,9 @@ to represent the product inside the single category. 00
       cursor: pointer; /* Hand cursor — makes it clear this is clickable */
 
       opacity: 1;
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
       animation: indicatorFadeIn 0.6s ease 0.3s both; /* Slight delayed fade-in: does not compete with page load but feels snappy */
 
       /* Fades out when JS adds this class (user scrolled past hero) */
@@ -254,13 +258,24 @@ to represent the product inside the single category. 00
 
 /* Scroll indicator keyframes */
 @keyframes scrollBounce {
-  0%, 100% { transform: rotate(45deg) translateY(0); }
-  50%       { transform: rotate(45deg) translateY(6px); }
+  0%,
+  100% {
+    transform: rotate(45deg) translateY(0);
+  }
+  50% {
+    transform: rotate(45deg) translateY(6px);
+  }
 }
 
 @keyframes indicatorFadeIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* =========================================================

@@ -661,6 +661,33 @@
   transform: translateY(-3px);
 }
 
+/* 
+ * Desktop Spatial Harmony:
+ * Shift the Back to Top button away from the right edge when the Social Media Drawer is open.
+ * Wraps in Desktop media query so it doesn't accidentally trigger on Mobile.
+ */
+@media (min-width: 992px) {
+  body:has(.fixed-overlay-drawer:not(.is-collapsed)) .back-to-top {
+    right: calc(var(--back-top-right, 20px) + 85px); /* Increased for a cleaner gap */
+  }
+}
+
+/* 
+ * Mobile UX Best Practice:
+ * Disable dynamic push offset and fade the button out entirely when the footer is reached
+ * so it never crashes into the main scrollable content.
+ */
+@media (max-width: 991.98px) {
+  .back-to-top {
+    bottom: var(--back-top-footer-bottom, 16px) !important; /* Ignore JS dynamic push */
+  }
+  
+  body.footer-visible .back-to-top {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+}
+
 /* Back to Top Button - responsive breakpoints */
 
 @media (min-width: 1200px) and (max-width: 1478px) {

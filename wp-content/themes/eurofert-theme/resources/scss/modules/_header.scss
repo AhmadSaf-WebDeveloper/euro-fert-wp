@@ -15,7 +15,7 @@
   /* Crisp neutral border to prevent merging with white backgrounds */
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: none;
-  z-index: 2000; /* Fixed header above all desktop page content, including sticky drawers */
+  z-index: 10000; /* Fixed header above all desktop page content and fixed overlays */
   padding-block: 1.5rem;
   transition:
     padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
@@ -84,7 +84,6 @@
   /*logo responsive height and width based on view port */
   max-width: clamp(160px, 20vw, 430px);
   max-height: clamp(46px, 5vh, 70px);
-
   object-fit: contain;
   image-rendering: -webkit-optimize-contrast; /* sharper in WebKit */
   transition: all 0.3s ease;
@@ -171,6 +170,7 @@
   justify-content: center;
   margin: 0;
   max-width: 100%;
+  cursor: pointer;
 }
 
 /* Style for the active link */
@@ -527,8 +527,6 @@
     flex-shrink: 0;
   }
 
-
-
   .nav-link:hover .nav-icon {
     color: var(--primary);
   }
@@ -583,7 +581,7 @@
     display: grid !important; /* Switch to grid for height transition */
     grid-template-rows: 0fr; /* Collapsed by default */
     flex: 0 0 100%;
-    width: 100%;
+
     /* 3. Style as a nested 'well' instead of a floating card */
     background: #f4f7f4; /* That professional Sage tint */
     border: none; /* Remove outer border to stop clashing */
@@ -852,7 +850,7 @@ Desktop main menu - 768px and above**/
 
   /*  Open-state: show the panel */
   .nav-item.has-dropdown.open .dropdown-menu.submenu-items {
-    display: flex;
+    display: flex; /* reveal the menu on .open */
     font-family: var(--font-primary);
     font-weight: 500;
     color: #606066;
@@ -861,73 +859,62 @@ Desktop main menu - 768px and above**/
 
   /* Panel container */
   .nav-item.has-dropdown .dropdown-menu {
+    display: none;
     position: absolute;
-    /* 4px overlap creates a hover-bridge so cursor can move from link to panel */
-    top: calc(100% + 4px);
-    right: -12px;
+    /* 2px separates the panel from the nav link for a tighter, premium feel */
+    top: calc(100% + 2px);
+    left: auto !important; /* Removes left anchor so box can expand naturally */
+    right: 0 !important; /* Anchors the right edge of the menu to the nav link */
+    transform: none !important; /* Removes horizontal centering */
     flex-flow: row wrap;
-    /* 500px max, with safe 24px margins on medium screens */
-    width: min(500px, calc(100vw - 48px));
-    left: auto;
+    width: max-content; /* Allows the menu to strictly wrap the grid */
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 12px;
     box-shadow:
       0 12px 36px rgba(0, 0, 0, 0.08),
       0 4px 12px rgba(0, 0, 0, 0.04);
-    z-index: 2100;
-    display: none;
+    z-index: 9999;
     list-style: none;
     /* visible so the arrow caret is not clipped */
     overflow: visible;
-    padding: 8px 0;
-    transform-origin: top right;
+    padding: 0;
+    transform-origin: top center;
   }
 
-  /* ── Arrow caret: sits ON the panel border, masks the line ── */
+  /* ── Modern Caret: Seamlessly attached to the panel itself ── */
 
-  /* Border outline triangle (gray, peeks behind the white fill) */
-  .nav-menu > .nav-item.has-dropdown::before {
+  /* Outline triangle */
+  .nav-item.has-dropdown .dropdown-menu::before {
     content: "";
     position: absolute;
-    top: calc(100% - 7px);
-    right: 12px; /* Adjusted to perfectly align under the new 24px wide arrow */
+    bottom: 100%;
+    left: auto;
+    right: 20px; /* Positions caret exactly under the green arrow on the right side */
     transform: translateX(50%);
-    z-index: 2101;
-    margin-top: 0;
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 0 10px 11px 10px;
+    border-width: 0 10px 10px 10px;
     border-color: transparent transparent rgba(0, 0, 0, 0.08) transparent;
-    opacity: 0;
-    transition: opacity 0.2s ease;
     pointer-events: none;
   }
 
-  /* White fill triangle — covers the panel border beneath it */
-  .nav-menu > .nav-item.has-dropdown::after {
+  /* White fill triangle */
+  .nav-item.has-dropdown .dropdown-menu::after {
     content: "";
     position: absolute;
-    top: calc(100% - 5px); /* 2px lower to overlap border */
-    right: 12px; /* Adjusted to align perfectly with the new 24px wide arrow */
+    bottom: 100%;
+    left: auto;
+    right: 20px; /* Positions caret exactly under the green arrow on the right side */
     transform: translateX(50%);
-    margin-top: 0;
-    z-index: 2102;
+    margin-bottom: -1px; /* Overlap the top border by 1px to seamlessly merge */
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 0 9px 10px 9px;
+    border-width: 0 9px 9px 9px;
     border-color: transparent transparent #fff transparent;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  /* Show arrows when open */
-  .nav-item.has-dropdown.open::after,
-  .nav-item.has-dropdown.open::before {
-    opacity: 1;
   }
 
   /* ── Submenu items & links ── */
@@ -936,77 +923,89 @@ Desktop main menu - 768px and above**/
     text-decoration: none;
   }
 
-  /* Each column item — padding here instead of on the wrapper,
-     so the title border can span the full panel width naturally */
+  /* Reset padding on individual items */
   .dropdown-menu .submenu-item {
     display: flex;
-    padding-left: 24px;
-    padding-right: 12px;
+    padding-left: 0;
+    padding-right: 0;
   }
 
-  /* Title row spans full width — border goes edge to edge */
+  /* Title row spans full width */
   .dropdown-menu.submenu-items > .submenu-item:first-child {
     grid-column: 1 / -1;
-    /* No negative margins needed — wrapper has no horizontal padding,
-       so the border naturally reaches both edges */
-    border-bottom: 1px solid var(--border-green-light);
+    width: 100%; /* Force full width so border reaches both edges */
+    margin: 0;
+    padding: 24px 16px 24px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.05); /* Soft drop shadow under the line */
+    margin-bottom: 12px; /* Breathing room */
   }
 
   /* Category link styling — proportional font & padding */
-  .dropdown-menu > div .submenu-item .submenu__link {
+  .dropdown-menu .mega-grid-wrapper .submenu-item .submenu__link {
     display: flex;
-    align-items: baseline;
-    padding-block: 14px;
-    padding-right: 12px;
+    align-items: center;
+    position: relative;
+    padding-block: 10px;
+    padding-left: 0;
+    padding-right: 0;
     /* Bigger, responsive font for desktop readability */
-    font-size: clamp(0.85rem, 1vw, 0.95rem);
-    white-space: nowrap;
+    font-size: 1rem;
+    color: var(--gray-600);
     transition:
       color 0.2s ease,
       transform 0.2s ease;
   }
 
-  /* Hover dash animation (unchanged) */
-  .dropdown-menu > div .submenu-item .submenu__link::before {
+  /* Hover dash animation - Layout safe using pure transforms */
+  .dropdown-menu .mega-grid-wrapper .submenu-item .submenu__link::before {
     content: "";
-    width: 0;
+    position: absolute;
+    left: -8px; /* Anchor point for the dash relative to the text */
+    top: 50%;
+    transform: translateY(-50%) translateX(-25px); /* Start hidden further left */
+    width: 14px;
     height: 2px;
     flex-shrink: 0;
     background: var(--primary);
-    margin-right: 0;
-    align-self: center;
-    transition: 0.2s cubic-bezier(0.39, 0.575, 0.565, 1);
-    transition-property: margin-inline, width;
+    opacity: 0;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s cubic-bezier(0.39, 0.575, 0.565, 1);
   }
 
-  .dropdown-menu > div .submenu-item:hover .submenu__link::before {
-    width: 14px;
-    margin-right: 12px;
+  .dropdown-menu .mega-grid-wrapper .submenu-item:hover .submenu__link::before {
+    opacity: 1;
+    /* Since the whole link moves +15px, we translate the dash -15px to keep it anchored globally! */
+    transform: translateY(-50%) translateX(-15px);
   }
 
-  .dropdown-menu > div .submenu-item:hover .submenu__link {
-    color: #17171a;
-    transform: translateX(4px);
+  .dropdown-menu .mega-grid-wrapper .submenu-item:hover .submenu__link {
+    color: #17171a; /* Darker on hover */
+    /* Pure visual slide - does NOT affect CSS Grid layout bounds! */
+    transform: translateX(15px);
   }
 
-  /* Title row — "PRODUCT CATEGORIES OVERVIEW" */
-  .dropdown-menu.submenu-items > .submenu-item:first-child .submenu__link {
-    padding-top: 24px;
-    padding-bottom: 18px;
-    font-size: 0.8rem;
+  /* Title row — "Products Overview" */
+  .dropdown-menu.submenu-items > .submenu-item:first-child .submenu__title-text {
+    display: block;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 1.1rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--primary);
+    color: #17171a; /* Replicating goal image (not green) */
   }
 
-  /* Inner wrapper — CSS Grid, no horizontal padding (items handle their own) */
-  .dropdown-menu > div {
+  /* Grid Layout for mega menu */
+  .mega-grid-wrapper {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 0;
-    width: 100%;
-    padding: 12px 0; /* vertical padding only — items own their left/right inset */
+    grid-template-rows: repeat(4, max-content);
+    grid-auto-flow: column;
+    column-gap: 1rem; /* Natural, balanced space between columns */
+    row-gap: 12px; /* Increased vertical gap between rows */
+    padding: 0 0 1rem 34px; /* Space only on bottom and left */
+    margin: 0;
+    width: 100%; /* Columns will stretch equally to perfectly fill the menu with zero dead space */
   }
 
   /* Optional: hide the mobile-only menu header title */
@@ -1038,8 +1037,8 @@ Desktop main menu - 768px and above**/
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    margin-left: 2px; /* Tighter gap so it feels like one unit with "Products" */
     margin-right: 0;
+    margin-left: 4px; /* Tight gap to the right of the Products link */
     width: 24px; /* Reduced footprint to pull the chevron closer */
     height: 24px;
     border-radius: 50%;
@@ -1107,7 +1106,7 @@ Desktop main menu - 768px and above**/
     border-right: 2px solid var(--primary-dark);
     border-bottom: 2px solid var(--primary-dark);
     /* point down initially */
-    transform: translateY(-2px) rotate(45deg);
+    transform: translateY(-2px) scaleY(1) rotate(45deg);
     transition:
       transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
       border-color 0.3s ease;
@@ -1118,7 +1117,7 @@ Desktop main menu - 768px and above**/
 
   /* Open state: flip chevron smoothly to point UP */
   .nav-item.has-dropdown.open > .nav-opener::after {
-    transform: translateY(2px) rotate(225deg);
+    transform: translateY(2px) scaleY(-1) rotate(45deg);
     border-color: var(--primary);
   }
 

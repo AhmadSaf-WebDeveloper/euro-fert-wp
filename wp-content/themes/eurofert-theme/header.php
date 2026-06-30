@@ -49,22 +49,10 @@
               <span>Home</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo esc_url(site_url('/contact-us/')); ?>" id="contact-modal-trigger" aria-haspopup="dialog" aria-controls="contact-modal">
-              <i class="far fa-envelope nav-icon"></i>
-              <span>Contact us</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about.html">
-              <i class="fas fa-info-circle nav-icon"></i>
-              <span>About Us</span>
-            </a>
-          </li>
 
           <!-- Dropdown list Product Categories-->
-          <li class="nav-item has-dropdown" data-toggle="dropdown">
-            <a class="nav-link parent-link">
+          <li class="nav-item has-dropdown">
+            <a class="nav-link parent-link" href="javascript:void(0);">
               <i class="fas fa-seedling nav-icon"></i>
               <span class="link-title">Products</span>
             </a>
@@ -77,7 +65,7 @@
 
             <!-- Mobile and Desktop Categories Sub-menu -->
             <?php
-            $cat_base = 'fertilizer_category';
+            $cat_base = 'fertilizer_category'; //category key defined in register_taxonomy() in functions.php
             $product_categories = get_terms(array(
               'taxonomy'   => $cat_base,
               'hide_empty' => false,
@@ -87,25 +75,36 @@
             ?>
             <ul class="dropdown-menu submenu-items">
               <li class="submenu-item submenu-title">
-                <a class="submenu__link" href="<?php echo esc_url(home_url('/product-category/')); ?>">
-                  Products Overview</a>
+                <span class="submenu__title-text">Products Overview</span>
               </li>
 
-              <div>
+              <div class="mega-grid-wrapper">
                 <?php
                 if (!is_wp_error($product_categories) && !empty($product_categories)) :
                   foreach ($product_categories as $single_category) :
-                    $url = esc_url(get_term_link($single_category));
                 ?>
-                  <li class="submenu-item">
-                    <a href="<?php echo $url; ?>" class="submenu__link"><?php echo esc_html($single_category->name); ?></a>
-                  </li>
+                    <li class="submenu-item">
+                      <a href="<?php echo esc_url(get_term_link($single_category)); ?>" class="submenu__link"><?php echo esc_html($single_category->name); ?></a>
+                    </li>
                 <?php
                   endforeach;
                 endif;
                 ?>
               </div>
             </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo esc_url(site_url('/contact-us/')); ?>" id="contact-modal-trigger" aria-haspopup="dialog" aria-controls="contact-modal">
+              <i class="far fa-envelope nav-icon"></i>
+              <span>Contact us</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">
+              <i class="fas fa-info-circle nav-icon"></i>
+              <span>About Us</span>
+            </a>
           </li>
         </ul>
       </div>
