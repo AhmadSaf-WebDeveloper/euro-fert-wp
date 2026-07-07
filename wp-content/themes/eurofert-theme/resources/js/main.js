@@ -259,23 +259,18 @@ function initScrollHeaderAndBackToTop() {
             // 1. Mobile: fade back-to-top button
             document.body.classList.add("footer-visible");
 
-            // 2. Desktop: auto-collapse the overlay if it is currently open.
-            //    Only acts when the user has the drawer open — never touches an already-closed drawer.
+            // 2. Desktop: completely hide the overlay drawer when footer is visible
             var drawer = document.getElementById("desktopOverlayDrawer");
-            if (drawer && !drawer.classList.contains("is-collapsed")) {
-              drawer.classList.add("is-collapsed");
-              drawer.dataset.autoCollapsed = "true"; // flag: system did this, not the user
+            if (drawer) {
+              drawer.classList.add("is-hidden");
             }
           } else {
             // Footer left the viewport — restore previous state
             document.body.classList.remove("footer-visible");
 
-            // Restore overlay only if the system auto-collapsed it.
-            // If the user manually closed it, data-auto-collapsed is empty → we do nothing.
             var drawer = document.getElementById("desktopOverlayDrawer");
-            if (drawer && drawer.dataset.autoCollapsed === "true") {
-              drawer.classList.remove("is-collapsed");
-              drawer.dataset.autoCollapsed = "";
+            if (drawer) {
+              drawer.classList.remove("is-hidden");
             }
           }
         });
