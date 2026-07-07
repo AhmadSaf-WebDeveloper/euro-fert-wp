@@ -8,8 +8,8 @@
                 <div class="footer-top-left-col">
                     <div class="content-wrapper">
                         <img class="footer-logo"
-                             src="<?php echo get_template_directory_uri(); ?>/public/images/eurofert-logo.png"
-                             alt="Eurofert Logo">
+                            src="<?php echo get_template_directory_uri(); ?>/public/images/eurofert-logo.png"
+                            alt="Eurofert Logo">
                         <p class="footer-subtitle">
                             Sustainable agricultural solutions. Trusted by farmers worldwide since 1985.
                         </p>
@@ -72,12 +72,11 @@
                     </ul>
                 </div>
 
-                <!-- Lower Col 3: Get in Touch CTA -->
-                <!-- contact.js intercepts any a[href*='/contact-us'] — no extra JS needed -->
+                <!-- Lower Col 3: Get in Touch -->
                 <div class="footer-cta-col">
                     <a href="<?php echo esc_url(home_url('/contact-us/')); ?>"
-                       class="footer-cta-btn"
-                       aria-label="Open contact form">
+                        class="footer-cta-btn"
+                        aria-label="Open contact form">
                         Get in Touch &rarr;
                     </a>
                 </div>

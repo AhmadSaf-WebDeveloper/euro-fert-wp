@@ -104,15 +104,15 @@
 
 /* Circular social badges with frosted-glass look */
 .footer-social-icon {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: var(--footer-social-bg);
   border: 1px solid var(--footer-social-border) !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   color: rgba(255, 255, 255, 0.85);
   text-decoration: none !important;
   box-shadow: none !important;
@@ -150,7 +150,7 @@
 .footer-legal-link {
   display: inline-block;
   white-space: nowrap;
-  color: var(--footer-text-muted);
+  color: rgba(255, 255, 255, 0.85); /* Match quick links color */
   text-decoration: none;
   font-size: clamp(0.75rem, 0.18vw + 0.76rem, 0.9rem);
   transition: color 0.2s ease;
@@ -189,7 +189,7 @@
 @media (min-width: 1200px) {
   .footer-container {
     display: grid;
-    grid-template-columns: 1.3fr 1.2fr 1fr;
+    grid-template-columns: 1fr auto 1fr;
     grid-template-rows: auto auto auto;
     gap: 0 clamp(1rem, 2vw, 2rem);
     padding-top: 2.5rem;
@@ -200,14 +200,40 @@
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    grid-template-rows: minmax(clamp(160px, 11vw, 220px), auto);
-    align-items: center;
-    gap: 0;
+    grid-template-rows: auto auto; /* Two mathematical rows */
+    row-gap: 1rem; /* Exact gap between titles and content */
+    align-items: start;
   }
 
-  .footer-upper .footer-top-left-col { grid-column: 1; }
-  .footer-upper .footer-center-col   { grid-column: 2; }
-  .footer-upper .footer-end-col      { grid-column: 3; }
+  /* Expose children to the subgrid */
+  .footer-top-left-col .content-wrapper,
+  .footer-center-col .footer-quick-nav,
+  .footer-end-col .footer-social-block {
+    display: contents;
+  }
+
+  .footer-top-left-col,
+  .footer-center-col,
+  .footer-end-col {
+    grid-row: 1 / span 2;
+    display: grid;
+    grid-template-rows: subgrid;
+    align-items: start;
+    justify-items: start; /* Internal left-alignment */
+  }
+
+  .footer-upper .footer-top-left-col { grid-column: 1; justify-self: start; }
+  .footer-upper .footer-center-col   { grid-column: 2; justify-self: start; }
+  .footer-upper .footer-end-col      { grid-column: 3; justify-self: end; }
+
+  /* Remove implicit margins to let subgrid control spacing strictly */
+  .footer-nav-label {
+    margin: 0 !important;
+    align-self: center; /* Push title to vertical center of Row 1 (logo row) */
+  }
+  .footer-subtitle {
+    margin: 0 !important;
+  }
 
   /* Logo: left-aligned on desktop */
   .footer-top-left-col {
@@ -215,11 +241,11 @@
   }
   .footer-top-left-col .content-wrapper > .footer-logo {
     margin: 0;
-    width: clamp(200px, 18vw, 280px);
+    width: clamp(240px, 25vw, 340px); /* Larger logo */
   }
 
   .footer-subtitle {
-    max-width: 30ch;
+    max-width: 45ch; /* Prevent wrapping */
   }
 
   /* Separator full-width */
@@ -249,14 +275,19 @@
 
   .footer-lower .footer-legal-col {
     grid-column: 2;
-    justify-self: center;
-    width: auto;
+    justify-self: center; /* Center the full-width column within the auto space */
+    width: 100%;
   }
 
   .footer-lower .footer-legal-list {
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: clamp(1rem, 1.8vw, 2rem);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    width: 100%;
+    gap: 0;
+
+    li:nth-child(1) { justify-self: start; }
+    li:nth-child(2) { justify-self: center; }
+    li:nth-child(3) { justify-self: end; }
   }
 
   .footer-legal-link {
@@ -271,14 +302,10 @@
   /* CTA in lower-right — aligns with social block column above */
   .footer-lower .footer-cta-col {
     grid-column: 3;
-    justify-self: start;
+    justify-self: end;
     align-self: center;
   }
 
-  /* Social block: left-aligned inside right column */
-  .footer-social-block {
-    align-items: flex-start;
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -474,11 +501,11 @@
 }
 
 /*
- * Desktop: shift button left when the social drawer is open.
+ * Desktop: shift button left permanently to clear the social FAB.
  */
 @media (min-width: 992px) {
-  body:has(.fixed-overlay-drawer:not(.is-collapsed)) .back-to-top {
-    right: calc(var(--back-top-right, 20px) + 70px); /* reduced offset — narrower overlay */
+  body:has(.fixed-overlay-drawer) .back-to-top {
+    right: calc(var(--back-top-right, 20px) + 80px); /* clear both collapsed and open FAB */
   }
 }
 
