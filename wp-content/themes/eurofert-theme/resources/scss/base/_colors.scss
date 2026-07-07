@@ -43,7 +43,7 @@
   --reco-header-gradient: linear-gradient(90deg, var(--ef-green) 0%, var(--primary) 100%);
 
   /* ── Footer Component Colors ────────────────────────────── */
-  --footer-bg:              #1a2e1a;                   /* Deep forest green — footer background */
+  --footer-bg:              #2e4a2e;                   /* Deep forest green — footer background */
   --footer-accent:          #a3d9a5;                   /* Sage green — labels, hover states, CTA */
   --footer-text-muted:      rgba(255, 255, 255, 0.55); /* Copyright & legal text */
   --footer-text-tagline:    rgba(163, 217, 165, 0.68); /* Tagline under logo */
@@ -55,10 +55,11 @@
   --footer-cta-border:      rgba(163, 217, 165, 0.50); /* "Get in Touch" outline */
 
   /* ── Fixed Overlay Component Colors ─────────────────────── */
-  --overlay-bg:             rgba(46, 74, 46, 0.95);    /* Drawer open state background */
-  --overlay-fab-bg:         rgba(46, 74, 46, 1.0);     /* FAB collapsed state background */
-  --overlay-leaf-color:     var(--footer-accent);       /* Leaf icon = sage green accent */
-  --overlay-icon-color:     rgba(255, 255, 255, 0.85); /* Social icons inside open drawer */
-  --overlay-icon-hover:     var(--footer-accent);       /* Social icon hover color */
-  --overlay-action-bg:      rgba(255, 255, 255, 0.15); /* Contact Us circle background */
+  --overlay-bg:             rgba(22, 22, 28, 0.96);    /* Deep charcoal — darker, near-black */
+  --overlay-fab-bg:         #16161c;                   /* FAB collapsed state — matching charcoal */
+  --overlay-leaf-color:     var(--footer-accent);       /* Leaf icon = sage green (unchanged) */
+  --overlay-icon-color:     rgba(255, 255, 255, 1);    /* Icons: pure white */
+  --overlay-icon-hover:     var(--primary-light);       /* Hover: brand green */
+  --overlay-action-bg:      var(--primary);             /* Phone CTA: solid Eurofert green */
+  --overlay-accent-border:  rgba(69, 160, 65, 0.75);   /* Green left-edge accent line */
 }
