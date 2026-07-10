@@ -233,3 +233,31 @@ add_action('wp_footer', 'eurofert_inject_social_overlay');
 function eurofert_inject_social_overlay() {
     get_template_part('template-parts/components/fixed-overlay-drawer');
 }
+
+/**
+ * Normalizes a package size string (e.g., "4 Kg" -> "4 kg", "20 lt and" -> "20 lt")
+ * Mirrors the logic used in the api_sync_product.js script.
+ */
+function eurofert_normalize_package_unit($pkg) {
+    if (preg_match('/^([0-9]+(?:\.[0-9]+)?)\s*(.*)$/', trim($pkg), $parts)) {
+        $val = $parts[1];
+        $unit = trim(strtolower($parts[2]));
+        
+        // Remove trailing conjunctions/words (e.g. "and", "or", "to")
+        $unit = trim(preg_replace('/\b(and|or|to)\b.*/i', '', $unit));
+        
+        // Normalization rules matching the JS sync script
+        if (preg_match('/^kgs?$/', $unit) || $unit === 'kilogram' || $unit === 'kilograms') {
+            $unit = 'kg';
+        } elseif (preg_match('/^l(?:t|iters?|itres?)?$/', $unit)) {
+            $unit = 'lt';
+        } elseif (preg_match('/^mls?$/', $unit) || $unit === 'milliliter' || $unit === 'milliliters') {
+            $unit = 'ml';
+        } elseif (preg_match('/^g$/', $unit) || $unit === 'grams' || $unit === 'gram') {
+            $unit = 'g';
+        }
+        
+        return $val . ' ' . $unit;
+    }
+    return $pkg;
+}
