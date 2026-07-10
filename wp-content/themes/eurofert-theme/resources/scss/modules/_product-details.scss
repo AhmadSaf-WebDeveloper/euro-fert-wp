@@ -353,6 +353,12 @@ Application Recommendations Table
       padding: 0.9rem 1rem;
       border-right: 1px solid rgba(255, 255, 255, 0.3); // Consistent, clean inner grid
       border-bottom: none; // Let the thead handle the bottom border
+
+      // iPad Optimization (Between 768px and 1200px)
+      @media (max-width: 1199px) and (min-width: 768px) {
+        padding: 0.7rem 0.5rem;
+        font-size: 0.72rem;
+      }
     }
 
     // "Crop" column header — spans 2 rows
@@ -388,6 +394,12 @@ Application Recommendations Table
       text-align: center;
       border-right: 1px solid rgba(255, 255, 255, 0.3);
       border-bottom: none; // Let the thead handle the bottom border
+
+      // iPad Optimization (Between 768px and 1200px)
+      @media (max-width: 1199px) and (min-width: 768px) {
+        padding: 0.6rem 0.4rem;
+        font-size: 0.7rem;
+      }
     }
 
     // Style the FA6 <i> icons injected by PHP in all header cells
@@ -427,6 +439,12 @@ Application Recommendations Table
       word-break: break-word;
       overflow-wrap: break-word;
       white-space: normal;
+
+      // iPad Optimization (Between 768px and 1200px)
+      @media (max-width: 1199px) and (min-width: 768px) {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.82rem;
+      }
     }
 
     // Remove right border on last cell in each row
@@ -442,6 +460,8 @@ Application Recommendations Table
       padding-left: 1.25rem;
       color: var(--ef-green);
       text-wrap: pretty; // Prevent orphaned words on single lines
+      word-break: normal; 
+      overflow-wrap: normal;
     }
 
     // ── DOSAGE COLUMNS (Fertigation / Foliar) ────────────────────────────────
