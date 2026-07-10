@@ -404,18 +404,8 @@ $banner-wave-h-desktop  : 100px;
 }
 
 // ── 6. Card: Scroll-reveal (IntersectionObserver adds .is-visible) ───────────
-.product-grid--archive .product-grid__item {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity   0.42s ease,
-    transform 0.42s ease;
-
-  &.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+// DELETED: The archive grid no longer hardcodes opacity: 0. 
+// It now perfectly relies on the unified animations.js which adds .will-scroll-reveal dynamically!
 
 // ── 7. Card: Lime top border on hover (archive-specific upgrade) ──────────────
 .product-grid--archive .product-grid__item:hover {
