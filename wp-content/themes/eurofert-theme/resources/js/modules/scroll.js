@@ -121,8 +121,10 @@ export function initHeaderScroll() {
 }
 
 export function initViewportAnimations() {
-  var animated = qsa(".fade-in, .slide-up, .scale-in, .product-grid-item");
-  if (!animated.length) return;
+
+  // ── 1. Existing animation classes (.fade-in, .slide-up, .scale-in) ────────
+  // Unchanged behaviour — adds .active class when element enters viewport.
+  var animated = qsa(".fade-in, .slide-up, .scale-in");
 
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(
@@ -133,32 +135,26 @@ export function initViewportAnimations() {
       },
       { threshold: 0.15 }
     );
-
-    animated.forEach(function (el) {
-      io.observe(el);
-    });
-    return;
+    animated.forEach(function (el) { io.observe(el); });
+  } else {
+    // Fallback for browsers without IntersectionObserver
+    function isInViewport(el) {
+      var rect = el.getBoundingClientRect();
+      return (
+        rect.top  <= (window.innerHeight || document.documentElement.clientHeight) * 0.85 &&
+        rect.bottom >= 0
+      );
+    }
+    function check() {
+      animated.forEach(function (el) { if (isInViewport(el)) activateEl(el); });
+    }
+    check();
+    addListener(window, "scroll", check, { passive: true });
   }
 
-  function isInViewport(el) {
-    var rect = el.getBoundingClientRect();
-    return rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.85 && rect.bottom >= 0;
-  }
-
-  function check() {
-    animated.forEach(function (el) {
-      if (isInViewport(el)) activateEl(el);
-    });
-  }
-
-  check();
-  addListener(window, "scroll", check, { passive: true });
+  // Grid animations are now handled globally by animations.js
 }
 
 function activateEl(el) {
-  if (el.classList.contains("product-grid-item")) {
-    el.classList.add("animate");
-    return;
-  }
   el.classList.add("active");
 }

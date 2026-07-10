@@ -1,0 +1,582 @@
+/* =============================================================================
+   _product-archive.scss
+   Product Archive Page (/products/)
+   
+   Sections:
+   1.  Page Banner (.page-banner)
+   2.  Toolbar (.archive-toolbar)
+   3.  Filter Pills (.archive-filter)
+   4.  Grid Section (.archive-grid-section)
+   5.  Grid Layout (.product-grid--archive)
+   6.  Card: Scroll-reveal states
+   7.  Card: Hover accent (lime top border)
+   8.  Card: List view layout
+   9.  Card: Load-More overflow hiding
+   10. Skeleton shimmer
+   11. Load More button
+   12. Empty state
+   13. Back nav spacing
+   ============================================================================= */
+
+// ── Local SCSS Variables ────────────────────────────────────────────────────
+$archive-card-min-width : 195px;
+$archive-card-gap       : clamp(1.25rem, 2.5vw, 1.75rem);
+$banner-wave-h-mobile   : 62px;
+$banner-wave-h-desktop  : 100px;
+
+// ── 1. Page Banner ───────────────────────────────────────────────────────────
+.page-banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: clamp(280px, 40vh, 460px);
+  text-align: center;
+
+  // Clear fixed header + leave room for wave at the bottom
+  padding-top: calc(var(--header-offset, 80px) + var(--wp-admin-bar-h, 0px) + 2rem);
+  padding-bottom: calc(#{$banner-wave-h-mobile} + 1rem);
+
+  @media (min-width: 768px) {
+    padding-bottom: calc(#{$banner-wave-h-desktop} + 1rem);
+  }
+
+  // ── Background image layer ──
+  &__bg-image {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 55%;
+    background-repeat: no-repeat;
+
+    // Dark forest-green overlay applied purely via CSS – no inline style
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(26, 43, 26, 0.74) 0%,
+        rgba(26, 43, 26, 0.52) 100%
+      );
+    }
+  }
+
+  // ── Content wrapper (above overlay) ──
+  &__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  // ── Breadcrumb ──
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-family: var(--font-primary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 1.25rem;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      &:hover { color: rgba(255, 255, 255, 0.9); }
+    }
+  }
+
+  &__breadcrumb-sep {
+    font-size: 0.9em;
+    opacity: 0.6;
+  }
+
+  // ── H1 Title ──
+  &__title {
+    font-family: var(--font-primary);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 0.75rem;
+  }
+
+  // ── Lime-green accent underline bar ──
+  &__accent {
+    width: clamp(48px, 6vw, 72px);
+    height: 3px;
+    background: var(--accent-green);   // #93d500
+    border-radius: 2px;
+    margin: 0 auto 1.25rem;
+  }
+
+  // ── Subtitle ──
+  &__subtitle {
+    font-family: var(--font-secondary);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 55ch;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+
+  // ── Wave divider at bottom ──
+  .wave-divider {
+    position: absolute;
+    inset: auto 0 -1px 0;
+    width: 100%;
+    height: $banner-wave-h-mobile;
+    overflow: hidden;
+    line-height: 0;
+    z-index: 1;
+    pointer-events: none;
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (min-width: 768px) {
+      height: $banner-wave-h-desktop;
+    }
+  }
+}
+
+// ── 2. Toolbar ───────────────────────────────────────────────────────────────
+.archive-toolbar {
+  background: var(--gray-100);    // #fdfbf7 warm cream
+  padding: 1.75rem 0 0;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 767.98px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+  }
+
+  // "35 Products" label
+  &__count {
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // Search input wrapper
+  &__search {
+    position: relative;
+    flex: 1;
+    max-width: 420px;
+
+    @media (max-width: 767.98px) {
+      max-width: 100%;
+    }
+
+    &-input {
+      width: 100%;
+      padding: 0.55rem 2.5rem 0.55rem 2.5rem;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 999px;
+      background: #ffffff;
+      font-family: var(--font-primary);
+      font-size: 0.88rem;
+      color: var(--gray-900);
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(69, 160, 65, 0.12);
+      }
+
+      &::placeholder {
+        color: var(--gray-500);
+      }
+    }
+
+    &-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+
+    &-clear {
+      position: absolute;
+      right: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--gray-500);
+      padding: 0;
+      line-height: 1;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+
+      &:hover { color: var(--gray-800); }
+    }
+  }
+
+  // Grid / List view toggle
+  &__view {
+    display: flex;
+    gap: 0.35rem;
+    margin-left: auto;
+    flex-shrink: 0;
+
+    @media (max-width: 767.98px) {
+      margin-left: 0;
+      align-self: flex-end;
+    }
+
+    &-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1.5px solid var(--gray-300);
+      background: #ffffff;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition:
+        background    0.2s ease,
+        color         0.2s ease,
+        border-color  0.2s ease;
+
+      &.is-active,
+      &[aria-pressed="true"] {
+        background:    var(--primary-dark);
+        color:         #ffffff;
+        border-color:  var(--primary-dark);
+      }
+
+      &:hover:not(.is-active) {
+        border-color: var(--primary);
+        color: var(--primary-dark);
+      }
+    }
+  }
+}
+
+// ── 3. Filter Pills ──────────────────────────────────────────────────────────
+.archive-filter {
+  background: var(--gray-100);
+  padding: 1rem 0 1.5rem;
+
+  &__bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+
+    // Mobile: horizontally scrollable single row — no wrapping, hidden scrollbar
+    @media (max-width: 479.98px) {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;       // Firefox
+
+      &::-webkit-scrollbar {
+        display: none;             // Chrome / Safari
+      }
+    }
+  }
+
+  &__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--primary);
+    background: transparent;
+    color: var(--primary-dark);
+    font-family: var(--font-primary);
+    font-size: 0.84rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background     0.18s ease,
+      color          0.18s ease,
+      border-color   0.18s ease,
+      opacity        0.18s ease;
+
+    // Active / selected pill
+    &.is-active {
+      background:   var(--primary-dark);
+      color:        #ffffff;
+      border-color: var(--primary-dark);
+    }
+
+    // Empty category (0 products)
+    &.is-empty,
+    &[disabled],
+    &[aria-disabled="true"] {
+      opacity:      0.42;
+      border-style: dashed;
+      cursor:       not-allowed;
+    }
+
+    &:hover:not(.is-active):not(:disabled):not(.is-empty) {
+      background: var(--ef-green-soft);
+    }
+  }
+
+  // Product count badge inside the pill e.g. "3"
+  &__pill-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+
+    .archive-filter__pill.is-active & {
+      background: rgba(255, 255, 255, 0.28);
+    }
+  }
+}
+
+// ── 4. Archive Grid Section ──────────────────────────────────────────────────
+.archive-grid-section {
+  background: var(--gray-100);
+  padding-top: 1.5rem;
+  padding-bottom: var(--space-3xl);
+}
+
+// Mobile: generous side padding so cards never feel squeezed
+@media (max-width: 439.98px) {
+  .archive-grid-section .container {
+    padding-inline: 1.25rem;
+  }
+}
+
+// ── 5. Grid Layout (5-col, scales down for smaller viewports) ────────────────
+.product-grid--archive {
+  grid-template-columns: repeat(5, minmax($archive-card-min-width, 1fr));
+  max-width: 1380px;
+  gap: $archive-card-gap;
+
+  @media (max-width: 1199.98px) {
+    grid-template-columns: repeat(4, minmax($archive-card-min-width, 1fr));
+  }
+
+  @media (max-width: 991.98px) {
+    grid-template-columns: repeat(3, minmax($archive-card-min-width, 1fr));
+  }
+
+  @media (max-width: 767.98px) {
+    grid-template-columns: repeat(2, minmax($archive-card-min-width, 1fr));
+  }
+
+  @media (max-width: 439.98px) {
+    grid-template-columns: 1fr;   // 1 col: full-width, generous padding from container
+  }
+}
+
+// ── 6. Card: Scroll-reveal (IntersectionObserver adds .is-visible) ───────────
+.product-grid--archive .product-grid__item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity   0.42s ease,
+    transform 0.42s ease;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── 7. Card: Lime top border on hover (archive-specific upgrade) ──────────────
+.product-grid--archive .product-grid__item:hover {
+  border-top: 3px solid var(--accent-green);  // #93d500
+}
+
+// ── 8. Card: List view layout ────────────────────────────────────────────────
+.product-grid--archive.archive-list-mode {
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  transition: grid-template-columns 0.3s ease;
+
+  .product-grid__item {
+    flex-direction: row;
+    max-height: 140px;
+
+    // Thumbnail: fixed square on the left
+    .product-grid__media {
+      flex: 0 0 130px;
+      width: 130px;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px 0 0 12px;
+    }
+
+    // Content: fills remaining width, vertically centred
+    .product-grid__content {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+}
+
+// ── 9. Card: Load-More overflow hiding ───────────────────────────────────────
+// Cards 16+ rendered in DOM but hidden — JS removes data-overflow on click
+.product-grid--archive .product-grid__item[data-overflow="true"] {
+  display: none;
+
+  &.is-revealed {
+    display: flex;  // restore normal card display
+  }
+}
+
+// Cards filtered out by JS category filter
+.product-grid__item.is-filtered-out {
+  display: none !important;
+}
+
+// Cards hidden by live-search.js when query doesn't match
+// (render() in productArchive.js reads this class and applies is-filtered-out)
+.product-grid__item.is-search-hidden {
+  display: none !important;
+}
+
+// ── 10. Skeleton shimmer (CSS-only, no JS or library) ────────────────────────
+.product-grid__skeleton {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid var(--gray-300);
+  min-height: 300px;
+  position: relative;
+  overflow: hidden;
+
+  // Shimmer shine sweep
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent                  0%,
+      rgba(255, 255, 255, 0.65)   50%,
+      transparent                 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+// Remove skeletons once JS fires is-loaded
+.product-grid--archive.is-loaded .product-grid__skeleton {
+  display: none;
+}
+
+// ── 11. Load More button ──────────────────────────────────────────────────────
+.archive-load-more {
+  text-align: center;
+  padding: 2.5rem 0 1rem;
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.72rem 2rem;
+    border-radius: 999px;
+    border: 2px solid var(--primary);
+    background: transparent;
+    color: var(--primary-dark);
+    font-family: var(--font-primary);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition:
+      background   0.22s ease,
+      color        0.22s ease,
+      border-color 0.22s ease,
+      transform    0.18s ease;
+
+    &:hover {
+      background:   var(--primary-dark);
+      color:        #ffffff;
+      border-color: var(--primary-dark);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    i {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover i {
+      transform: translateY(3px);
+    }
+  }
+}
+
+// ── 12. Empty state ──────────────────────────────────────────────────────────
+.archive-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--gray-600);
+
+  &__icon {
+    display: block;
+    font-size: 2.5rem;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin: 0 0 0.4rem;
+    color: var(--gray-700);
+  }
+
+  small {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+  }
+}
+
+// ── 13. Back nav spacing ──────────────────────────────────────────────────────
+.archive-back-nav {
+  padding: 2rem 0 1rem;
+}

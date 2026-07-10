@@ -18,7 +18,7 @@
       </div>
 
       <div class="hero-section__buttons">
-        <a href="" class="btn btn-primary btn-explore">Explore Products</a>
+        <a href="<?php echo esc_url( get_post_type_archive_link( 'eurofert_product' ) ); ?>" class="btn btn-primary btn-explore">Explore Products</a>
         <a href="<?php echo esc_url(site_url('/contact-us/')); ?>" class="btn btn-outline-light">Contact Us</a>
       </div>
     </div>
@@ -164,7 +164,7 @@
           ?>
             <div class="category-wrapper col-12 col-xl-4 col-xxl-3">
               <!-- Category card-->
-              <div class="category-card card h-100 shadow-sm fade-in">
+              <div class="category-card card h-100 shadow-sm">
                 <img
                   src="<?php echo esc_url($category_image_url); ?>"
                   class="card-img-top category-thumbnail"
