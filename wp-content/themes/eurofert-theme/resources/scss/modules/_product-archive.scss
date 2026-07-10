@@ -409,7 +409,9 @@ $banner-wave-h-desktop  : 100px;
 
 // ── 7. Card: Lime top border on hover (archive-specific upgrade) ──────────────
 .product-grid--archive .product-grid__item:hover {
-  border-top: 3px solid var(--accent-green);  // #93d500
+  // We use an inset box-shadow instead of a physical border to prevent the card
+  // from growing by 2 pixels and causing a grid "shake" layout shift!
+  box-shadow: inset 0 3px 0 var(--accent-green), 0 6px 16px rgba(0,0,0,0.08);
 }
 
 // ── 8. Card: List view layout ────────────────────────────────────────────────
