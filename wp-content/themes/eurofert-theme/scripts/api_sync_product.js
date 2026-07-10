@@ -2,7 +2,7 @@ const fs = require("fs"); //Node js Module called file system = fs ,
 // Purpose: To read, write, and manipulate files and directories.
 const path = require("path");
 const xlsx = require("xlsx");
-const useLocal = process.argv.includes('--local') || process.argv.includes('local');
+const useLocal = process.argv.includes("--local") || process.argv.includes("local");
 const envFileName = useLocal ? "../.env.local" : "../.env";
 require("dotenv").config({ path: path.join(__dirname, envFileName) }); // Load environment variables from .env or .env.local file
 
@@ -28,7 +28,7 @@ if (!BASE_IMAGE_DIR) {
 
 // Reads the --dry-run flag from the terminal command. process.argv is an array
 /* e.g. "node api_sync_product.js --dry-run" => process.argv = ["node", "api_sync_product.js", "--dry-run"]*/
-const DRY_RUN = process.argv.includes('--dry-run') || process.argv.includes('dry-run');
+const DRY_RUN = process.argv.includes("--dry-run") || process.argv.includes("dry-run");
 
 // --- THE CORE ENGINE ---
 
@@ -147,9 +147,20 @@ async function runProductSync() {
       // Section B : Find Category ID using the slug (e.g., 'colfert-essential')
       const categoryId = await getCategoryIdBySlug(item.category_slug);
 
-      // Section C :  Read  JSON from the external file to get the recommendation table
+      // Section C : Read JSON from inline column OR external file to get the recommendation table
       let recommendationsData = [];
-      if (item.recommendations_file_path && item.recommendations_file_path !== "") {
+      
+      // 1. Try reading inline JSON first
+      if (item.recommendations_json && item.recommendations_json.trim() !== "") {
+        try {
+          recommendationsData = JSON.parse(item.recommendations_json);
+          console.log(`📄 Reading JSON directly from inline Excel cell data.`);
+        } catch (e) {
+          console.log(`⚠️ WARNING: Invalid JSON format in recommendations_json column for ${item.title}. Skipping table.`);
+        }
+      } 
+      // 2. Fallback to external JSON file if inline is empty
+      else if (item.recommendations_file_path && item.recommendations_file_path !== "") {
         // Glues the Base JSON folder + the Filename
         const jsonPath = path.join(BASE_JSON_DIR, item.recommendations_file_path.trim());
         if (fs.existsSync(jsonPath)) {
@@ -187,6 +198,13 @@ async function runProductSync() {
           .split(/\\n|\r?\n/) // split the string into an array at each \n character
           .map((line) => line.trim()) // trim() removes leading/trailing whitespace from each line
           .join("\n"); // rejoin the array back into a single string
+      }
+
+      if (item.packages_content && item.packages_content.trim() !== "") {
+        const cleanedPackages = cleanPackagesContent(item.packages_content);
+        if (cleanedPackages) {
+          acf.packages_content = cleanedPackages;
+        }
       }
 
       // Only attach acf to the payload if at least one ACF field had data
@@ -237,6 +255,47 @@ async function runProductSync() {
 } //end of Async function
 
 // --- HELPER FUNCTIONS ---
+
+function cleanPackagesContent(rawInput) {
+  // Cleans up the packages_content field to a normalized format by taking only numbers and units, removing extra words, and standardizing units (e.g., "kgs" -> "kg").
+  if (!rawInput) return "";
+
+  // Regex to extract numbers followed by letters (with optional spaces)
+  const regex = /(?:[0-9]+(?:\.[0-9]+)?\s*[a-zA-Z]+(?:\s[a-zA-Z]+)?)/g;
+  const matches = rawInput.match(regex);
+
+  if (!matches) {
+    console.warn(`⚠️ Warning: No valid package sizes found in packages_content: "${rawInput}"`);
+    return "";
+  }
+
+  const cleanedParts = matches.map((match) => {
+    // Separate numeric value and unit
+    const parts = match.match(/^([0-9]+(?:\.[0-9]+)?)\s*(.*)$/);
+    if (!parts) return match.trim();
+
+    const value = parts[1];
+    let unit = parts[2].trim().toLowerCase();
+
+    // Clean up trailing conjunctions/words (e.g. "and", "or", "to") that got captured
+    unit = unit.replace(/\b(and|or|to)\b.*/gi, "").trim();
+
+    // Normalization rules
+    if (/^kgs?$/i.test(unit) || unit === "kilogram" || unit === "kilograms") {
+      unit = "kg";
+    } else if (/^l(?:t|iters?|itres?)?$/i.test(unit)) {
+      unit = "lt";
+    } else if (/^mls?$/i.test(unit) || unit === "milliliter" || unit === "milliliters") {
+      unit = "ml";
+    } else if (/^g$/i.test(unit) || unit === "grams?") {
+      unit = "g";
+    }
+
+    return `${value} ${unit}`;
+  });
+
+  return cleanedParts.join(", ");
+}
 
 // Function to upload images to the Media Library
 async function uploadMedia(filePath) {
