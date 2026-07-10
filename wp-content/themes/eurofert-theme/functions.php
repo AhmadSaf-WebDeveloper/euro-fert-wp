@@ -229,6 +229,109 @@ function eurofert_format_chemical_formula($string)
 /* 
  * Inject the Fixed Social Overlay globally into the footer 
  */
+add_action('init', 'eurofert_register_taxonomies');
+
+
+/**
+ * eurofert_page_banner()
+ *
+ * Renders the standard Eurofert page hero banner.
+ * Reusable across archive, taxonomy, and static page templates.
+ *
+ * Inspired by Brad Schiff's setPageBanner() pattern, adapted for this project.
+ *
+ * Usage:
+ *   eurofert_page_banner([
+ *     'title'    => 'All Products',
+ *     'subtitle' => 'Precision-engineered fertilizers for every crop and growth stage.',
+ *     'photo'    => get_theme_file_uri( '/public/images/hero-farm.jpg' ),
+ *   ]);
+ *
+ * @param array $args {
+ *   @type string $title    H1 text. Defaults to get_the_title().
+ *   @type string $subtitle Subtitle paragraph. Defaults to ACF page_banner_subtitle field.
+ *   @type string $photo    Absolute URL of the background image.
+ * }
+ */
+function eurofert_page_banner( array $args = [] ): void {
+
+  // ── Defaults ──────────────────────────────────────────────────────────────
+  if ( ! isset( $args['title'] ) ) {
+    $args['title'] = get_the_title();
+  }
+
+  if ( ! isset( $args['subtitle'] ) ) {
+    $args['subtitle'] = function_exists( 'get_field' )
+      ? (string) get_field( 'page_banner_subtitle' )
+      : '';
+  }
+
+  if ( ! isset( $args['photo'] ) ) {
+    // Per-page ACF background image (singular non-archive pages only)
+    if ( ! is_archive() && ! is_home() && function_exists( 'get_field' ) && get_field( 'page_banner_background_image' ) ) {
+      $img          = get_field( 'page_banner_background_image' );
+      $args['photo'] = $img['sizes']['pageBanner'] ?? ( $img['url'] ?? '' );
+    } else {
+      // Fallback: shared farm hero — ships with theme, copied by webpack
+      $args['photo'] = get_theme_file_uri( '/public/images/hero-farm.jpg' );
+    }
+  }
+  ?>
+
+  <section class="page-banner" aria-label="<?php echo esc_attr( $args['title'] ); ?> page header">
+
+    <!-- Background image layer (overlay applied via CSS ::after) -->
+    <div class="page-banner__bg-image"
+         style="background-image: url('<?php echo esc_url( $args['photo'] ); ?>');"
+         role="img"
+         aria-label="<?php esc_attr_e( 'Agricultural fields', 'eurofert' ); ?>">
+    </div>
+
+    <!-- Content (z-index above the overlay) -->
+    <div class="page-banner__content container">
+
+      <!-- Breadcrumb -->
+      <nav class="page-banner__breadcrumb" aria-label="<?php esc_attr_e( 'Breadcrumb', 'eurofert' ); ?>">
+        <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'eurofert' ); ?></a>
+        <span class="page-banner__breadcrumb-sep" aria-hidden="true">›</span>
+        <span aria-current="page"><?php echo esc_html( $args['title'] ); ?></span>
+      </nav>
+
+      <!-- H1 -->
+      <h1 class="page-banner__title">
+        <?php echo esc_html( $args['title'] ); ?>
+      </h1>
+
+      <!-- Lime-green accent underline bar -->
+      <div class="page-banner__accent" aria-hidden="true"></div>
+
+      <!-- Subtitle -->
+      <?php if ( ! empty( $args['subtitle'] ) ) : ?>
+        <p class="page-banner__subtitle">
+          <?php echo esc_html( $args['subtitle'] ); ?>
+        </p>
+      <?php endif; ?>
+
+    </div><!-- .page-banner__content -->
+
+    <!-- Wave divider — fill colour matches page background (#fdfbf7) -->
+    <div class="wave-divider" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 1440 320"
+           preserveAspectRatio="none"
+           style="display:block">
+        <path fill="#fdfbf7"
+              d="M 0 140 C 216.233 564.4 361.845 93.09 678.729
+                 148.922 C 793.75 160.651 964.357 231.648 1175.231 212.578
+                 C 1302.39 189.262 1443.778 194.192 1481.472 142.663
+                 L 1478.484 323.963 L 0 320 Z">
+        </path>
+      </svg>
+    </div>
+
+  </section>
+  <?php
+}
 add_action('wp_footer', 'eurofert_inject_social_overlay');
 function eurofert_inject_social_overlay() {
     get_template_part('template-parts/components/fixed-overlay-drawer');
