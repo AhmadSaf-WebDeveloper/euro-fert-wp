@@ -87,10 +87,7 @@
     </footer>
 
 
-    <!-- Back to Top Button -->
-    <a href="#" class="back-to-top" aria-label="Back to Top">
-        <i class="fas fa-arrow-up"></i>
-    </a>
+    <?php get_template_part('template-parts/components/back-to-top'); ?>
     <?php wp_footer(); ?>
     </body>
 
