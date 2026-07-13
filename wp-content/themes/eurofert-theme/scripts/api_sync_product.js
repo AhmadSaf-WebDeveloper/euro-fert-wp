@@ -52,7 +52,7 @@ async function runProductSync() {
 
   const workbook = xlsx.readFile(excelPath);
   const sheetName = workbook.SheetNames[0]; // grab the first sheet
-  const rawProducts = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
+  const rawProducts = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "", skipHidden: true });
 
   // Clean the headers and values in the excell
   for (const row of rawProducts) {
@@ -103,6 +103,8 @@ async function runProductSync() {
       // Handle Featured Image
       let featuredMediaId = null;
 
+      let hasErrors = false; // Tracks if any files were missing so we can retry later
+
       //check for empty column in the excel sheet
       if (item.local_image_path && item.local_image_path.trim() !== "") {
         // Section A : find Image path = the Base Folder + Category Folder + Filename
@@ -135,12 +137,14 @@ async function runProductSync() {
                 console.error(`⚠️ Image Upload Failed for ${fileName}:`, imgErr.message);
                 console.log(`   Continuing to sync product text data without the image.`);
                 featuredMediaId = null; // Ensure it stays null so the payload
+                hasErrors = true;
               }
             }
           }
         } // end if  fs.existsSync(imgPath)
         else {
           console.log(`⚠️ WARNING: Image not found at ${imgPath}. Skipping image.`);
+          hasErrors = true;
         }
       }
 
@@ -157,6 +161,7 @@ async function runProductSync() {
           console.log(`📄 Reading JSON directly from inline Excel cell data.`);
         } catch (e) {
           console.log(`⚠️ WARNING: Invalid JSON format in recommendations_json column for ${item.title}. Skipping table.`);
+          hasErrors = true;
         }
       } 
       // 2. Fallback to external JSON file if inline is empty
@@ -169,6 +174,7 @@ async function runProductSync() {
           console.log(`📄 Reading JSON from: ${jsonPath}`);
         } else {
           console.log(`⚠️ WARNING: JSON file not found at: ${jsonPath}. Skipping table.`);
+          hasErrors = true;
         }
       }
 
@@ -235,11 +241,15 @@ async function runProductSync() {
 
         if (response.ok) {
           console.log(`✅ Success! ${item.title} is live.`);
-          //Save progress! Add slug to array and rewrite the JSON file
-
-          syncedSlugs.push(item.slug); // records the slug
-          // JSON.stringify(array, null, 2) makes the file readable
-          fs.writeFileSync(PROGRESS_FILE, JSON.stringify(syncedSlugs, null, 2));
+          
+          if (!hasErrors) {
+            //Save progress! Add slug to array and rewrite the JSON file
+            syncedSlugs.push(item.slug); // records the slug
+            // JSON.stringify(array, null, 2) makes the file readable
+            fs.writeFileSync(PROGRESS_FILE, JSON.stringify(syncedSlugs, null, 2));
+          } else {
+            console.log(`⚠️ Product saved, but had missing files (like an image typo). Left out of progress file to retry automatically on next run!`);
+          }
         } else {
           const error = await response.json();
           console.error(`❌ Server rejected ${item.title}:`, error.message);
@@ -281,7 +291,7 @@ function cleanPackagesContent(rawInput) {
     unit = unit.replace(/\b(and|or|to)\b.*/gi, "").trim();
 
     // Normalization rules
-    if (/^kgs?$/i.test(unit) || unit === "kilogram" || unit === "kilograms") {
+    if (/^k(?:gs?)?$/i.test(unit) || unit === "kilogram" || unit === "kilograms") {
       unit = "kg";
     } else if (/^l(?:t|iters?|itres?)?$/i.test(unit)) {
       unit = "lt";

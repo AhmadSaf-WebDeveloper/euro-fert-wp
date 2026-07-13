@@ -350,7 +350,7 @@ function eurofert_normalize_package_unit($pkg) {
         $unit = trim(preg_replace('/\b(and|or|to)\b.*/i', '', $unit));
         
         // Normalization rules matching the JS sync script
-        if (preg_match('/^kgs?$/', $unit) || $unit === 'kilogram' || $unit === 'kilograms') {
+        if (preg_match('/^k(?:gs?)?$/', $unit) || $unit === 'kilogram' || $unit === 'kilograms') {
             $unit = 'kg';
         } elseif (preg_match('/^l(?:t|iters?|itres?)?$/', $unit)) {
             $unit = 'lt';
