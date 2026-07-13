@@ -33,7 +33,12 @@ wp-content/themes/eurofert-theme/datasheets/*.txt
 
 # Sync Script Outputs
 .sync_progress.json
+.sync_progress.local.json
 dry_run_preview.txt
+
+# Temporary Excel Files
+~$*
+~$*.xlsx
 
 # WordPress Core & Plugins (AI Token Savers)
 wp-admin/
